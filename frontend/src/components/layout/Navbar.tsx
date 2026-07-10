@@ -22,8 +22,12 @@ export default function AppNavbar() {
     { name: "Home", link: "/" },
     { name: "Products", link: "/products" },
     { name: "Industries", link: "/industries" },
-    { name: "Pricing", link: "/pricing" },
-    { name: "About", link: "/about" },
+    { name: "Solutions", link: "/solutions" },
+    { name: "Customers", link: "/customers" },
+    { name: "Resources", link: "/resources" },
+    { name: "Support", link: "/support" },
+    { name: "About Us", link: "/about" },
+    { name: "Contact", link: "/contact" },
   ];
 
   return (
@@ -33,11 +37,15 @@ export default function AppNavbar() {
         <NavbarLogo />
         <NavItems items={navItems} />
         <div className="flex items-center gap-4">
+          <Link href="/admin/login" className="text-sm font-medium text-foreground hover:text-primary-600 transition-colors">
+            Login
+          </Link>
           <NavbarButton 
             variant="primary" 
-            onClick={() => router.push('/contact')}
+            onClick={() => router.push('/request-demo')}
+            className="bg-primary-600 hover:bg-primary-700 text-white border-none shadow-md"
           >
-            Get Started
+            Request Demo
           </NavbarButton>
         </div>
       </NavBody>
@@ -67,15 +75,22 @@ export default function AppNavbar() {
             </Link>
           ))}
           <div className="flex w-full flex-col gap-4 px-4 pt-4 border-t border-border mt-2">
+            <Link
+              href="/admin/login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-center py-2 text-sm font-medium text-foreground hover:text-primary-600 transition-colors"
+            >
+              Login
+            </Link>
             <NavbarButton
               onClick={() => {
                 setIsMobileMenuOpen(false);
-                router.push('/contact');
+                router.push('/request-demo');
               }}
               variant="primary"
-              className="w-full h-12"
+              className="w-full h-12 bg-primary-600 hover:bg-primary-700 text-white border-none"
             >
-              Get Started
+              Request Demo
             </NavbarButton>
           </div>
         </MobileNavMenu>

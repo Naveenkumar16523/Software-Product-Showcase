@@ -4,12 +4,18 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { CheckCircle2 } from "lucide-react";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  message: z.string().min(10, "Please provide more details (min 10 chars)"),
-  honeypot: z.string().max(0, "Spam detected"),
+  firstName: z.string().min(2, "First name is required"),
+  lastName: z.string().min(2, "Last name is required"),
+  email: z.string().email("Valid work email is required"),
+  phone: z.string().min(10, "Valid phone number is required"),
+  company: z.string().min(2, "Company name is required"),
+  industry: z.string().min(1, "Please select an industry"),
+  businessSize: z.string().min(1, "Please select business size"),
+  productInterest: z.string().min(1, "Please select a product"),
+  message: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -19,11 +25,7 @@ export default function RequestDemoPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
@@ -31,19 +33,25 @@ export default function RequestDemoPage() {
     setIsSubmitting(true);
     setServerError("");
     
-    if (data.honeypot) {
-      setIsSubmitting(false);
-      return; // spam bot
-    }
-
     try {
+      // We map the extended fields to a simple message string for the current backend lead model, 
+      // or the backend can be updated later to accept these structured fields.
+      const compiledMessage = `
+Company: ${data.company}
+Phone: ${data.phone}
+Industry: ${data.industry}
+Size: ${data.businessSize}
+Interest: ${data.productInterest}
+Message: ${data.message || 'No additional message'}
+      `;
+
       const response = await fetch("http://localhost:8080/api/v1/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: data.name,
+          name: `${data.firstName} ${data.lastName}`,
           email: data.email,
-          message: data.message,
+          message: compiledMessage,
         }),
       });
 
@@ -60,72 +68,156 @@ export default function RequestDemoPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-24 max-w-2xl">
-      <h1 className="text-4xl font-display font-bold mb-6">Request a Demo</h1>
-      <p className="text-xl text-gray-600 mb-8">See how our retail software can transform your business.</p>
-
-      {isSuccess ? (
-        <div className="bg-success text-white p-6 rounded-xl shadow-md">
-          <h3 className="text-2xl font-bold mb-2">Success!</h3>
-          <p>We've received your request and a confirmation email has been sent to you. Our team will reach out shortly.</p>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded-xl shadow-card border border-gray-100">
-          {serverError && (
-            <div className="bg-error/10 text-error p-4 rounded-md mb-6 border border-error/20">
-              {serverError}
-            </div>
-          )}
+    <div className="bg-background min-h-screen pt-20 pb-24">
+      <div className="container mx-auto px-4 max-w-6xl">
+        
+        <div className="flex flex-col lg:flex-row gap-12 mt-12 bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
           
-          {/* Honeypot field for spam bots */}
-          <div className="hidden">
-            <input type="text" {...register("honeypot")} tabIndex={-1} autoComplete="off" />
+          {/* Left Side Info */}
+          <div className="lg:w-2/5 bg-primary-900 p-12 text-white flex flex-col justify-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('/grid-dark.svg')] opacity-20"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">See our platform in action</h2>
+              <p className="text-primary-100 mb-8 text-lg">
+                Discover how top retailers are scaling their operations and increasing margins with our unified software suite.
+              </p>
+              <ul className="space-y-6">
+                <li className="flex gap-4">
+                  <CheckCircle2 className="text-primary-400 shrink-0 w-6 h-6" />
+                  <div>
+                    <strong className="block mb-1 text-lg">Live Walkthrough</strong>
+                    <span className="text-primary-200 text-sm">A personalized tour of the features that matter most to your business.</span>
+                  </div>
+                </li>
+                <li className="flex gap-4">
+                  <CheckCircle2 className="text-primary-400 shrink-0 w-6 h-6" />
+                  <div>
+                    <strong className="block mb-1 text-lg">Expert Consultation</strong>
+                    <span className="text-primary-200 text-sm">Discuss your technical requirements and integration needs with our engineers.</span>
+                  </div>
+                </li>
+                <li className="flex gap-4">
+                  <CheckCircle2 className="text-primary-400 shrink-0 w-6 h-6" />
+                  <div>
+                    <strong className="block mb-1 text-lg">Custom Pricing</strong>
+                    <span className="text-primary-200 text-sm">Get a detailed quote based on your specific module requirements and scale.</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="name">Full Name</label>
-            <input
-              id="name"
-              {...register("name")}
-              className={`w-full px-4 py-3 rounded-md border ${errors.name ? 'border-error focus:ring-error' : 'border-gray-300 focus:ring-primary-500'} focus:outline-none focus:ring-2`}
-              placeholder="Jane Doe"
-            />
-            {errors.name && <p className="text-error text-sm mt-1">{errors.name.message}</p>}
-          </div>
+          {/* Form */}
+          <div className="lg:w-3/5 p-8 md:p-12">
+            {isSuccess ? (
+              <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
+                <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                  <CheckCircle2 className="w-10 h-10" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900">Request Received!</h3>
+                <p className="text-gray-600 max-w-md mx-auto">
+                  Thank you for your interest. One of our retail technology experts will contact you shortly to schedule your personalized demo.
+                </p>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold text-gray-900 mb-8">Schedule Free Demo</h2>
+                
+                {serverError && (
+                  <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 border border-red-100 text-sm font-medium">
+                    {serverError}
+                  </div>
+                )}
+                
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">First Name <span className="text-red-500">*</span></label>
+                      <input {...register("firstName")} className={`w-full px-4 py-3 rounded-lg border ${errors.firstName ? 'border-red-500' : 'border-gray-200'} bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500`} />
+                      {errors.firstName && <p className="text-red-500 text-xs">{errors.firstName.message}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Last Name <span className="text-red-500">*</span></label>
+                      <input {...register("lastName")} className={`w-full px-4 py-3 rounded-lg border ${errors.lastName ? 'border-red-500' : 'border-gray-200'} bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500`} />
+                      {errors.lastName && <p className="text-red-500 text-xs">{errors.lastName.message}</p>}
+                    </div>
+                  </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="email">Work Email</label>
-            <input
-              id="email"
-              type="email"
-              {...register("email")}
-              className={`w-full px-4 py-3 rounded-md border ${errors.email ? 'border-error focus:ring-error' : 'border-gray-300 focus:ring-primary-500'} focus:outline-none focus:ring-2`}
-              placeholder="jane@company.com"
-            />
-            {errors.email && <p className="text-error text-sm mt-1">{errors.email.message}</p>}
-          </div>
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Work Email <span className="text-red-500">*</span></label>
+                      <input type="email" {...register("email")} className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-200'} bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500`} />
+                      {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Phone Number <span className="text-red-500">*</span></label>
+                      <input type="tel" {...register("phone")} className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500' : 'border-gray-200'} bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500`} />
+                      {errors.phone && <p className="text-red-500 text-xs">{errors.phone.message}</p>}
+                    </div>
+                  </div>
 
-          <div className="mb-8">
-            <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="message">How can we help?</label>
-            <textarea
-              id="message"
-              {...register("message")}
-              rows={4}
-              className={`w-full px-4 py-3 rounded-md border ${errors.message ? 'border-error focus:ring-error' : 'border-gray-300 focus:ring-primary-500'} focus:outline-none focus:ring-2`}
-              placeholder="Tell us about your current challenges..."
-            />
-            {errors.message && <p className="text-error text-sm mt-1">{errors.message.message}</p>}
-          </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">Company Name <span className="text-red-500">*</span></label>
+                    <input {...register("company")} className={`w-full px-4 py-3 rounded-lg border ${errors.company ? 'border-red-500' : 'border-gray-200'} bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500`} />
+                    {errors.company && <p className="text-red-500 text-xs">{errors.company.message}</p>}
+                  </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-primary-600 text-white font-bold py-4 rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? "Submitting..." : "Request Demo"}
-          </button>
-        </form>
-      )}
+                  <div className="grid sm:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Industry <span className="text-red-500">*</span></label>
+                      <select {...register("industry")} className={`w-full px-4 py-3 rounded-lg border ${errors.industry ? 'border-red-500' : 'border-gray-200'} bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500`}>
+                        <option value="">Select...</option>
+                        <option value="Supermarket">Supermarket</option>
+                        <option value="Fashion">Fashion & Apparel</option>
+                        <option value="Pharmacy">Pharmacy</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      {errors.industry && <p className="text-red-500 text-xs">{errors.industry.message}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Business Size <span className="text-red-500">*</span></label>
+                      <select {...register("businessSize")} className={`w-full px-4 py-3 rounded-lg border ${errors.businessSize ? 'border-red-500' : 'border-gray-200'} bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500`}>
+                        <option value="">Select...</option>
+                        <option value="1-10">1-10 stores</option>
+                        <option value="11-50">11-50 stores</option>
+                        <option value="51-200">51-200 stores</option>
+                        <option value="200+">200+ stores</option>
+                      </select>
+                      {errors.businessSize && <p className="text-red-500 text-xs">{errors.businessSize.message}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Interest <span className="text-red-500">*</span></label>
+                      <select {...register("productInterest")} className={`w-full px-4 py-3 rounded-lg border ${errors.productInterest ? 'border-red-500' : 'border-gray-200'} bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500`}>
+                        <option value="">Select...</option>
+                        <option value="POS">POS Software</option>
+                        <option value="ERP">ERP Solution</option>
+                        <option value="CRM">Retail CRM</option>
+                        <option value="Full Suite">Full Suite</option>
+                      </select>
+                      {errors.productInterest && <p className="text-red-500 text-xs">{errors.productInterest.message}</p>}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">Additional Information</label>
+                    <textarea {...register("message")} rows={3} className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none" placeholder="Tell us about your current challenges..."></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-primary-600 text-white font-bold py-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-70 text-lg shadow-md"
+                  >
+                    {isSubmitting ? "Submitting Request..." : "Schedule Free Demo"}
+                  </button>
+                  <p className="text-xs text-gray-500 text-center">By submitting, you agree to our Terms of Service and Privacy Policy.</p>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
