@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-brand-accent: #d9f99d; /* Electric Lime */
+  
+  --radius-md: 0.5rem;
+}
+
+:root {
+  /* Forced dark mode tokens using the provided OKLCH palette */
+  --background: oklch(0.08 0 0); /* Nearly Black */
+  --surface: oklch(0.11 0 0);    /* Dark Gray for cards */
+  --foreground: oklch(0.95 0 0); /* Off-White */
+  --border: oklch(0.2 0 0);      /* Medium Gray */
+}
+
+body {
+  @apply font-sans bg-background text-foreground antialiased;
+}
