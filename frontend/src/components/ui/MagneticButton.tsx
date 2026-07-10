@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, HTMLMotionProps } from "framer-motion";
 
-interface MagneticButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+interface MagneticButtonProps extends HTMLMotionProps<"div"> {
   children: React.ReactNode;
   className?: string;
   strength?: number;

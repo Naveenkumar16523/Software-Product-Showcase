@@ -37,13 +37,13 @@ export default function AppNavbar() {
         <NavbarLogo />
         <NavItems items={navItems} />
         <div className="flex items-center gap-4">
-          <Link href="/admin/login" className="text-sm font-medium text-foreground hover:text-primary-600 transition-colors">
+          <Link href="/admin/login" className="text-sm font-medium text-foreground hover:text-brand-accent transition-colors">
             Login
           </Link>
           <NavbarButton 
             variant="primary" 
             onClick={() => router.push('/request-demo')}
-            className="bg-primary-600 hover:bg-primary-700 text-white border-none shadow-md"
+            className="bg-brand-accent hover:bg-brand-accent/90 text-black border-none shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
           >
             Request Demo
           </NavbarButton>
@@ -78,7 +78,7 @@ export default function AppNavbar() {
             <Link
               href="/admin/login"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-center py-2 text-sm font-medium text-foreground hover:text-primary-600 transition-colors"
+              className="text-center py-2 text-sm font-medium text-foreground hover:text-brand-accent transition-colors"
             >
               Login
             </Link>
@@ -88,7 +88,7 @@ export default function AppNavbar() {
                 router.push('/request-demo');
               }}
               variant="primary"
-              className="w-full h-12 bg-primary-600 hover:bg-primary-700 text-white border-none"
+              className="w-full h-12 bg-brand-accent hover:bg-brand-accent/90 text-black border-none shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
             >
               Request Demo
             </NavbarButton>

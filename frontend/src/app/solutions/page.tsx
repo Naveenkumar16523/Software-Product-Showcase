@@ -38,44 +38,44 @@ export default function SolutionsPage() {
   return (
     <div className="bg-background min-h-screen pt-20 pb-24">
       {/* Header */}
-      <div className="bg-primary-900 text-white py-20 px-4 mb-16">
+      <div className="bg-surface border-b border-border text-foreground py-20 px-4 mb-16">
         <div className="container mx-auto max-w-4xl text-center">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">Tailored Solutions for Every Retailer</h1>
-          <p className="text-xl text-primary-200">Discover how B&Y Technology addresses the unique challenges of your industry with our specialized software suites.</p>
+          <p className="text-xl text-foreground/70">Discover how B&Y Technology addresses the unique challenges of your industry with our specialized software suites.</p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {industries.map((ind, i) => (
-            <div key={i} className="bg-surface rounded-2xl border border-border p-8 hover:shadow-hover transition-all duration-300">
-              <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mb-6">
+            <div key={i} className="glass-border rounded-2xl p-8 hover:shadow-hover hover:bg-white/10 transition-colors">
+              <div className="w-16 h-16 bg-brand-accent/20 text-brand-accent rounded-xl flex items-center justify-center mb-6">
                 {ind.icon}
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{ind.title}</h2>
-              <p className="text-gray-600 mb-6">{ind.desc}</p>
+              <h2 className="text-2xl font-bold text-foreground mb-4">{ind.title}</h2>
+              <p className="text-foreground/70 mb-6">{ind.desc}</p>
               
-              <h3 className="font-semibold text-gray-900 mb-3">Key Capabilities:</h3>
+              <h3 className="font-semibold text-foreground mb-3">Key Capabilities:</h3>
               <ul className="space-y-2 mb-8">
                 {ind.features.map((feature, j) => (
-                  <li key={j} className="flex items-center text-gray-700">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary-500 mr-3 shrink-0"></div>
+                  <li key={j} className="flex items-center text-foreground/80">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-accent mr-3 shrink-0"></div>
                     {feature}
                   </li>
                 ))}
               </ul>
               
-              <Link href="/request-demo" className="text-primary-600 font-semibold flex items-center hover:text-primary-700 transition-colors">
+              <Link href="/request-demo" className="text-brand-accent font-semibold flex items-center hover:text-brand-accent/80 transition-colors">
                 Request a Demo <ChevronRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
           ))}
         </div>
         
-        <div className="mt-20 bg-gray-50 rounded-3xl p-12 text-center max-w-4xl mx-auto border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Don't see your industry?</h2>
-          <p className="text-gray-600 mb-8 max-w-xl mx-auto">Our platform is highly customizable. Talk to our experts to learn how we can adapt our software to your specific business model.</p>
-          <Link href="/contact" className="inline-flex items-center justify-center bg-gray-900 text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+        <div className="mt-20 glass-border rounded-3xl p-12 text-center max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Don't see your industry?</h2>
+          <p className="text-foreground/70 mb-8 max-w-xl mx-auto">Our platform is highly customizable. Talk to our experts to learn how we can adapt our software to your specific business model.</p>
+          <Link href="/contact" className="inline-flex items-center justify-center bg-brand-accent text-black px-8 py-3 rounded-lg font-bold hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]">
             Contact Our Experts
           </Link>
         </div>

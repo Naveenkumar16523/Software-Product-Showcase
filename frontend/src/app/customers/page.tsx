@@ -50,32 +50,32 @@ export default function CustomersPage() {
   return (
     <div className="bg-background min-h-screen pt-20 pb-24">
       {/* Header */}
-      <div className="bg-white border-b border-border py-20 px-4 mb-16 text-center">
+      <div className="bg-surface border-b border-border py-20 px-4 mb-16 text-center">
         <div className="container mx-auto max-w-4xl">
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-6">Customer Success Stories</h1>
-          <p className="text-xl text-gray-600">See how businesses of all sizes use our platform to drive growth, increase efficiency, and delight their customers.</p>
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-6">Customer Success Stories</h1>
+          <p className="text-xl text-foreground/70">See how businesses of all sizes use our platform to drive growth, increase efficiency, and delight their customers.</p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {customers.map((customer, i) => (
-            <div key={i} className="bg-white rounded-2xl overflow-hidden border border-border shadow-soft flex flex-col md:flex-row group">
-              <div className={`md:w-1/3 ${customer.bg} text-white flex flex-col items-center justify-center p-8`}>
+            <div key={i} className="glass-border rounded-2xl overflow-hidden flex flex-col md:flex-row group hover:shadow-hover transition-shadow">
+              <div className="md:w-1/3 bg-black/40 group-hover:bg-black/60 transition-colors text-foreground flex flex-col items-center justify-center p-8">
                 <div className="text-4xl font-bold mb-2">{customer.logo}</div>
                 <div className="text-sm font-medium opacity-80 uppercase tracking-wide text-center">{customer.industry}</div>
               </div>
               <div className="md:w-2/3 p-8 flex flex-col">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">{customer.name}</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4 group-hover:text-brand-accent transition-colors">{customer.name}</h2>
                 <div className="mb-4">
-                  <span className="text-sm font-semibold text-gray-500 uppercase">The Challenge</span>
-                  <p className="text-gray-700 mt-1">{customer.challenge}</p>
+                  <span className="text-sm font-semibold text-foreground/50 uppercase">The Challenge</span>
+                  <p className="text-foreground/80 mt-1">{customer.challenge}</p>
                 </div>
                 <div className="mb-6 flex-grow">
-                  <span className="text-sm font-semibold text-gray-500 uppercase">The Result</span>
-                  <p className="text-primary-700 font-medium mt-1">{customer.result}</p>
+                  <span className="text-sm font-semibold text-foreground/50 uppercase">The Result</span>
+                  <p className="text-brand-accent font-medium mt-1">{customer.result}</p>
                 </div>
-                <Link href={`/customers/${customer.name.toLowerCase()}`} className="inline-flex items-center text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                <Link href={`/customers/${customer.name.toLowerCase()}`} className="inline-flex items-center text-brand-accent font-semibold hover:text-brand-accent/80 transition-colors">
                   Read Full Story <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </div>
