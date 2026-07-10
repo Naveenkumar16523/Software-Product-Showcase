@@ -29,7 +29,7 @@ export const LogoMarquee = () => {
 
         {/* Row 2 - scrolling right */}
         <div className="flex whitespace-nowrap w-max animate-scroll-right hover:[animation-play-state:paused]">
-          {[...defaultLogos.reverse(), ...defaultLogos].map((logo, i) => (
+          {[...[...defaultLogos].reverse(), ...[...defaultLogos].reverse()].map((logo, i) => (
             <div key={i} className="mx-8 md:mx-12 shrink-0 glass-border px-6 py-3 rounded-lg flex items-center justify-center min-w-[160px]">
               <span className="text-xl font-display font-bold text-foreground/40 hover:text-brand-accent transition-colors">
                 {logo}
