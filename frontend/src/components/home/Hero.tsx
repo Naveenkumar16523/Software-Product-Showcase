@@ -6,7 +6,7 @@ import { ArrowRight, Box } from "lucide-react";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import MagneticButton from "@/components/ui/MagneticButton";
-import { MagneticCursor } from "@/components/motion/MagneticCursor";
+// Removed MagneticCursor import
 
 const Aurora = dynamic(() => import("@/components/effects/Aurora"), { ssr: false });
 
@@ -26,7 +26,7 @@ export const Hero = () => {
 
   return (
     <>
-      <MagneticCursor />
+      {/* Cursor removed */}
       <section ref={containerRef} className="relative min-h-[90vh] flex items-center pt-32 pb-20 overflow-hidden bg-background">
         {/* Aurora WebGL Background with Parallax */}
         <motion.div 
