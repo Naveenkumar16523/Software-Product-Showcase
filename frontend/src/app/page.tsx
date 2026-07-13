@@ -188,18 +188,15 @@ function IndustriesSection() {
     if (isMobile) return;
 
     gsap.to(scrollWrapperRef.current, {
-      x: () => {
-        const wrapper = scrollWrapperRef.current;
-        return wrapper ? -(wrapper.scrollWidth - window.innerWidth) : 0;
-      },
+      x: () => -(scrollWrapperRef.current!.scrollWidth - window.innerWidth),
       ease: "none",
       scrollTrigger: {
         trigger: containerRef.current,
         pin: true,
-        pinType: "transform",
+        pinSpacing: true,
         scrub: 1,
         invalidateOnRefresh: true,
-        end: () => "+=" + (scrollWrapperRef.current?.scrollWidth || 0)
+        end: () => "+=" + (window.innerWidth * 3)
       }
     });
   }, { scope: containerRef, dependencies: [reduce] });
