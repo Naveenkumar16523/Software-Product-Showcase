@@ -3,8 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight, Box } from "lucide-react";
-import Aurora from "@/components/effects/Aurora";
+import dynamic from "next/dynamic";
 import MagneticButton from "@/components/ui/MagneticButton";
+
+const Aurora = dynamic(() => import("@/components/effects/Aurora"), { ssr: false });
 
 export const Hero = () => {
   return (
