@@ -187,22 +187,24 @@ function IndustriesSection() {
     const isMobile = window.innerWidth < 768;
     if (isMobile) return;
 
-    const sections = gsap.utils.toArray(".industry-card");
-    
-    gsap.to(sections, {
-      xPercent: -100 * (sections.length - 1),
+    gsap.to(scrollWrapperRef.current, {
+      x: () => {
+        const wrapper = scrollWrapperRef.current;
+        return wrapper ? -(wrapper.scrollWidth - window.innerWidth) : 0;
+      },
       ease: "none",
       scrollTrigger: {
         trigger: containerRef.current,
         pin: true,
         scrub: 1,
-        end: () => "+=" + scrollWrapperRef.current!.offsetWidth
+        invalidateOnRefresh: true,
+        end: () => "+=" + (scrollWrapperRef.current?.scrollWidth || 0)
       }
     });
   }, { scope: containerRef, dependencies: [reduce] });
 
   return (
-    <section ref={containerRef} className="py-24 bg-surface text-white relative overflow-hidden">
+    <section ref={containerRef} className="py-24 bg-surface text-white relative">
       {/* Grid background removed */}
       <div className="container mx-auto px-4 md:px-6 relative z-10 mb-16">
         <Reveal as="div" intensity="bold" className="text-center max-w-3xl mx-auto">
