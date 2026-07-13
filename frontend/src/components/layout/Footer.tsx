@@ -17,46 +17,35 @@ export default function Footer() {
               Empowering your future with next-gen technology and enterprise solutions.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-8 sm:gap-6 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-8 sm:gap-6 lg:grid-cols-4">
             <div>
               <h2 className="mb-6 text-sm font-semibold text-foreground uppercase tracking-wide">Company</h2>
               <ul className="text-foreground/70 font-medium text-sm space-y-4">
-                <li><Link href="/about" className="hover:text-brand-accent transition-colors">About</Link></li>
-                <li><Link href="/about/careers" className="hover:text-brand-accent transition-colors">Careers</Link></li>
-                <li><Link href="/about#leadership" className="hover:text-brand-accent transition-colors">Leadership</Link></li>
-                <li><Link href="/news" className="hover:text-brand-accent transition-colors">News</Link></li>
+                <li><Link href="/about" className="hover:text-brand-accent transition-colors">About Us</Link></li>
+                <li><Link href="/careers" className="hover:text-brand-accent transition-colors">Careers</Link></li>
+                <li><Link href="/customers" className="hover:text-brand-accent transition-colors">Customers</Link></li>
               </ul>
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-foreground uppercase tracking-wide">Products</h2>
               <ul className="text-foreground/70 font-medium text-sm space-y-4">
                 <li><Link href="/products" className="hover:text-brand-accent transition-colors">All Products</Link></li>
+                <li><Link href="/solutions" className="hover:text-brand-accent transition-colors">Solutions</Link></li>
                 <li><Link href="/pricing" className="hover:text-brand-accent transition-colors">Pricing</Link></li>
-                <li><Link href="/integrations" className="hover:text-brand-accent transition-colors">Integrations</Link></li>
               </ul>
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-foreground uppercase tracking-wide">Resources</h2>
               <ul className="text-foreground/70 font-medium text-sm space-y-4">
-                <li><Link href="/resources/blog" className="hover:text-brand-accent transition-colors">Blog</Link></li>
-                <li><Link href="/resources/docs" className="hover:text-brand-accent transition-colors">Documentation</Link></li>
-                <li><Link href="/support/help" className="hover:text-brand-accent transition-colors">Help Center</Link></li>
+                <li><Link href="/resources" className="hover:text-brand-accent transition-colors">Resource Center</Link></li>
+                <li><Link href="/industries" className="hover:text-brand-accent transition-colors">Industries</Link></li>
               </ul>
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-foreground uppercase tracking-wide">Support</h2>
               <ul className="text-foreground/70 font-medium text-sm space-y-4">
-                <li><Link href="/contact" className="hover:text-brand-accent transition-colors">Contact</Link></li>
-                <li><Link href="/support/faq" className="hover:text-brand-accent transition-colors">FAQs</Link></li>
-                <li><Link href="/support/tickets" className="hover:text-brand-accent transition-colors">Ticket Support</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h2 className="mb-6 text-sm font-semibold text-foreground uppercase tracking-wide">Legal</h2>
-              <ul className="text-foreground/70 font-medium text-sm space-y-4">
-                <li><Link href="/legal/privacy-policy" className="hover:text-brand-accent transition-colors">Privacy Policy</Link></li>
-                <li><Link href="/legal/terms-of-service" className="hover:text-brand-accent transition-colors">Terms of Service</Link></li>
-                <li><Link href="/legal/cookie-policy" className="hover:text-brand-accent transition-colors">Cookie Policy</Link></li>
+                <li><Link href="/support" className="hover:text-brand-accent transition-colors">Help Center</Link></li>
+                <li><Link href="/contact" className="hover:text-brand-accent transition-colors">Contact Us</Link></li>
               </ul>
             </div>
           </div>

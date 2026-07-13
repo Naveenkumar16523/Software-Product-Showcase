@@ -92,8 +92,8 @@ function ProductsSection() {
           }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">Enterprise Product Suite</h2>
-          <p className="text-lg text-gray-600">Everything you need to run your retail business efficiently, unified in one powerful ecosystem.</p>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">Enterprise Product Suite</h2>
+          <p className="text-lg text-foreground/70">Everything you need to run your retail business efficiently, unified in one powerful ecosystem.</p>
         </motion.div>
         
         <motion.div 
