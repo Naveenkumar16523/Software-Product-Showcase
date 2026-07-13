@@ -3,14 +3,16 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight, Box } from "lucide-react";
-import { Lightning } from "@/components/effects/Lightning";
+import Aurora from "@/components/effects/Aurora";
 import MagneticButton from "@/components/ui/MagneticButton";
 
 export const Hero = () => {
   return (
     <section className="relative min-h-[90vh] flex items-center pt-32 pb-20 overflow-hidden bg-background">
-      {/* Skitbit-style Lightning WebGL Background */}
-      <Lightning intensity={1.5} />
+      {/* Aurora WebGL Background */}
+      <div className="absolute inset-0 opacity-60 z-0 pointer-events-none">
+        <Aurora colorStops={["#a3e635", "#4d7c0f", "#0a0a0a"]} blend={0.5} amplitude={1.2} speed={0.6} />
+      </div>
       
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
