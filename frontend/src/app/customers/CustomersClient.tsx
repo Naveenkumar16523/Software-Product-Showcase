@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ArrowRight, Star, Quote } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
@@ -41,52 +41,25 @@ const customers = [
 ];
 
 export default function CustomersClient() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    show: { opacity: 1, scale: 1, transition: { type: "spring" as const, stiffness: 300 } }
-  };
-
   return (
     <div className="bg-background min-h-screen">
       {/* Hero Section */}
       <section className="pt-32 pb-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-brand-accent/5 to-background z-0"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6"
-          >
+          <Reveal as="h1" intensity="subtle" className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6">
             Customer <span className="text-brand-accent">Success</span> Stories
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10"
-          >
+          </Reveal>
+          <Reveal as="p" intensity="subtle" delay={0.1} className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10">
             See how businesses of all sizes use our platform to drive growth, increase efficiency, and delight their customers.
-          </motion.p>
+          </Reveal>
         </div>
       </section>
 
       {/* Testimonial Feature */}
       <section className="pb-16 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="glass-border rounded-3xl p-10 md:p-16 max-w-6xl mx-auto bg-brand-accent/5 border-brand-accent/30 relative overflow-hidden"
-          >
+          <Reveal as="div" intensity="subtle" className="glass-border rounded-3xl p-10 md:p-16 max-w-6xl mx-auto bg-brand-accent/5 border-brand-accent/30 relative overflow-hidden">
             <Quote className="absolute -top-6 -left-6 w-32 h-32 text-brand-accent/10 rotate-180" />
             <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
               <div>
@@ -106,26 +79,16 @@ export default function CustomersClient() {
                  </div>
               </div>
             </div>
-          </motion.div>
+          </Reveal>
         </div>
       </section>
 
       {/* Case Studies Grid */}
       <section className="pb-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto"
-          >
+          <RevealGroup stagger={0.1} className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {customers.map((customer, i) => (
-              <motion.div 
-                key={i}
-                variants={itemVariants}
-                className="glass-border rounded-2xl overflow-hidden flex flex-col md:flex-row group hover:shadow-[0_0_30px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 transition-all duration-300 bg-white/5"
-              >
+              <Reveal as="div" intensity="subtle" key={i} className="glass-border rounded-2xl overflow-hidden flex flex-col md:flex-row group hover:shadow-[0_0_30px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 transition-all duration-300 bg-white/5 hover:bg-white/10">
                 <div className="md:w-1/3 bg-black/60 group-hover:bg-brand-accent/10 transition-colors text-foreground flex flex-col items-center justify-center p-8 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="text-5xl font-display font-extrabold text-white group-hover:text-brand-accent transition-colors mb-2 relative z-10">{customer.logo}</div>
@@ -141,13 +104,13 @@ export default function CustomersClient() {
                     <span className="text-xs font-bold text-foreground/40 uppercase tracking-wider">The Result</span>
                     <p className="text-brand-accent font-semibold mt-1">{customer.result}</p>
                   </div>
-                  <Link href={`/customers/${customer.name.toLowerCase()}`} className="inline-flex items-center text-foreground font-semibold group-hover:text-brand-accent transition-colors mt-auto">
+                  <Link href={`/customers`} className="inline-flex items-center text-foreground font-semibold group-hover:text-brand-accent transition-colors mt-auto">
                     Read Full Story <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
-              </motion.div>
+              </Reveal>
             ))}
-          </motion.div>
+          </RevealGroup>
         </div>
       </section>
     </div>

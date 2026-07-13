@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ChevronRight, ShoppingCart, ShirtIcon, Smartphone, PillIcon } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
@@ -33,59 +33,27 @@ const industries = [
 ];
 
 export default function SolutionsClient() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300 } }
-  };
-
   return (
     <div className="bg-background min-h-screen">
       {/* Hero Section */}
       <section className="pt-32 pb-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-brand-accent/5 to-background z-0"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6"
-          >
+          <Reveal as="h1" intensity="subtle" className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6">
             Tailored <span className="text-brand-accent">Solutions</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10"
-          >
+          </Reveal>
+          <Reveal as="p" intensity="subtle" delay={0.1} className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10">
             Discover how B&Y Technology addresses the unique challenges of your industry with our specialized software suites.
-          </motion.p>
+          </Reveal>
         </div>
       </section>
 
       {/* Solutions Grid */}
       <section className="pb-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto"
-          >
+          <RevealGroup stagger={0.1} className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {industries.map((ind, i) => (
-              <motion.div 
-                variants={itemVariants}
-                key={i} 
-                className="glass-border rounded-2xl p-8 hover:bg-white/5 transition-all duration-300 group"
-              >
+              <Reveal as="div" intensity="subtle" key={i} className="glass-border rounded-2xl p-8 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
                 <div className="w-16 h-16 bg-brand-accent/10 text-brand-accent rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   {ind.icon}
                 </div>
@@ -105,16 +73,11 @@ export default function SolutionsClient() {
                 <Link href="/request-demo" className="text-brand-accent font-semibold flex items-center hover:text-brand-accent/80 transition-colors">
                   Request a Demo <ChevronRight className="w-4 h-4 ml-1" />
                 </Link>
-              </motion.div>
+              </Reveal>
             ))}
-          </motion.div>
+          </RevealGroup>
           
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-20 glass-border rounded-3xl p-12 text-center max-w-4xl mx-auto relative overflow-hidden"
-          >
+          <Reveal as="div" intensity="subtle" className="mt-20 glass-border rounded-3xl p-12 text-center max-w-4xl mx-auto relative overflow-hidden hover:border-white/20 hover:bg-white/5 transition-colors">
             <div className="absolute inset-0 bg-gradient-to-r from-brand-accent/10 via-transparent to-brand-accent/10 pointer-events-none"></div>
             <h2 className="text-3xl font-display font-bold text-foreground mb-4 relative z-10">Don't see your industry?</h2>
             <p className="text-foreground/70 mb-8 max-w-xl mx-auto relative z-10">
@@ -125,7 +88,7 @@ export default function SolutionsClient() {
                 Contact Our Experts
               </Link>
             </MagneticButton>
-          </motion.div>
+          </Reveal>
         </div>
       </section>
     </div>

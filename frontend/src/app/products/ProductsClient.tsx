@@ -1,102 +1,47 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
-import { ArrowRight, Box, Cpu, Database } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
-
-const products = [
-  {
-    id: "retail-os",
-    title: "RetailOS",
-    description: "Complete omnichannel retail management system for enterprise operations.",
-    icon: <Box className="w-6 h-6" />,
-    image: "/retail_dashboard_ui.png",
-    features: ["Omnichannel POS", "CRM", "Advanced Reporting"],
-  },
-  {
-    id: "inventory-ai",
-    title: "InventoryAI",
-    description: "Predictive inventory management powered by advanced machine learning models.",
-    icon: <Cpu className="w-6 h-6" />,
-    image: "/inventory_analytics_ui.png",
-    features: ["Demand Forecasting", "Automated Reordering", "Waste Reduction"],
-  },
-  {
-    id: "point-of-sale",
-    title: "Seamless POS",
-    description: "Lightning-fast, reliable Point of Sale interface designed for modern hardware.",
-    icon: <Database className="w-6 h-6" />,
-    image: "/pos_interface_ui.png",
-    features: ["Offline Mode", "Integrated Payments", "Staff Management"],
-  }
-];
+import { products } from "@/lib/data/products";
+import React from "react";
 
 export default function ProductsClient() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300 } }
-  };
-
   return (
     <div className="bg-background min-h-screen">
       {/* Hero Section */}
       <section className="pt-32 pb-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-accent/10 to-background/0 z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-accent/10 to-background/0 z-0 pointer-events-none"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6"
-          >
+          <Reveal as="h1" intensity="subtle" className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6">
             Our <span className="text-brand-accent">Products</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10"
-          >
+          </Reveal>
+          <Reveal as="p" intensity="subtle" delay={0.1} className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10">
             Discover our suite of intelligent retail software solutions designed for massive scale and ultimate performance.
-          </motion.p>
+          </Reveal>
         </div>
       </section>
 
       {/* Products Grid */}
       <section className="pb-32 relative z-10">
         <div className="container mx-auto px-4">
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-50px" }}
-            className="space-y-24"
-          >
+          <RevealGroup stagger={0.1} className="space-y-24">
             {products.map((product, idx) => (
-              <motion.div 
-                key={product.id}
-                variants={itemVariants}
+              <Reveal 
+                as="div"
+                key={idx}
+                intensity="subtle"
                 className={`flex flex-col ${idx % 2 !== 0 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12`}
               >
-                {/* Image Side */}
+                {/* Visual Side: Icon in Gradient Tile */}
                 <div className="w-full lg:w-1/2">
-                  <div className="relative aspect-video rounded-xl overflow-hidden glass-border p-2 bg-surface">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-brand-accent/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-                    <Image 
-                      src={product.image}
-                      alt={product.title}
-                      fill
-                      className="object-cover rounded-lg"
-                    />
+                  <div className="relative aspect-video rounded-xl overflow-hidden glass-border p-8 bg-surface flex flex-col items-center justify-center group hover:border-white/20 hover:bg-white/5 transition-all duration-500">
+                    <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500" style={{ background: `linear-gradient(135deg, var(--color-brand-accent) 0%, transparent 100%)` }}></div>
+                    <div className="relative z-10 w-24 h-24 rounded-2xl bg-black/50 glass-border flex items-center justify-center text-brand-accent mb-4 group-hover:scale-110 transition-transform duration-500">
+                      {React.cloneElement(product.icon as React.ReactElement<any>, { size: 48 })}
+                    </div>
+                    <div className="relative z-10 text-2xl font-bold text-foreground/50 group-hover:text-foreground transition-colors duration-500">{product.title}</div>
                   </div>
                 </div>
 
@@ -109,11 +54,11 @@ export default function ProductsClient() {
                     {product.title}
                   </h2>
                   <p className="text-lg text-foreground/70 leading-relaxed">
-                    {product.description}
+                    {product.desc}
                   </p>
                   
                   <ul className="space-y-3 pt-2">
-                    {product.features.map((feature, i) => (
+                    {product.benefits.map((feature, i) => (
                       <li key={i} className="flex items-center text-foreground/80">
                         <div className="w-2 h-2 rounded-full bg-brand-accent mr-3"></div>
                         {feature}
@@ -123,15 +68,15 @@ export default function ProductsClient() {
 
                   <div className="pt-6">
                     <MagneticButton>
-                      <Link href={`/products/${product.id}`} className="inline-flex items-center h-12 px-6 rounded-lg bg-brand-accent text-black font-bold hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)]">
+                      <Link href={`/products`} className="inline-flex items-center h-12 px-6 rounded-lg bg-brand-accent text-black font-bold hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)]">
                         Explore {product.title} <ArrowRight className="ml-2 w-4 h-4" />
                       </Link>
                     </MagneticButton>
                   </div>
                 </div>
-              </motion.div>
+              </Reveal>
             ))}
-          </motion.div>
+          </RevealGroup>
         </div>
       </section>
     </div>

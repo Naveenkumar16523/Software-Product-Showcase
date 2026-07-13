@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { Check, X } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
@@ -39,59 +39,27 @@ const plans = [
 ];
 
 export default function PricingClient() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300 } }
-  };
-
   return (
     <div className="bg-background min-h-screen">
       {/* Hero Section */}
       <section className="pt-32 pb-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-brand-accent/10 via-background to-background z-0"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6"
-          >
+          <Reveal as="h1" intensity="subtle" className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6">
             Simple, Transparent <span className="text-brand-accent">Pricing</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10"
-          >
+          </Reveal>
+          <Reveal as="p" intensity="subtle" delay={0.1} className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10">
             Choose the plan that best fits your retail operation. No hidden fees, no surprises.
-          </motion.p>
+          </Reveal>
         </div>
       </section>
 
       {/* Pricing Grid */}
       <section className="pb-32 relative z-10">
         <div className="container mx-auto px-4">
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
-          >
+          <RevealGroup stagger={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {plans.map((plan, i) => (
-              <motion.div 
-                key={i}
-                variants={itemVariants}
-                className={`relative glass-border rounded-3xl p-8 flex flex-col ${plan.popular ? 'border-brand-accent/50 shadow-[0_0_30px_rgba(163,230,53,0.15)] md:-translate-y-4 bg-white/5' : 'hover:bg-white/5'} transition-all duration-300`}
-              >
+              <Reveal as="div" intensity="subtle" key={i} className={`relative glass-border rounded-3xl p-8 flex flex-col ${plan.popular ? 'border-brand-accent/50 shadow-[0_0_30px_rgba(163,230,53,0.15)] md:-translate-y-4 bg-white/5' : 'hover:bg-white/5'} transition-all duration-300`}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-brand-accent text-black px-4 py-1 rounded-full text-sm font-bold shadow-[0_0_10px_rgba(163,230,53,0.5)]">
                     MOST POPULAR
@@ -136,9 +104,9 @@ export default function PricingClient() {
                     </Link>
                   )}
                 </div>
-              </motion.div>
+              </Reveal>
             ))}
-          </motion.div>
+          </RevealGroup>
         </div>
       </section>
     </div>

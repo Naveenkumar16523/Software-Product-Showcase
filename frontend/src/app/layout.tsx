@@ -60,6 +60,7 @@ const jsonLd = {
 };
 
 import Script from "next/script";
+import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 
 export default function RootLayout({
   children,
@@ -77,11 +78,13 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${outfit.variable} antialiased min-h-screen flex flex-col pt-16`}>
-        <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <SmoothScrollProvider>
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+        </SmoothScrollProvider>
         
         {gaId && (
           <>
