@@ -75,7 +75,7 @@ Message: ${data.message || 'No additional message'}
           
           {/* Left Side Info */}
           <div className="lg:w-2/5 bg-black/40 p-12 text-white flex flex-col justify-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/grid-dark.svg')] opacity-20"></div>
+            {/* Grid background removed */}
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground">See our platform in action</h2>
               <p className="text-foreground/70 mb-8 text-lg">

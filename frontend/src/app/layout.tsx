@@ -5,7 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export const viewport: Viewport = {
-  themeColor: '#2563eb', // Primary Blue
+  themeColor: '#0a0a0a', // Dark Theme
 };
 
 const inter = Inter({

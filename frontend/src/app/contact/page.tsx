@@ -17,7 +17,7 @@ export default function ContactPage() {
           
           {/* Contact Info Sidebar */}
           <div className="lg:w-1/3 bg-black/40 text-white p-10 flex flex-col justify-between relative overflow-hidden">
-             <div className="absolute inset-0 bg-[url('/grid-dark.svg')] opacity-20"></div>
+             {/* Grid background removed */}
              
              <div className="relative z-10 space-y-12">
                <div>

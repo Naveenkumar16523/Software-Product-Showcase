@@ -203,7 +203,7 @@ function IndustriesSection() {
 
   return (
     <section ref={containerRef} className="py-24 bg-surface text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/grid-dark.svg')] opacity-10"></div>
+      {/* Grid background removed */}
       <div className="container mx-auto px-4 md:px-6 relative z-10 mb-16">
         <Reveal as="div" intensity="bold" className="text-center max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Tailored for Your Industry</h2>
@@ -441,10 +441,7 @@ function DemoRequestSection() {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <Reveal as="div" intensity="bold" className="glass-border rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-[0_0_50px_rgba(163,230,53,0.05)]">
           <div className="lg:w-1/2 bg-surface/50 p-8 md:p-12 text-white flex flex-col justify-center relative overflow-hidden">
-            <motion.div 
-              style={{ y: reduce ? 0 : y }}
-              className="absolute inset-[-50px] bg-[url('/grid-dark.svg')] opacity-20"
-            ></motion.div>
+            {/* Background removed */}
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground">Ready to see it in action?</h2>
               <p className="text-foreground/80 mb-8 text-lg">
