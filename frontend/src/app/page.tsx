@@ -196,6 +196,7 @@ function IndustriesSection() {
       scrollTrigger: {
         trigger: containerRef.current,
         pin: true,
+        pinType: "transform",
         scrub: 1,
         invalidateOnRefresh: true,
         end: () => "+=" + (scrollWrapperRef.current?.scrollWidth || 0)

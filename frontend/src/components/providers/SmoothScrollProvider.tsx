@@ -19,7 +19,13 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
+    // Refresh ScrollTrigger after Framer Motion page entrance animation (350ms)
+    const timeoutId = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500);
+
     return () => {
+      clearTimeout(timeoutId);
       lenis.destroy();
       gsap.ticker.remove((time) => lenis.raf(time * 1000));
     };
