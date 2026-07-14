@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class AppUserServiceImpl implements AppUserService {
+@SuppressWarnings("null")`npublic class AppUserServiceImpl implements AppUserService {
 
     private final AppUserRepository repository;
     private final AppUserMapper mapper;

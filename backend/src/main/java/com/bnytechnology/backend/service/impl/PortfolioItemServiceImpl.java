@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class PortfolioItemServiceImpl implements PortfolioItemService {
+@SuppressWarnings("null")`npublic class PortfolioItemServiceImpl implements PortfolioItemService {
 
     private final PortfolioItemRepository repository;
     private final PortfolioItemMapper mapper;

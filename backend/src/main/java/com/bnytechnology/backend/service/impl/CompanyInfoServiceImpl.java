@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CompanyInfoServiceImpl implements CompanyInfoService {
+@SuppressWarnings("null")`npublic class CompanyInfoServiceImpl implements CompanyInfoService {
     private final CompanyInfoRepository repository;
     private final CompanyInfoMapper mapper;
     public CompanyInfoServiceImpl(CompanyInfoRepository repository, CompanyInfoMapper mapper) {

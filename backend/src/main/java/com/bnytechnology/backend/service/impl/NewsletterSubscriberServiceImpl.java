@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class NewsletterSubscriberServiceImpl implements NewsletterSubscriberService {
+@SuppressWarnings("null")`npublic class NewsletterSubscriberServiceImpl implements NewsletterSubscriberService {
 
     private final NewsletterSubscriberRepository repository;
     private final NewsletterSubscriberMapper mapper;

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class DemoRequestServiceImpl implements DemoRequestService {
+@SuppressWarnings("null")`npublic class DemoRequestServiceImpl implements DemoRequestService {
 
     private final DemoRequestRepository repository;
     private final DemoRequestMapper mapper;

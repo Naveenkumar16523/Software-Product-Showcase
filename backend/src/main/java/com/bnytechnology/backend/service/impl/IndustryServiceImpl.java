@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class IndustryServiceImpl implements IndustryService {
+@SuppressWarnings("null")`npublic class IndustryServiceImpl implements IndustryService {
 
     private final IndustryRepository repository;
     private final IndustryMapper mapper;

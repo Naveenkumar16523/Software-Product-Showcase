@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class BlogPostServiceImpl implements BlogPostService {
+@SuppressWarnings("null")`npublic class BlogPostServiceImpl implements BlogPostService {
 
     private final BlogPostRepository repository;
     private final BlogPostMapper mapper;

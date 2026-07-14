@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class ProductMediaServiceImpl implements ProductMediaService {
+@SuppressWarnings("null")`npublic class ProductMediaServiceImpl implements ProductMediaService {
 
     private final ProductMediaRepository repository;
     private final ProductMediaMapper mapper;
