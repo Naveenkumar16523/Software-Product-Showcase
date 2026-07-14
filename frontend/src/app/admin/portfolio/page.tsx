@@ -37,7 +37,7 @@ export default function AdminPortfolio() {
 
   const fetchItems = async () => {
     try {
-      const res = await apiFetch("/api/portfolio");
+      const res = await apiFetch("/api/v1/portfolio");
       if (res.ok) {
         const data = await res.json();
         setItems(data);
@@ -83,12 +83,12 @@ export default function AdminPortfolio() {
     e.preventDefault();
     try {
       if (editingItem) {
-        await apiFetch(`/api/portfolio/${editingItem.id}`, {
+        await apiFetch(`/api/v1/portfolio/${editingItem.id}`, {
           method: "PUT",
           body: JSON.stringify(formData)
         });
       } else {
-        await apiFetch("/api/portfolio", {
+        await apiFetch("/api/v1/portfolio", {
           method: "POST",
           body: JSON.stringify(formData)
         });
@@ -103,7 +103,7 @@ export default function AdminPortfolio() {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this project?")) {
       try {
-        await apiFetch(`/api/portfolio/${id}`, { method: "DELETE" });
+        await apiFetch(`/api/v1/portfolio/${id}`, { method: "DELETE" });
         fetchItems();
       } catch (err) {
         console.error(err);
@@ -138,8 +138,14 @@ export default function AdminPortfolio() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.length === 0 ? (
-          <div className="col-span-full p-8 text-center bg-surface border border-border rounded-xl text-foreground/50">
-            No projects found. Add one to get started.
+          <div className="col-span-full p-16 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-6 border border-border">
+              <Plus className="w-8 h-8 text-foreground/40" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-2">No projects yet</h3>
+            <p className="text-foreground/50 max-w-md">
+              Showcase your recent success stories by adding a project. They will appear on your public portfolio page.
+            </p>
           </div>
         ) : items.map((item, idx) => (
           <motion.div

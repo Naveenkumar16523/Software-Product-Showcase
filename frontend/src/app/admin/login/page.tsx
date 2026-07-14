@@ -20,7 +20,7 @@ export default function AdminLogin() {
     try {
       const res = await apiFetch("/api/auth/login", {
         method: "POST",
-        body: JSON.stringify({ username: email, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {

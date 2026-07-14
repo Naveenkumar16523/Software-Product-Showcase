@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
 
   try {
-    const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/portfolio");
+    const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1/portfolio");
     if (res.ok) {
       const projects = await res.json();
       const projectRoutes = projects.map((project: any) => ({

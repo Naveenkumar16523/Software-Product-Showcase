@@ -5,13 +5,14 @@ import Image from "next/image";
 import { Hero } from "@/components/home/Hero";
 import { LogoMarquee } from "@/components/effects/LogoMarquee";
 import { ArrowRight, CheckCircle2, ChevronRight, Cloud, Database, Package, Shield, Star, Store, Users, Zap, Cpu, ScanLine, Receipt } from "lucide-react";
-import React, { useRef, MouseEvent } from "react";
+import React, { useRef, MouseEvent, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import { products } from "@/lib/data/products";
 import { industries } from "@/lib/data/industries";
+import { Scanline } from "@/components/effects/Scanline";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -94,7 +95,7 @@ function ProductsSection() {
         <RevealGroup stagger={0.1} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product, i) => (
             <Reveal key={i} as="div" intensity="bold">
-              <TiltCard className="w-full h-[480px] group mx-auto p-2 glass-border overflow-hidden rounded-md text-foreground cursor-pointer">
+              <TiltCard className="w-full h-[480px] group mx-auto p-2 glass-border bg-surface-2 overflow-hidden rounded-md text-foreground cursor-pointer hover:-translate-y-1 transition-transform">
                 <figure className="w-full h-80 group-hover:h-72 transition-all duration-300 p-2 rounded-md relative overflow-hidden">
                   <div
                     style={{
@@ -283,7 +284,7 @@ function SuccessStoriesSection() {
         </div>
         
         <RevealGroup stagger={0.1} className="grid md:grid-cols-2 gap-8">
-          <Reveal as="div" intensity="bold" className="glass-border rounded-2xl overflow-hidden shadow-soft flex flex-col md:flex-row group cursor-pointer hover:shadow-hover transition-shadow">
+          <Reveal as="div" intensity="bold" className="glass-border bg-surface-2 rounded-2xl overflow-hidden shadow-soft flex flex-col md:flex-row group cursor-pointer hover:shadow-hover transition-shadow hover:-translate-y-1">
             <div className="md:w-2/5 bg-white/5 h-48 md:h-auto relative">
                <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-foreground font-bold text-2xl group-hover:bg-black/60 transition-colors">
                  FreshMart
@@ -300,7 +301,7 @@ function SuccessStoriesSection() {
               </Link>
             </div>
           </Reveal>
-          <Reveal as="div" intensity="bold" className="glass-border rounded-2xl overflow-hidden shadow-soft flex flex-col md:flex-row group cursor-pointer hover:shadow-hover transition-shadow">
+          <Reveal as="div" intensity="bold" className="glass-border bg-surface-2 rounded-2xl overflow-hidden shadow-soft flex flex-col md:flex-row group cursor-pointer hover:shadow-hover transition-shadow hover:-translate-y-1">
             <div className="md:w-2/5 bg-white/5 h-48 md:h-auto relative">
                <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-foreground font-bold text-2xl group-hover:bg-black/60 transition-colors">
                  StyleHub
@@ -343,7 +344,7 @@ function TestimonialsSection() {
         </Reveal>
         <RevealGroup stagger={0.1} className="grid md:grid-cols-3 gap-8">
           {reviews.map((review, i) => (
-            <Reveal as="div" intensity="bold" key={i} className="glass-border p-8 rounded-2xl relative shadow-sm">
+            <Reveal as="div" intensity="bold" key={i} className="glass-border bg-surface-2 p-8 rounded-2xl relative shadow-sm hover:-translate-y-1 transition-transform">
               <div className="flex text-amber-400 mb-6">
                 {[1,2,3,4,5].map(s => <Star key={s} size={18} fill="currentColor" />)}
               </div>
@@ -435,13 +436,19 @@ function DemoRequestSection() {
   });
   const y = useTransform(scrollYProgress, [0, 1], ["0px", "30px"]);
   const reduce = useReducedMotion();
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
 
   return (
     <section ref={containerRef} className="py-24 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <Reveal as="div" intensity="bold" className="glass-border rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-[0_0_50px_rgba(163,230,53,0.05)]">
-          <div className="lg:w-1/2 bg-surface/50 p-8 md:p-12 text-white flex flex-col justify-center relative overflow-hidden">
-            {/* Background removed */}
+        <Reveal as="div" intensity="bold" className="glass-border rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-[0_0_50px_rgba(163,230,53,0.05)] relative">
+          <Scanline />
+          <div className="lg:w-1/2 bg-surface-2 p-8 md:p-12 text-white flex flex-col justify-center relative overflow-hidden">
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground">Ready to see it in action?</h2>
               <p className="text-foreground/80 mb-8 text-lg">
@@ -454,31 +461,41 @@ function DemoRequestSection() {
               </ul>
             </div>
           </div>
-          <div className="lg:w-1/2 p-8 md:p-12 bg-surface relative z-10">
-            <form className="space-y-6" onSubmit={e => e.preventDefault()}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-foreground/80">First Name</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-brand-accent bg-background" placeholder="John" />
+          <div className="lg:w-1/2 p-8 md:p-12 bg-surface relative z-10 flex flex-col justify-center">
+            {submitted ? (
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-brand-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-accent/50">
+                  <CheckCircle2 className="w-8 h-8 text-brand-accent" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground">Request received</h3>
+                <p className="text-foreground/80 text-lg">Someone from the team will reach out within one business day to coordinate a time.</p>
+              </div>
+            ) : (
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-foreground/80">First Name</label>
+                    <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="John" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-foreground/80">Last Name</label>
+                    <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="Doe" required />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-foreground/80">Last Name</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-brand-accent bg-background" placeholder="Doe" />
+                  <label className="text-sm font-semibold text-foreground/80">Work Email</label>
+                  <input type="email" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="john@company.com" required />
                 </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground/80">Work Email</label>
-                <input type="email" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-brand-accent bg-background" placeholder="john@company.com" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground/80">Company Name</label>
-                <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-brand-accent bg-background" placeholder="Acme Retail" />
-              </div>
-              <button type="submit" data-cursor="hover" className="w-full py-4 bg-brand-accent hover:bg-brand-accent/90 text-black font-bold rounded-lg transition-colors text-lg shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]">
-                Schedule Free Demo
-              </button>
-              <p className="text-xs text-foreground/50 text-center">By submitting, you agree to our Terms of Service and Privacy Policy.</p>
-            </form>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground/80">Company Name</label>
+                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="Acme Retail" required />
+                </div>
+                <button type="submit" data-cursor="hover" className="w-full py-4 bg-brand-accent hover:bg-brand-accent/90 text-black font-bold rounded-lg transition-colors text-lg shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]">
+                  Request a demo
+                </button>
+                <p className="text-xs text-foreground/50 text-center font-mono uppercase tracking-widest mt-4">By submitting, you agree to our Terms.</p>
+              </form>
+            )}
           </div>
         </Reveal>
       </div>

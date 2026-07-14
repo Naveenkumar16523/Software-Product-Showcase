@@ -15,7 +15,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   });
 
   if (response.status === 401) {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && endpoint !== "/api/auth/login") {
       window.location.href = "/admin/login";
     }
     throw new Error("Unauthorized");
