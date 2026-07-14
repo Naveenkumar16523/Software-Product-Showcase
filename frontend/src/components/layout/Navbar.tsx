@@ -10,13 +10,13 @@ import {
   MobileNavToggle,
   MobileNavMenu,
 } from "@/components/ui/resizable-navbar";
-import { useState } from "react";
+import { useUIStore } from "@/store/useUIStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AppNavbar() {
   const router = useRouter();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isMobileMenuOpen, toggleMobileMenu, setMobileMenuOpen } = useUIStore();
 
   const navItems = [
     { name: "Home", link: "/" },
@@ -59,19 +59,19 @@ export default function AppNavbar() {
           <NavbarLogo />
           <MobileNavToggle
             isOpen={isMobileMenuOpen}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={toggleMobileMenu}
           />
         </MobileNavHeader>
 
         <MobileNavMenu
           isOpen={isMobileMenuOpen}
-          onClose={() => setIsMobileMenuOpen(false)}
+          onClose={() => setMobileMenuOpen(false)}
         >
           {navItems.map((item, idx) => (
             <Link
               key={`mobile-link-${idx}`}
               href={item.link}
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => setMobileMenuOpen(false)}
               className="block py-3 px-4 rounded-md text-foreground/80 hover:bg-surface hover:text-brand-accent transition-colors font-medium"
             >
               {item.name}
@@ -80,14 +80,14 @@ export default function AppNavbar() {
           <div className="flex w-full flex-col gap-4 px-4 pt-4 border-t border-border mt-2">
             <Link
               href="/admin/login"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => setMobileMenuOpen(false)}
               className="py-2 text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative self-center after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
             >
               Login
             </Link>
             <NavbarButton
               onClick={() => {
-                setIsMobileMenuOpen(false);
+                setMobileMenuOpen(false);
                 router.push('/request-demo');
               }}
               variant="primary"

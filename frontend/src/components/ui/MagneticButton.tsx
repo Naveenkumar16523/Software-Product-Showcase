@@ -12,7 +12,7 @@ interface MagneticButtonProps extends HTMLMotionProps<"div"> {
 export default function MagneticButton({
   children,
   className = "",
-  strength = 0.2, // How far it moves (0.1 to 0.5 is usually good)
+  strength = 0.4,
   ...props
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -38,11 +38,17 @@ export default function MagneticButton({
       onMouseMove={handleMouse}
       onMouseLeave={reset}
       animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-      className={`inline-block ${className}`}
+      transition={{ type: "spring", stiffness: 350, damping: 20, mass: 0.5 }}
+      className={`inline-block relative ${className}`}
       {...props}
     >
-      {children}
+      <motion.div
+        animate={{ x: position.x * 0.3, y: position.y * 0.3 }}
+        transition={{ type: "spring", stiffness: 400, damping: 25, mass: 0.2 }}
+        className="w-full h-full flex items-center justify-center"
+      >
+        {children}
+      </motion.div>
     </motion.div>
   );
 }

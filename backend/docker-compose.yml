@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: bny_db
+    environment:
+      POSTGRES_DB: bnytech
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: bny_backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=jdbc:postgresql://db:5432/bnytech
+      - DB_USER=postgres
+      - DB_PASSWORD=your_secure_password
+      - JWT_SECRET=generate_a_secure_base64_secret_key_that_is_at_least_32_bytes_long_like_a_random_sha256_hash
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

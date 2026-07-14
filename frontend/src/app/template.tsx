@@ -5,10 +5,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const reduce = useReducedMotion();
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: reduce ? 0 : 15, filter: reduce ? "none" : "blur(4px)" }}
+      animate={{ opacity: 1, y: 0, filter: reduce ? "none" : "blur(0px)" }}
+      exit={{ opacity: 0, filter: reduce ? "none" : "blur(4px)" }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
