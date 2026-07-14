@@ -37,7 +37,10 @@ export default function AppNavbar() {
         <NavbarLogo />
         <NavItems items={navItems} />
         <div className="flex items-center gap-4">
-          <Link href="/admin/login" className="text-sm font-medium text-foreground hover:text-brand-accent transition-colors">
+          <Link 
+            href="/admin/login" 
+            className="text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
+          >
             Login
           </Link>
           <NavbarButton 
@@ -78,7 +81,7 @@ export default function AppNavbar() {
             <Link
               href="/admin/login"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-center py-2 text-sm font-medium text-foreground hover:text-brand-accent transition-colors"
+              className="py-2 text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative self-center after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
             >
               Login
             </Link>
