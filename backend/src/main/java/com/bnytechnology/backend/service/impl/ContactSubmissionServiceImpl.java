@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("null")`npublic class ContactSubmissionServiceImpl implements ContactSubmissionService {
+@SuppressWarnings("null")
+public class ContactSubmissionServiceImpl implements ContactSubmissionService {
 
     private final ContactSubmissionRepository repository;
     private final ContactSubmissionMapper mapper;

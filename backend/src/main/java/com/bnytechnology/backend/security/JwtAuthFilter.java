@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Component
+@SuppressWarnings("null")
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;

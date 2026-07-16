@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("null")`npublic class ProductFeatureServiceImpl implements ProductFeatureService {
+@SuppressWarnings("null")
+public class ProductFeatureServiceImpl implements ProductFeatureService {
 
     private final ProductFeatureRepository repository;
     private final ProductFeatureMapper mapper;

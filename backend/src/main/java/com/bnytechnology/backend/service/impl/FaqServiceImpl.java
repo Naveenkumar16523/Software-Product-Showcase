@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("null")`npublic class FaqServiceImpl implements FaqService {
+@SuppressWarnings("null")
+public class FaqServiceImpl implements FaqService {
 
     private final FaqRepository repository;
     private final FaqMapper mapper;

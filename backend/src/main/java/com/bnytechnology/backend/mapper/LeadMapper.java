@@ -5,7 +5,7 @@ import com.bnytechnology.backend.dto.response.LeadResponse;
 import com.bnytechnology.backend.entity.ContactSubmission;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface LeadMapper {
     LeadResponse toResponse(ContactSubmission entity);
     ContactSubmission toEntity(LeadRequest request);

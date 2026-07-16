@@ -8,7 +8,6 @@ import com.bnytechnology.backend.repository.CompanyInfoRepository;
 import com.bnytechnology.backend.service.CompanyInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.lang.NonNull;
 
 @Service
 @Transactional
@@ -24,16 +23,26 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
     @Override
     @Transactional(readOnly = true)
+    @SuppressWarnings("null")
     public CompanyInfoResponse get() {
-        @NonNull Long id = 1L;
-        return repository.findById(id).map(mapper::toResponse).orElse(null);
+        return repository.findById(1L)
+                .map(mapper::toResponse)
+                .orElseGet(() -> {
+                    CompanyInfo empty = new CompanyInfo();
+                    empty.setId(1L);
+                    return mapper.toResponse(empty);
+                });
     }
 
     @Override
+    @SuppressWarnings("null")
     public CompanyInfoResponse update(CompanyInfoRequest request) {
-        CompanyInfo entity = mapper.toEntity(request);
-        entity.setId(1L);
-        @NonNull CompanyInfo nonNullEntity = entity;
-        return mapper.toResponse(repository.save(nonNullEntity));
+        CompanyInfo existing = repository.findById(1L).orElseGet(() -> {
+            CompanyInfo newInfo = new CompanyInfo();
+            newInfo.setId(1L);
+            return newInfo;
+        });
+        mapper.updateEntity(request, existing);
+        return mapper.toResponse(repository.save(existing));
     }
 }

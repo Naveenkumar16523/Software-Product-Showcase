@@ -12,16 +12,21 @@ import java.util.Optional;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider", dateTimeProviderRef = "offsetDateTimeProvider")
+@SuppressWarnings("null")
 public class JpaAuditingConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
-        return () -> {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
-                return Optional.of("system");
+        return new AuditorAware<String>() {
+            @Override
+            @org.springframework.lang.NonNull
+            public Optional<String> getCurrentAuditor() {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+                    return Optional.of("system");
+                }
+                return Optional.of(authentication.getName());
             }
-            return Optional.of(authentication.getName());
         };
     }
 

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@SuppressWarnings("null")
 public class JwtService {
 
     @Value("${jwt.secret:generate_a_secure_base64_secret_key_that_is_at_least_32_bytes_long_like_a_random_sha256_hash}")

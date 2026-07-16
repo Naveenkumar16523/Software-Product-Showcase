@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("null")`npublic class ProductCategoryServiceImpl implements ProductCategoryService {
+@SuppressWarnings("null")
+public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     private final ProductCategoryRepository repository;
     private final ProductCategoryMapper mapper;
