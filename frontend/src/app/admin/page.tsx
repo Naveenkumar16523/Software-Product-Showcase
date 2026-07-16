@@ -1,41 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { apiFetch } from "@/lib/api";
-import { Users, Briefcase, TrendingUp } from "lucide-react";
+import { Users, Briefcase, TrendingUp, Activity } from "lucide-react";
 import { motion } from "framer-motion";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useAdminStats } from "@/hooks/queries/useAdminStats";
 
-interface DashboardStats {
-  totalLeads: number;
-  newLeadsThisWeek: number;
-  totalPortfolio: number;
-}
+const mockChartData = [
+  { name: "Mon", leads: 4 },
+  { name: "Tue", leads: 7 },
+  { name: "Wed", leads: 5 },
+  { name: "Thu", leads: 11 },
+  { name: "Fri", leads: 15 },
+  { name: "Sat", leads: 12 },
+  { name: "Sun", leads: 18 },
+];
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const { data: stats, isLoading, isError } = useAdminStats();
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await apiFetch("/api/admin/dashboard/stats");
-        if (res.ok) {
-          const data = await res.json();
-          setStats(data);
-        } else {
-          setError(true);
-        }
-      } catch (e) {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
         <div className="w-8 h-8 border-4 border-brand-accent border-t-transparent rounded-full animate-spin" />
@@ -43,7 +26,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (error || !stats) {
+  if (isError || !stats) {
     return (
       <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-md text-red-400">
         Failed to load dashboard statistics.
@@ -75,7 +58,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome Back</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground font-display">Welcome Back</h1>
         <p className="text-foreground/60 mt-2">Here is what's happening with your platform today.</p>
       </div>
 
@@ -92,11 +75,57 @@ export default function AdminDashboard() {
               {card.icon}
             </div>
             <p className="text-sm font-medium text-foreground/60 mb-2">{card.title}</p>
-            <div className="text-4xl font-bold text-foreground mb-4">{card.value}</div>
+            <div className="text-4xl font-bold text-foreground mb-4 font-mono">{card.value}</div>
             <p className="text-xs text-foreground/50">{card.desc}</p>
           </motion.div>
         ))}
       </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-surface border border-border rounded-xl p-6"
+      >
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <Activity className="w-5 h-5 text-brand-accent" />
+              Lead Engagement (7 Days)
+            </h2>
+            <p className="text-sm text-foreground/50 mt-1">Total incoming inquiries over the past week.</p>
+          </div>
+        </div>
+        
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={mockChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#a3e635" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#a3e635" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+              <XAxis dataKey="name" stroke="#666" tick={{ fill: '#888', fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis stroke="#666" tick={{ fill: '#888', fontSize: 12 }} axisLine={false} tickLine={false} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#141414', borderColor: '#333', borderRadius: '8px' }}
+                itemStyle={{ color: '#a3e635' }}
+              />
+              <Area 
+                type="monotone" 
+                dataKey="leads" 
+                stroke="#a3e635" 
+                strokeWidth={3}
+                fillOpacity={1} 
+                fill="url(#colorLeads)" 
+                animationDuration={2000}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </motion.div>
     </div>
   );
 }

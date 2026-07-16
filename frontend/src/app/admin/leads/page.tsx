@@ -21,7 +21,7 @@ export default function AdminLeads() {
 
   const fetchLeads = async () => {
     try {
-      const res = await apiFetch("/api/leads");
+      const res = await apiFetch("/api/v1/leads");
       if (res.ok) {
         const data = await res.json();
         setLeads(data.sort((a: Lead, b: Lead) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()));
@@ -39,7 +39,7 @@ export default function AdminLeads() {
 
   const updateStatus = async (id: number, newStatus: string) => {
     try {
-      const res = await apiFetch(`/api/leads/${id}/status`, {
+      const res = await apiFetch(`/api/v1/leads/${id}/status`, {
         method: "PUT",
         body: JSON.stringify({ status: newStatus })
       });
@@ -88,8 +88,14 @@ export default function AdminLeads() {
 
       <div className="bg-surface border border-border rounded-xl overflow-hidden">
         {filteredLeads.length === 0 ? (
-          <div className="p-8 text-center text-foreground/50">
-            No leads found matching this filter.
+          <div className="p-16 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-6 border border-border">
+              <Mail className="w-8 h-8 text-foreground/40" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-2">No leads yet</h3>
+            <p className="text-foreground/50 max-w-md">
+              When visitors submit the contact form or request a demo, their inquiries will appear here for you to manage.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">

@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export const viewport: Viewport = {
-  themeColor: '#2563eb', // Primary Blue
+  themeColor: '#0a0a0a', // Dark Theme
 };
 
 const inter = Inter({
@@ -13,8 +13,13 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-display",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -60,6 +65,9 @@ const jsonLd = {
 };
 
 import Script from "next/script";
+import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
+import { CommandPalette } from "@/components/ui/CommandPalette";
+import QueryProvider from "@/components/providers/query-provider";
 
 export default function RootLayout({
   children,
@@ -76,12 +84,17 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.variable} ${outfit.variable} antialiased min-h-screen flex flex-col pt-16`}>
-        <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col pt-16`}>
+        <QueryProvider>
+          <SmoothScrollProvider>
+            <Navbar />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </SmoothScrollProvider>
+          <CommandPalette />
+        </QueryProvider>
         
         {gaId && (
           <>

@@ -20,7 +20,7 @@ export default function AdminLogin() {
     try {
       const res = await apiFetch("/api/auth/login", {
         method: "POST",
-        body: JSON.stringify({ username: email, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
@@ -67,7 +67,7 @@ export default function AdminLogin() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full h-11 bg-background border border-border rounded-md pl-10 pr-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                placeholder="admin@example.com"
+                placeholder="admin@bnytechnologies.com"
               />
             </div>
           </div>

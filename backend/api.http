@@ -1,0 +1,50 @@
+### B&Y Technology API Tests
+
+@host = http://localhost:8080
+@email = admin@bnytechnologies.com
+@password = admin
+
+### Login (Returns HttpOnly Cookie)
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Get Current User (Requires Cookie)
+GET {{host}}/api/v1/auth/me
+
+### Logout
+POST {{host}}/api/v1/auth/logout
+
+### Public: Get Products
+GET {{host}}/api/v1/products
+
+### Public: Submit Contact Form (Lead)
+POST {{host}}/api/v1/leads
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "message": "I'd like to learn more about your services."
+}
+
+### Admin: Get All Leads (Requires Cookie)
+GET {{host}}/api/v1/admin/leads
+
+### Admin: Update Company Info
+PUT {{host}}/api/v1/admin/company-info
+Content-Type: application/json
+
+{
+  "legalName": "B & Y Technology Inc.",
+  "tagline": "Next-Gen Retail Software",
+  "aboutText": "Updated about text.",
+  "foundedYear": 2015,
+  "headquarters": "San Francisco",
+  "email": "hello@bnytechnologies.com",
+  "phone": "+1 555 000 0000"
+}

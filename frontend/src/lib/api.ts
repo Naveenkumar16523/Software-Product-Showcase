@@ -14,8 +14,8 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
     credentials: "include", // This ensures HttpOnly cookies are sent with the request
   });
 
-  if (response.status === 401) {
-    if (typeof window !== "undefined") {
+  if (response.status === 401 || response.status === 403) {
+    if (typeof window !== "undefined" && endpoint !== "/api/auth/login" && window.location.pathname !== "/admin/login") {
       window.location.href = "/admin/login";
     }
     throw new Error("Unauthorized");

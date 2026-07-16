@@ -18,7 +18,10 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await apiFetch("/api/auth/me");
+        const res = await apiFetch("/api/auth/me");
+        if (!res.ok) {
+          throw new Error("Not authenticated");
+        }
         setIsAuthenticated(true);
         if (isLoginPage) {
           router.replace("/admin");

@@ -59,7 +59,7 @@ export default function Portfolio() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/portfolio" || "http://localhost:8080/api/portfolio");
+        const res = await fetch(process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL + "/api/v1/portfolio" : "http://localhost:8080/api/v1/portfolio");
         if (!res.ok) throw new Error("API not reachable");
         const data = await res.json();
         setProjects(data.length > 0 ? data : FALLBACK_PROJECTS);

@@ -5,54 +5,54 @@ export default function ContactPage() {
   return (
     <div className="bg-background min-h-screen pt-20 pb-24">
       {/* Header */}
-      <div className="bg-surface py-20 px-4 mb-16 border-b border-border">
+      <div className="bg-surface py-20 px-4 mb-16 border-b border-border text-foreground">
         <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-6">Contact Our Sales Team</h1>
-          <p className="text-xl text-gray-600">Have a question or want to see a live demo? We're here to help you navigate our enterprise retail software.</p>
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-6">Contact Our Sales Team</h1>
+          <p className="text-xl text-foreground/70">Have a question or want to see a live demo? We're here to help you navigate our enterprise retail software.</p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
-        <div className="flex flex-col lg:flex-row gap-12 bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+        <div className="flex flex-col lg:flex-row gap-12 glass-border rounded-3xl shadow-soft overflow-hidden">
           
           {/* Contact Info Sidebar */}
-          <div className="lg:w-1/3 bg-primary-900 text-white p-10 flex flex-col justify-between relative overflow-hidden">
-             <div className="absolute inset-0 bg-[url('/grid-dark.svg')] opacity-20"></div>
+          <div className="lg:w-1/3 bg-black/40 text-white p-10 flex flex-col justify-between relative overflow-hidden">
+             {/* Grid background removed */}
              
              <div className="relative z-10 space-y-12">
                <div>
                  <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
-                 <p className="text-primary-200">Fill out the form and our team will get back to you within 24 hours.</p>
+                 <p className="text-foreground/70">Fill out the form and our team will get back to you within 24 hours.</p>
                </div>
                
                <ul className="space-y-8">
                  <li className="flex gap-4 items-start">
-                   <MapPin className="w-6 h-6 text-primary-400 shrink-0 mt-1" />
+                   <MapPin className="w-6 h-6 text-brand-accent shrink-0 mt-1" />
                    <div>
                      <div className="font-semibold mb-1">Corporate Headquarters</div>
-                     <span className="text-primary-100 leading-relaxed text-sm">No.624, Khivraj Building, Anna Salai,<br/>Chennai-600006<br/>LM.Gemini Flyover</span>
+                     <span className="text-foreground/80 leading-relaxed text-sm">No.624, Khivraj Building, Anna Salai,<br/>Chennai-600006<br/>LM.Gemini Flyover</span>
                    </div>
                  </li>
                  <li className="flex gap-4 items-start">
-                   <Phone className="w-6 h-6 text-primary-400 shrink-0 mt-1" />
+                   <Phone className="w-6 h-6 text-brand-accent shrink-0 mt-1" />
                    <div>
                      <div className="font-semibold mb-1">Phone</div>
-                     <a href="tel:+919941070555" className="block text-primary-100 hover:text-white transition-colors text-sm">+91 99410 70555</a>
-                     <a href="tel:+918667735575" className="block text-primary-100 hover:text-white transition-colors text-sm mt-1">+91 86677 35575</a>
+                     <a href="tel:+919941070555" className="block text-foreground/80 hover:text-white transition-colors text-sm">+91 99410 70555</a>
+                     <a href="tel:+918667735575" className="block text-foreground/80 hover:text-white transition-colors text-sm mt-1">+91 86677 35575</a>
                    </div>
                  </li>
                  <li className="flex gap-4 items-start">
-                   <Mail className="w-6 h-6 text-primary-400 shrink-0 mt-1" />
+                   <Mail className="w-6 h-6 text-brand-accent shrink-0 mt-1" />
                    <div>
                      <div className="font-semibold mb-1">Email</div>
-                     <a href="mailto:info@bnytechnologies.com" className="text-primary-100 hover:text-white transition-colors text-sm break-all">info@bnytechnologies.com</a>
+                     <a href="mailto:info@bnytechnologies.com" className="text-foreground/80 hover:text-white transition-colors text-sm break-all">info@bnytechnologies.com</a>
                    </div>
                  </li>
                  <li className="flex gap-4 items-start">
-                   <Clock className="w-6 h-6 text-primary-400 shrink-0 mt-1" />
+                   <Clock className="w-6 h-6 text-brand-accent shrink-0 mt-1" />
                    <div>
                      <div className="font-semibold mb-1">Business Hours</div>
-                     <span className="text-primary-100 text-sm">Mon-Fri: 9:00 AM - 6:00 PM (IST)<br/>Sat-Sun: Closed</span>
+                     <span className="text-foreground/80 text-sm">Mon-Fri: 9:00 AM - 6:00 PM (IST)<br/>Sat-Sun: Closed</span>
                    </div>
                  </li>
                </ul>
@@ -74,25 +74,25 @@ export default function ContactPage() {
 
           {/* Form */}
           <div className="lg:w-2/3 p-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">Send us a message</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-8">Send us a message</h2>
             <form className="space-y-6" onSubmit={e => e.preventDefault()}>
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">First Name</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-surface" placeholder="John" />
+                  <label className="text-sm font-semibold text-foreground/80">First Name</label>
+                  <input type="text" className="w-full px-4 py-3 rounded-lg border bg-background border-border focus:outline-none focus:ring-2 focus:ring-brand-accent placeholder:text-foreground/50" placeholder="John" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">Last Name</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-surface" placeholder="Doe" />
+                  <label className="text-sm font-semibold text-foreground/80">Last Name</label>
+                  <input type="text" className="w-full px-4 py-3 rounded-lg border bg-background border-border focus:outline-none focus:ring-2 focus:ring-brand-accent placeholder:text-foreground/50" placeholder="Doe" />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Email Address</label>
-                <input type="email" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-surface" placeholder="john@company.com" />
+                <label className="text-sm font-semibold text-foreground/80">Email Address</label>
+                <input type="email" className="w-full px-4 py-3 rounded-lg border bg-background border-border focus:outline-none focus:ring-2 focus:ring-brand-accent placeholder:text-foreground/50" placeholder="john@company.com" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Subject</label>
-                <select className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-surface">
+                <label className="text-sm font-semibold text-foreground/80">Subject</label>
+                <select className="w-full px-4 py-3 rounded-lg border bg-background border-border focus:outline-none focus:ring-2 focus:ring-brand-accent text-foreground">
                   <option>Sales Inquiry</option>
                   <option>Technical Support</option>
                   <option>Partnership</option>
@@ -100,10 +100,10 @@ export default function ContactPage() {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Message</label>
-                <textarea rows={5} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-surface resize-none" placeholder="How can we help you?"></textarea>
+                <label className="text-sm font-semibold text-foreground/80">Message</label>
+                <textarea rows={5} className="w-full px-4 py-3 rounded-lg border bg-background border-border focus:outline-none focus:ring-2 focus:ring-brand-accent placeholder:text-foreground/50 resize-none" placeholder="How can we help you?"></textarea>
               </div>
-              <button type="submit" className="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-lg transition-colors">
+              <button type="submit" className="px-8 py-4 bg-brand-accent text-black font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]">
                 Send Message
               </button>
             </form>
@@ -111,8 +111,8 @@ export default function ContactPage() {
         </div>
 
         {/* Map */}
-        <div className="mt-12 bg-gray-200 rounded-3xl h-[400px] border border-gray-100 flex items-center justify-center relative overflow-hidden shadow-sm">
-           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400 font-bold text-2xl">
+        <div className="mt-12 bg-black/40 rounded-3xl h-[400px] border border-border flex items-center justify-center relative overflow-hidden shadow-sm">
+           <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-foreground/40 font-bold text-2xl">
               Google Maps Integration Placeholder
            </div>
         </div>

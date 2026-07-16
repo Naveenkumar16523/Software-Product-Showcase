@@ -24,7 +24,7 @@ export default function AdminServices() {
 
   const fetchItems = async () => {
     try {
-      const res = await apiFetch("/api/services");
+      const res = await apiFetch("/api/v1/services");
       if (res.ok) {
         const data = await res.json();
         setItems(data);
@@ -55,12 +55,12 @@ export default function AdminServices() {
     e.preventDefault();
     try {
       if (editingItem) {
-        await apiFetch(`/api/admin/services/${editingItem.id}`, {
+        await apiFetch(`/api/v1/services/${editingItem.id}`, {
           method: "PUT",
           body: JSON.stringify(formData)
         });
       } else {
-        await apiFetch("/api/admin/services", {
+        await apiFetch("/api/v1/services", {
           method: "POST",
           body: JSON.stringify(formData)
         });
@@ -75,7 +75,7 @@ export default function AdminServices() {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this service?")) {
       try {
-        await apiFetch(`/api/admin/services/${id}`, { method: "DELETE" });
+        await apiFetch(`/api/v1/services/${id}`, { method: "DELETE" });
         fetchItems();
       } catch (err) {
         console.error(err);
@@ -110,8 +110,14 @@ export default function AdminServices() {
 
       <div className="bg-surface border border-border rounded-xl overflow-hidden">
         {items.length === 0 ? (
-          <div className="p-8 text-center text-foreground/50">
-            No services found. Add one to get started.
+          <div className="col-span-full p-16 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-6 border border-border">
+              <Plus className="w-8 h-8 text-foreground/40" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-2">No services offered yet</h3>
+            <p className="text-foreground/50 max-w-md">
+              Start by adding a service. They will be displayed to visitors on the services page.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">

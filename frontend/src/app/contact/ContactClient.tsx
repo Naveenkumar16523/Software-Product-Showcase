@@ -22,7 +22,7 @@ export default function Contact() {
     setStatus("loading");
     
     try {
-      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/leads", {
+      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1/leads", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -138,14 +138,14 @@ export default function Contact() {
             {status === "success" && (
               <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-md flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-green-400 font-medium">Thank you! Your message has been sent successfully. We will be in touch shortly.</p>
+                <p className="text-sm text-green-400 font-medium font-mono uppercase tracking-wide">Inquiry received — someone from the team will reach out within one business day.</p>
               </div>
             )}
             
             {status === "error" && (
               <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-md flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-400 font-medium">{errorMsg}</p>
+                <p className="text-sm text-red-400 font-medium font-mono uppercase tracking-wide">{errorMsg}</p>
               </div>
             )}
 
@@ -162,7 +162,7 @@ export default function Contact() {
                 value={formData.message}
                 onChange={handleChange}
                 required
-                className="w-full bg-surface border border-border rounded-md p-4 text-foreground placeholder:text-foreground/20 focus:ring-1 focus:ring-brand-accent focus:border-brand-accent resize-none h-32 focus:outline-none transition-colors"
+                className="w-full bg-surface border border-border rounded-md p-4 text-foreground placeholder:text-foreground/20 focus:ring-1 focus:ring-amber-accent focus:border-amber-accent resize-none h-32 focus:outline-none transition-colors"
                 placeholder="How can we help you?"
               ></textarea>
             </div>
@@ -170,9 +170,9 @@ export default function Contact() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full h-12 bg-white text-black font-semibold rounded-md hover:bg-gray-200 active:scale-[0.98] mt-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none"
+              className="w-full h-12 bg-brand-accent text-black font-semibold rounded-md hover:bg-brand-accent/90 active:scale-[0.98] mt-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none"
             >
-              {status === "loading" ? "Sending..." : "Send Message"}
+              {status === "loading" ? "Sending..." : "Send a message"}
             </button>
             
             <div className="text-center mt-6">
@@ -227,7 +227,7 @@ function InputGroup({ label, name, placeholder, type, value, onChange, required 
         onChange={onChange}
         required={required}
         placeholder={placeholder}
-        className="bg-surface border border-border rounded-md h-11 px-4 text-foreground placeholder:text-foreground/20 focus:ring-1 focus:ring-brand-accent focus:border-brand-accent focus:outline-none w-full transition-colors"
+        className="bg-surface border border-border rounded-md h-11 px-4 text-foreground placeholder:text-foreground/20 focus:ring-1 focus:ring-amber-accent focus:border-amber-accent focus:outline-none w-full transition-colors"
       />
     </div>
   );
