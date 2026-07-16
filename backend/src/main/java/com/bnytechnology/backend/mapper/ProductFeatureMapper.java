@@ -6,7 +6,7 @@ import com.bnytechnology.backend.entity.ProductFeature;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface ProductFeatureMapper {
     @Mapping(source = "product.id", target = "productId")
     ProductFeatureResponse toResponse(ProductFeature entity);

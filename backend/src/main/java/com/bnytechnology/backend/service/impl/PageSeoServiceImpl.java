@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("null")`npublic class PageSeoServiceImpl implements PageSeoService {
+@SuppressWarnings("null")
+public class PageSeoServiceImpl implements PageSeoService {
 
     private final PageSeoRepository repository;
     private final PageSeoMapper mapper;

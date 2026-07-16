@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("null")`npublic class TestimonialServiceImpl implements TestimonialService {
+@SuppressWarnings("null")
+public class TestimonialServiceImpl implements TestimonialService {
 
     private final TestimonialRepository repository;
     private final TestimonialMapper mapper;

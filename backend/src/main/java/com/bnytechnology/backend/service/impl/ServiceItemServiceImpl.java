@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("null")`npublic class ServiceItemServiceImpl implements ServiceItemService {
+@SuppressWarnings("null")
+public class ServiceItemServiceImpl implements ServiceItemService {
 
     private final ServiceItemRepository repository;
     private final ServiceItemMapper mapper;

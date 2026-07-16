@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("null")`npublic class JobListingServiceImpl implements JobListingService {
+@SuppressWarnings("null")
+public class JobListingServiceImpl implements JobListingService {
 
     private final JobListingRepository repository;
     private final JobListingMapper mapper;
