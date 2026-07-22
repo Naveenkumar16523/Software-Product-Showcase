@@ -171,12 +171,12 @@ export default function PricingClient() {
                       className="absolute inset-0 flex flex-col justify-center"
                     >
                       <div className="flex items-baseline">
-                        {typeof price === "number" && <span className="text-2xl font-bold text-foreground/50 mr-1">$</span>}
+                        {typeof price === "number" && <span className="text-2xl font-bold text-foreground/50 mr-1">₹</span>}
                         <span className="text-5xl font-display font-bold text-foreground">{price}</span>
                         {typeof price === "number" && <span className="text-foreground/50 ml-2 font-medium">/mo</span>}
                       </div>
                       {typeof price === "number" && isAnnual && (
-                        <div className="text-xs text-brand-accent font-medium mt-1 tracking-wide">Billed ${price * 12} yearly</div>
+                        <div className="text-xs text-brand-accent font-medium mt-1 tracking-wide">Billed ₹{price * 12} yearly</div>
                       )}
                     </motion.div>
                   </AnimatePresence>

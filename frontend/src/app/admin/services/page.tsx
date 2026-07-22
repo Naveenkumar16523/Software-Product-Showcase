@@ -6,6 +6,7 @@ import { Plus, Edit2, Trash2, X, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServices, Service } from "@/hooks/queries/useServices";
+import toast from "react-hot-toast";
 
 export default function AdminServices() {
   const queryClient = useQueryClient();
@@ -16,6 +17,7 @@ export default function AdminServices() {
   const [formData, setFormData] = useState<Partial<Service>>({
     title: "",
     description: "",
+    icon: "",
   });
 
   const handleOpenModal = (item?: Service) => {
@@ -24,7 +26,7 @@ export default function AdminServices() {
       setFormData(item);
     } else {
       setEditingItem(null);
-      setFormData({ title: "", description: "" });
+      setFormData({ title: "", description: "", icon: "" });
     }
     setIsModalOpen(true);
   };
@@ -45,18 +47,26 @@ export default function AdminServices() {
       }
       setIsModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ['admin', 'services'] });
+      toast.success(editingItem ? "Service updated successfully" : "Service created successfully");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to save service");
     }
   };
 
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this service?")) {
       try {
-        await apiFetch(`/api/v1/services/${id}`, { method: "DELETE" });
-        queryClient.invalidateQueries({ queryKey: ['admin', 'services'] });
+        const res = await apiFetch(`/api/v1/services/${id}`, { method: "DELETE" });
+        if (res.ok) {
+          queryClient.invalidateQueries({ queryKey: ['admin', 'services'] });
+          toast.success("Service deleted successfully");
+        } else {
+          toast.error("Failed to delete service");
+        }
       } catch (err) {
         console.error(err);
+        toast.error("Failed to delete service");
       }
     }
   };
@@ -174,6 +184,18 @@ export default function AdminServices() {
                       className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
                       placeholder="e.g. Cloud Architecture"
                     />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-foreground">Lucide Icon Name</label>
+                    <input 
+                      type="text" 
+                      value={formData.icon || ""} 
+                      onChange={e => setFormData({...formData, icon: e.target.value})} 
+                      className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                      placeholder="e.g. Code, Server, Database"
+                    />
+                    <p className="text-xs text-foreground/50 mt-1">Enter a valid Lucide icon name (PascalCase).</p>
                   </div>
 
                   <div className="space-y-1">

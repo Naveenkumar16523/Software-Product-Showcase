@@ -8,14 +8,27 @@ import { ArrowLeft, CheckCircle2 } from "lucide-react";
 export default function PortfolioCaseStudy() {
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
-
-  // In a real scenario, fetch the specific project by slug from the API.
-  // Using static placeholder data here to match the design prompt constraints.
+  const [project, setProject] = useState<any>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
+    const fetchProject = async () => {
+      try {
+        const res = await fetch(process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL + "/api/v1/portfolio" : "http://localhost:8080/api/v1/portfolio");
+        if (res.ok) {
+          const data = await res.json();
+          const found = data.find((p: any) => p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug);
+          if (found) {
+            setProject(found);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProject();
+  }, [slug]);
 
   if (loading) {
     return (
@@ -25,10 +38,22 @@ export default function PortfolioCaseStudy() {
     );
   }
 
+  if (!project) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background flex-col text-center px-4">
+        <h1 className="text-4xl font-bold mb-4">Project Not Found</h1>
+        <p className="text-foreground/70 mb-8">The case study you are looking for doesn't exist.</p>
+        <Link href="/portfolio" className="bg-brand-accent text-black px-6 py-2 rounded-md font-medium hover:bg-brand-accent/90 transition-colors">
+          Back to Portfolio
+        </Link>
+      </div>
+    );
+  }
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": String(slug).replace(/-/g, ' '),
+    "headline": project.title,
     "publisher": {
       "@type": "Organization",
       "name": "B & Y Technology",
@@ -63,14 +88,14 @@ export default function PortfolioCaseStudy() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 capitalize">
-              {String(slug).replace(/-/g, ' ')}
+              {project.title}
             </h1>
             <p className="text-xl text-foreground/70 leading-relaxed mb-8">
-              A comprehensive case study showcasing our methodology and the technical solutions applied to deliver measurable business impact.
+              {project.summary}
             </p>
             
             <div className="flex flex-wrap gap-2">
-              {["React", "Spring Boot", "PostgreSQL", "Kafka"].map(tech => (
+              {project.techStack?.map((tech: string) => (
                 <span key={tech} className="px-3 py-1 text-sm font-medium bg-surface text-foreground rounded-full border border-border">
                   {tech}
                 </span>
@@ -83,18 +108,18 @@ export default function PortfolioCaseStudy() {
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-6 space-y-20">
           
+          {project.problemStatement && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
             <h2 className="text-2xl font-bold mb-6 text-brand-accent">The Problem</h2>
-            <p className="text-lg text-foreground/80 leading-relaxed">
-              Our client was facing significant operational bottlenecks due to a legacy monolithic architecture. 
-              The system could not scale to meet peak demand, resulting in frequent downtimes and a degraded user experience. 
-              Data silos prevented real-time analytics, making it difficult for the executive team to make informed, data-driven decisions.
+            <p className="text-lg text-foreground/80 leading-relaxed whitespace-pre-line">
+              {project.problemStatement}
             </p>
           </motion.div>
+          )}
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -102,50 +127,71 @@ export default function PortfolioCaseStudy() {
             viewport={{ once: true }}
           >
             <h2 className="text-2xl font-bold mb-6 text-brand-accent">Our Approach</h2>
-            <p className="text-lg text-foreground/80 leading-relaxed mb-6">
-              We proposed a phased migration to a cloud-native, microservices-based architecture. 
-              This allowed us to decouple critical services without disrupting ongoing business operations.
+            <p className="text-lg text-foreground/80 leading-relaxed mb-6 whitespace-pre-line">
+              {project.description}
             </p>
-            <ul className="space-y-4">
-              {[
-                "Conducted a comprehensive architectural audit and domain-driven design workshops.",
-                "Implemented event-driven communication using Apache Kafka to ensure data consistency.",
-                "Containerized services using Docker and orchestrated deployments via Kubernetes.",
-                "Established CI/CD pipelines for automated testing and zero-downtime deployments."
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-brand-accent shrink-0 mt-0.5" />
-                  <span className="text-lg text-foreground/80">{item}</span>
-                </li>
-              ))}
-            </ul>
+            
+            {project.solutionSummary && (
+              <div className="mt-8 bg-surface p-6 rounded-xl border border-border">
+                <h3 className="text-xl font-bold mb-4">Solution Delivered</h3>
+                <p className="text-foreground/80 leading-relaxed whitespace-pre-line">
+                  {project.solutionSummary}
+                </p>
+              </div>
+            )}
           </motion.div>
 
+          {(project.quantifiedResults && project.quantifiedResults.length > 0) && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
             <h2 className="text-2xl font-bold mb-6 text-brand-accent">The Outcome</h2>
-            <div className="grid sm:grid-cols-3 gap-6 mb-8">
-              <div className="p-6 bg-surface border border-border rounded-xl text-center">
-                <div className="text-4xl font-bold text-foreground mb-2">99.99%</div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Uptime</div>
-              </div>
-              <div className="p-6 bg-surface border border-border rounded-xl text-center">
-                <div className="text-4xl font-bold text-foreground mb-2">40%</div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Cost Reduction</div>
-              </div>
-              <div className="p-6 bg-surface border border-border rounded-xl text-center">
-                <div className="text-4xl font-bold text-foreground mb-2">10x</div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Deploy Speed</div>
-              </div>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+              {project.quantifiedResults.map((result: string, idx: number) => {
+                // Try to extract a big number from the string for the visual treatment
+                const match = result.match(/^([^\s]+)\s+(.+)$/);
+                if (match) {
+                  return (
+                    <div key={idx} className="p-6 bg-surface border border-border rounded-xl text-center flex flex-col justify-center">
+                      <div className="text-3xl font-bold text-foreground mb-2 break-words">{match[1]}</div>
+                      <div className="text-sm text-foreground/60 uppercase tracking-wider">{match[2]}</div>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={idx} className="p-6 bg-surface border border-border rounded-xl text-center flex items-center justify-center">
+                    <div className="text-lg font-bold text-foreground break-words">{result}</div>
+                  </div>
+                );
+              })}
             </div>
-            <p className="text-lg text-foreground/80 leading-relaxed">
-              The new architecture successfully handled a 300% surge in traffic during the peak season with zero degradation in performance. 
-              The organization can now release new features daily instead of quarterly, significantly accelerating their time-to-market.
-            </p>
+            
+            {project.testimonialQuote && (
+              <div className="mt-12 border-t border-border pt-8">
+                <blockquote className="text-xl italic text-foreground/80 mb-6 relative">
+                  <span className="absolute -left-4 -top-4 text-4xl text-brand-accent/20">"</span>
+                  {project.testimonialQuote}
+                  <span className="absolute -right-4 -bottom-4 text-4xl text-brand-accent/20">"</span>
+                </blockquote>
+                <div className="flex items-center gap-4">
+                  {project.customerLogo && (
+                    <img src={project.customerLogo} alt="Customer Logo" className="w-12 h-12 rounded-full object-contain bg-white" />
+                  )}
+                  <div>
+                    <div className="font-bold text-foreground">{project.testimonialAuthorName || project.customerName}</div>
+                    {(project.testimonialAuthorTitle || project.industry) && (
+                      <div className="text-sm text-foreground/60">
+                        {project.testimonialAuthorTitle} {project.testimonialAuthorTitle && project.industry ? '•' : ''} {project.industry}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </motion.div>
+          )}
 
           <motion.div
              initial={{ opacity: 0, y: 20 }}

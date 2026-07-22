@@ -12,18 +12,24 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import org.springframework.lang.NonNull;
 
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class RateLimitFilter extends OncePerRequestFilter {
 
-    private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
+    private final Cache<String, Bucket> cache = Caffeine.newBuilder()
+            .expireAfterAccess(Duration.ofMinutes(10))
+            .build();
 
     private Bucket resolveBucket(String ip) {
-        return cache.computeIfAbsent(ip, this::newBucket);
+        return cache.get(ip, this::newBucket);
     }
 
     private Bucket newBucket(String ip) {
@@ -36,7 +42,12 @@ public class RateLimitFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         if (path.startsWith("/api/auth/login") || path.startsWith("/api/v1/leads")) {
-            String ip = request.getRemoteAddr();
+            String ip = request.getHeader("X-Forwarded-For");
+            if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getRemoteAddr();
+            } else {
+                ip = ip.split(",")[0].trim();
+            }
             Bucket bucket = resolveBucket(ip);
             if (bucket.tryConsume(1)) {
                 filterChain.doFilter(request, response);

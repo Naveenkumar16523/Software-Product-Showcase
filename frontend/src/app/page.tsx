@@ -14,6 +14,7 @@ import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import { products } from "@/lib/data/products";
 import { industries } from "@/lib/data/industries";
 import { Scanline } from "@/components/effects/Scanline";
+import BorderGlow from "@/components/ui/border-glow";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -158,109 +159,85 @@ function ProductsSection() {
 
 
 function IndustriesSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const column1Ref = useRef<HTMLDivElement>(null);
-  const column2Ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
   const [selectedIndustry, setSelectedIndustry] = useState<(typeof industries)[number] | null>(null);
 
-  useGSAP(() => {
-    if (reduce || window.innerWidth < 768) return;
-
-    // Pin the text center
-    ScrollTrigger.create({
-      trigger: sectionRef.current,
-      pin: contentRef.current,
-      start: "top top",
-      end: "bottom bottom",
-      pinSpacing: false,
-    });
-
-    // Parallax columns
-    gsap.to(column1Ref.current, {
-      y: () => -(column1Ref.current!.scrollHeight - window.innerHeight),
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true,
-      }
-    });
-
-    gsap.to(column2Ref.current, {
-      y: () => -(column2Ref.current!.scrollHeight - window.innerHeight + 200),
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true,
-      }
-    });
-
-  }, { scope: sectionRef, dependencies: [reduce] });
-
-  // Add pseudo-random rotations using useMemo and array index so they don't change on re-render and match server/client
+  // Pseudo-random rotations so they look like a messy deck of cards when stacked
   const rotations = React.useMemo(() => industries.map((_, idx) => ((idx * 7) % 10) - 5), []);
 
   return (
     <>
-      <section ref={sectionRef} className="min-h-[300vh] relative bg-background overflow-hidden text-foreground">
-        
-        {/* Layer 1: Pinned Center */}
-        <div ref={contentRef} className="h-screen w-full flex items-center justify-center pointer-events-none z-10 absolute top-0 left-0 px-4">
-          <div className="text-center max-w-3xl mx-auto backdrop-blur-sm bg-background/50 p-8 rounded-3xl border border-white/5 shadow-2xl">
-            <h3 className="text-brand-accent font-bold tracking-widest uppercase mb-4 text-sm md:text-base">Tailored Solutions</h3>
-            <h2 className="text-4xl md:text-6xl font-display font-extrabold mb-6">Tailored for Your Industry</h2>
-            <p className="text-xl md:text-2xl font-light text-foreground/90 max-w-4xl mx-auto leading-relaxed">
-            &quot;Your technology stack is the foundation of your business. We don&apos;t just build software; we engineer competitive advantages that last.&quot;
-          </p>
+      <section className="bg-background relative w-full text-foreground lg:pb-0 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-3">
+          
+          {/* Left Column: Sticky Text */}
+          <div className="lg:col-span-1 lg:sticky lg:top-0 h-auto lg:h-screen flex flex-col justify-center px-4 md:px-12 xl:px-24 py-24 lg:py-0 z-10">
+            <Reveal as="div" intensity="bold" className="max-w-xl">
+              <h3 className="text-brand-accent font-bold tracking-widest uppercase mb-4 text-sm md:text-base">Tailored Solutions</h3>
+              <h2 className="text-4xl md:text-6xl font-display font-extrabold mb-6">Tailored for Your Industry</h2>
+              <p className="text-xl md:text-2xl font-light text-foreground/70 leading-relaxed">
+                &quot;Your technology stack is the foundation of your business. We don&apos;t just build software; we engineer competitive advantages that last.&quot;
+              </p>
+            </Reveal>
           </div>
-        </div>
 
-        {/* Layer 2: Parallax Columns */}
-        <div className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none pt-[100vh]">
-           <div className="container mx-auto px-4 md:px-6 max-w-[1400px]">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-40 relative">
-                
-                {/* Column 1 */}
-                <div ref={column1Ref} className="flex flex-col gap-24 items-center md:items-end md:pr-10 pt-24 pointer-events-auto pb-48">
-                   {industries.slice(0, 3).map((ind, i) => (
-                      <div 
-                        key={i} 
-                        onClick={() => setSelectedIndustry(ind)}
-                        className="group w-full max-w-[320px] aspect-square glass-border rounded-3xl p-8 hover:bg-white/10 transition-all cursor-pointer flex flex-col justify-center items-center text-center shadow-xl hover:shadow-[0_0_40px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 hover:scale-105 bg-surface"
-                        style={{ transform: `rotate(${rotations[i]}deg)` }}
-                      >
-                         <div className="w-20 h-20 bg-brand-accent/10 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                           {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 40 })}
+          {/* Right Column: Sticky Stacking Cards */}
+          <div className="lg:col-span-2 flex flex-col px-4 md:px-12 xl:px-24">
+             {/* Desktop Stacking (Pairs) */}
+             <div className="hidden lg:block relative pb-[10vh]">
+               {Array.from({ length: Math.ceil(industries.length / 2) }).map((_, i) => (
+                  <div key={i} className="sticky top-0 h-screen flex items-center justify-center gap-6 xl:gap-10 w-full" style={{ zIndex: i }}>
+                    {industries.slice(i * 2, i * 2 + 2).map((ind, j) => {
+                       const idx = i * 2 + j;
+                       return (
+                         <div 
+                           key={j} 
+                           onClick={() => setSelectedIndustry(ind)}
+                           className="group relative flex flex-col w-full max-w-[320px] bg-surface/95 backdrop-blur-md border border-white/10 rounded-3xl p-8 cursor-pointer shadow-[0_0_40px_rgba(0,0,0,0.5)] hover:border-brand-accent/50 transition-colors"
+                           style={{ transform: `rotate(${rotations[idx]}deg)` }}
+                         >
+                           <div className="w-16 h-16 bg-brand-accent/10 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-brand-accent group-hover:text-black transition-all duration-300">
+                             {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 32 })}
+                           </div>
+                           <h3 className="text-2xl font-bold mb-3">{ind.title}</h3>
+                           <p className="text-foreground/70 mb-8 text-sm xl:text-base">{ind.desc}</p>
+                           
+                           <div className="mt-auto">
+                             <span className="inline-flex items-center text-brand-accent font-semibold group-hover:underline decoration-2 underline-offset-4 transition-all">
+                               View <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                             </span>
+                           </div>
                          </div>
-                         <h3 className="text-2xl font-bold">{ind.title}</h3>
-                      </div>
-                   ))}
-                </div>
+                       )
+                    })}
+                  </div>
+               ))}
+             </div>
 
-                {/* Column 2 */}
-                <div ref={column2Ref} className="flex flex-col gap-32 items-center md:items-start md:pl-10 pt-[30vh] pointer-events-auto pb-48">
-                   {industries.slice(3, 6).map((ind, i) => (
-                      <div 
-                        key={i + 3} 
-                        onClick={() => setSelectedIndustry(ind)}
-                        className="group w-full max-w-[320px] aspect-square glass-border rounded-3xl p-8 hover:bg-white/10 transition-all cursor-pointer flex flex-col justify-center items-center text-center shadow-xl hover:shadow-[0_0_40px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 hover:scale-105 bg-surface"
-                        style={{ transform: `rotate(${rotations[i + 3]}deg)` }}
-                      >
-                         <div className="w-20 h-20 bg-brand-accent/10 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                           {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 40 })}
-                         </div>
-                         <h3 className="text-2xl font-bold">{ind.title}</h3>
+             {/* Mobile/Tablet Grid (Normal flow) */}
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:hidden mt-8">
+               {industries.map((ind, i) => (
+                 <Reveal key={i} as="div" intensity="bold">
+                    <div 
+                      onClick={() => setSelectedIndustry(ind)}
+                      className="group relative flex flex-col h-full bg-surface border border-white/5 rounded-3xl p-8 cursor-pointer shadow-sm hover:border-brand-accent/30"
+                    >
+                      <div className="w-16 h-16 bg-brand-accent/10 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-brand-accent group-hover:text-black transition-all duration-300">
+                        {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 32 })}
                       </div>
-                   ))}
-                </div>
-
-              </div>
-           </div>
+                      <h3 className="text-2xl font-bold mb-3">{ind.title}</h3>
+                      <p className="text-foreground/70 mb-6 flex-grow">{ind.desc}</p>
+                      
+                      <div className="mt-auto">
+                        <span className="inline-flex items-center text-brand-accent font-semibold group-hover:underline decoration-2 underline-offset-4 transition-all">
+                          View <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                      </div>
+                    </div>
+                 </Reveal>
+               ))}
+             </div>
+          </div>
+          
         </div>
       </section>
 
@@ -328,26 +305,36 @@ function WhyChooseUsSection() {
         
         <RevealGroup stagger={0.1} className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto">
            {features.map((f, i) => (
-             <Reveal as="div" intensity="bold" key={i}>
-                <div className="border border-white/5 relative group w-full cursor-pointer aspect-[4/3] grid place-content-center p-6 bg-surface/50 hover:bg-surface rounded-2xl overflow-hidden transition-colors">
-                  
-                  {/* Background Hover Effect (BuyMeCoffee Style) */}
-                  <div 
-                    className="absolute inset-0 w-full h-full scale-150 group-hover:scale-50 opacity-20 group-hover:opacity-0 transition-all duration-700 ease-out pointer-events-none"
-                    style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.15) 2px, transparent 2px)', backgroundSize: '32px 32px' }}
-                  ></div>
-                  
-                  {/* Content */}
-                  <div className="relative z-10 flex flex-col items-center gap-4">
-                    <div className="text-foreground/50 group-hover:text-brand-accent transition-colors duration-300">
-                      {React.cloneElement(f.icon as React.ReactElement<{ size?: number; strokeWidth?: number }>, { size: 32, strokeWidth: 1.5 })}
+             <Reveal as="div" intensity="bold" key={i} className="h-full">
+                <BorderGlow
+                  edgeSensitivity={30}
+                  glowColor="84 79% 57%"
+                  backgroundColor="transparent"
+                  borderRadius={16}
+                  glowRadius={40}
+                  glowIntensity={0.8}
+                  coneSpread={25}
+                  colors={['#a3e635', '#22c55e', '#a3e635']}
+                  className="w-full h-full aspect-[4/3] group cursor-pointer"
+                >
+                  <div className="w-full h-full grid place-content-center p-6 bg-surface/50 hover:bg-surface rounded-2xl overflow-hidden transition-colors relative">
+                    {/* Background Hover Effect */}
+                    <div 
+                      className="absolute inset-0 w-full h-full scale-150 group-hover:scale-50 opacity-20 group-hover:opacity-0 transition-all duration-700 ease-out pointer-events-none"
+                      style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.15) 2px, transparent 2px)', backgroundSize: '32px 32px' }}
+                    ></div>
+                    
+                    {/* Content */}
+                    <div className="relative z-10 flex flex-col items-center gap-4">
+                      <div className="text-foreground/50 group-hover:text-brand-accent transition-colors duration-300">
+                        {React.cloneElement(f.icon as React.ReactElement<{ size?: number; strokeWidth?: number }>, { size: 32, strokeWidth: 1.5 })}
+                      </div>
+                      <h4 className="text-sm md:text-base font-semibold text-foreground text-center">
+                        {f.title}
+                      </h4>
                     </div>
-                    <h4 className="text-sm md:text-base font-semibold text-foreground text-center">
-                      {f.title}
-                    </h4>
                   </div>
-                  
-                </div>
+                </BorderGlow>
              </Reveal>
            ))}
         </RevealGroup>

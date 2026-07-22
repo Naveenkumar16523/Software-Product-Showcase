@@ -16,6 +16,9 @@ public class ServiceItem extends Auditable {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column
+    private String icon;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -25,4 +28,7 @@ public class ServiceItem extends Auditable {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public String getIcon() { return icon; }
+    public void setIcon(String icon) { this.icon = icon; }
 }

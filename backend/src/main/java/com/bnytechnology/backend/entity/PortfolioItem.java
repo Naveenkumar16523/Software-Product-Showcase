@@ -27,7 +27,7 @@ public class PortfolioItem extends Auditable {
     private String description;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(name = "tech_stack", columnDefinition = "text[]")
+    @Column(name = "tech_stack")
     private List<String> techStack;
 
     @Column(name = "image_url")

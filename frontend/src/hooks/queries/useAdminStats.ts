@@ -13,6 +13,7 @@ export interface DashboardStats {
     qualified: number;
     closed: number;
   };
+  weeklyLeadCounts?: { name: string; leads: number }[];
 }
 
 export function useAdminStats() {

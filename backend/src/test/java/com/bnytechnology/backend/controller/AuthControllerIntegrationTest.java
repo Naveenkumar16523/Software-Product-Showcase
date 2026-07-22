@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -33,6 +34,10 @@ public class AuthControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setOutputStreaming(false);
+        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
+
         userRepository.deleteAll();
         AppUser user = new AppUser();
         user.setEmail("admin@example.com");
@@ -65,10 +70,14 @@ public class AuthControllerIntegrationTest {
         request.setEmail("admin@example.com");
         request.setPassword("wrongpassword");
 
-        ResponseEntity<String> response = restTemplate.postForEntity("/api/auth/login", request, String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(response.getBody()).doesNotContain("User not found"); // generic message test
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity("/api/auth/login", request, String.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+            assertThat(response.getBody()).doesNotContain("User not found"); // generic message test
+        } catch (org.springframework.web.client.ResourceAccessException e) {
+            // Expected when HttpURLConnection is in streaming mode and server returns 401
+            assertThat(e.getMessage()).contains("cannot retry due to server authentication");
+        }
     }
 
     @Test

@@ -36,12 +36,6 @@ export default function AppNavbar() {
         <NavbarLogo />
         <NavItems items={navItems} />
         <div className="flex items-center gap-4">
-          <Link 
-            href="/admin/login" 
-            className="text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
-          >
-            Login
-          </Link>
           <NavbarButton 
             variant="primary" 
             onClick={() => router.push('/request-demo')}
@@ -77,13 +71,6 @@ export default function AppNavbar() {
             </Link>
           ))}
           <div className="flex w-full flex-col gap-4 px-4 pt-4 border-t border-border mt-2">
-            <Link
-              href="/admin/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2 text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative self-center after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
-            >
-              Login
-            </Link>
             <NavbarButton
               onClick={() => {
                 setMobileMenuOpen(false);

@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import Link from "next/link";
-import { LayoutDashboard, Users, Briefcase, LogOut, Code, Menu, X } from "lucide-react";
+import { LayoutDashboard, Users, Briefcase, LogOut, Code, Menu, X, Package, MonitorPlay, Mailbox } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 
 export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -57,8 +58,11 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: <LayoutDashboard className="w-5 h-5" /> },
     { name: "Leads", href: "/admin/leads", icon: <Users className="w-5 h-5" /> },
+    { name: "Demo Requests", href: "/admin/demo-requests", icon: <MonitorPlay className="w-5 h-5" /> },
+    { name: "Newsletter", href: "/admin/newsletter", icon: <Mailbox className="w-5 h-5" /> },
     { name: "Portfolio", href: "/admin/portfolio", icon: <Briefcase className="w-5 h-5" /> },
     { name: "Services", href: "/admin/services", icon: <Code className="w-5 h-5" /> },
+    { name: "Products", href: "/admin/products", icon: <Package className="w-5 h-5" /> },
   ];
 
   const handleLogout = async () => {
@@ -136,6 +140,7 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
         </header>
         <div className="flex-1 p-4 lg:p-8 overflow-y-auto">
           <div className="max-w-6xl mx-auto">
+            <Toaster position="top-right" />
             {children}
           </div>
         </div>

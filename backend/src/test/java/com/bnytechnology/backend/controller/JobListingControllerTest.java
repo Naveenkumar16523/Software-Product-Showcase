@@ -72,7 +72,7 @@ public class JobListingControllerTest {
         JobListingResponse response = new JobListingResponse();
         when(service.findById(1L)).thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/admin/jobs/1"))
+        mockMvc.perform(get("/api/v1/admin/job-listings/1"))
                 .andExpect(status().isOk());
     }
 
@@ -82,7 +82,7 @@ public class JobListingControllerTest {
         JobListingResponse response = new JobListingResponse();
         when(service.create(any(JobListingRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/admin/jobs")
+        mockMvc.perform(post("/api/v1/admin/job-listings")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
@@ -94,7 +94,7 @@ public class JobListingControllerTest {
         JobListingResponse response = new JobListingResponse();
         when(service.update(eq(1L), any(JobListingRequest.class))).thenReturn(response);
 
-        mockMvc.perform(put("/api/v1/admin/jobs/1")
+        mockMvc.perform(put("/api/v1/admin/job-listings/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
@@ -102,7 +102,7 @@ public class JobListingControllerTest {
 
     @Test
     void delete_ReturnsNoContent() throws Exception {
-        mockMvc.perform(delete("/api/v1/admin/jobs/1"))
+        mockMvc.perform(delete("/api/v1/admin/job-listings/1"))
                 .andExpect(status().isNoContent());
     }
 }

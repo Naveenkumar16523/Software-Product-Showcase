@@ -68,6 +68,15 @@ export default function AdminDashboard() {
     },
   ];
 
+  const engagementData = stats.weeklyLeadCounts && stats.weeklyLeadCounts.length > 0 ? stats.weeklyLeadCounts : mockChartData;
+  const funnelData = stats.funnel ? [
+    { name: 'Visits', value: stats.funnel.visits, fill: '#333333' },
+    { name: 'Demo Requests', value: stats.funnel.demoRequests, fill: '#4E85BF' },
+    { name: 'Leads', value: stats.funnel.leads, fill: '#84cc16' },
+    { name: 'Qualified', value: stats.funnel.qualified, fill: '#65a30d' },
+    { name: 'Closed', value: stats.funnel.closed, fill: '#a3e635' }
+  ] : mockFunnelData;
+
   return (
     <div className="space-y-8">
       <div>
@@ -112,7 +121,7 @@ export default function AdminDashboard() {
         
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={mockChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <AreaChart data={engagementData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#a3e635" stopOpacity={0.3}/>
@@ -160,13 +169,7 @@ export default function AdminDashboard() {
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart 
-              data={stats.funnel ? [
-                { name: 'Visits', value: stats.funnel.visits, fill: '#333333' },
-                { name: 'Demo Requests', value: stats.funnel.demoRequests, fill: '#4E85BF' },
-                { name: 'Leads', value: stats.funnel.leads, fill: '#84cc16' },
-                { name: 'Qualified', value: stats.funnel.qualified, fill: '#65a30d' },
-                { name: 'Closed', value: stats.funnel.closed, fill: '#a3e635' }
-              ] : mockFunnelData}
+              data={funnelData}
               layout="vertical"
               margin={{ top: 10, right: 30, left: 40, bottom: 0 }}
             >
@@ -179,7 +182,7 @@ export default function AdminDashboard() {
                 itemStyle={{ color: '#fff' }}
               />
               <Bar dataKey="value" radius={[0, 4, 4, 0]} animationDuration={2000} barSize={40}>
-                {mockFunnelData.map((entry, index) => (
+                {funnelData.map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={entry.fill} />
                 ))}
               </Bar>
