@@ -6,6 +6,7 @@ import { Plus, Edit2, Trash2, ExternalLink, X, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePortfolio, PortfolioItem as Portfolio } from "@/hooks/queries/usePortfolio";
+import { ImageUpload } from "@/components/ui/image-upload";
 import toast from "react-hot-toast";
 
 export default function AdminPortfolio() {
@@ -262,13 +263,8 @@ export default function AdminPortfolio() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-foreground/70">Image URL</label>
-                      <input type="url" value={formData.imageUrl || ''} onChange={e => setFormData({...formData, imageUrl: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
-                      {formData.imageUrl && (
-                        <div className="mt-2 h-20 w-full rounded-md border border-border overflow-hidden flex items-center justify-center bg-background/50">
-                          <img src={formData.imageUrl} alt="Preview" className="h-full w-auto object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                        </div>
-                      )}
+                      <label className="text-xs font-medium text-foreground/70">Image</label>
+                      <ImageUpload value={formData.imageUrl || ''} onChange={url => setFormData({...formData, imageUrl: url})} />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-foreground/70">Live URL</label>
@@ -285,13 +281,8 @@ export default function AdminPortfolio() {
                       <input type="text" value={formData.customerName || ''} onChange={e => setFormData({...formData, customerName: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-foreground/70">Customer Logo URL</label>
-                      <input type="url" value={formData.customerLogo || ''} onChange={e => setFormData({...formData, customerLogo: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
-                      {formData.customerLogo && (
-                        <div className="mt-2 h-16 w-full rounded-md border border-border overflow-hidden flex items-center justify-center bg-white/10 p-2">
-                          <img src={formData.customerLogo} alt="Logo Preview" className="h-full w-auto object-contain bg-white rounded-sm" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                        </div>
-                      )}
+                      <label className="text-xs font-medium text-foreground/70">Customer Logo</label>
+                      <ImageUpload value={formData.customerLogo || ''} onChange={url => setFormData({...formData, customerLogo: url})} />
                     </div>
                   </div>
 
