@@ -49,7 +49,7 @@ public class AuthController {
         String jwt = jwtService.generateToken(userDetails);
 
         boolean isProd = Arrays.asList(env.getActiveProfiles()).contains("prod");
-        ResponseCookie cookie = ResponseCookie.from("auth_token", jwt)
+        ResponseCookie cookie = ResponseCookie.from("auth_token", jwt != null ? jwt : "")
                 .httpOnly(true)
                 .secure(isProd)
                 .path("/")

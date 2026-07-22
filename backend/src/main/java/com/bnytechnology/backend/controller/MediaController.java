@@ -27,7 +27,7 @@ public class MediaController {
         
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/uploads/")
-                .path(filename)
+                .path(filename != null ? filename : "")
                 .toUriString();
 
         Map<String, String> response = new HashMap<>();
