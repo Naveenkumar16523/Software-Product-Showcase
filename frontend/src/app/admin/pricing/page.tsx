@@ -5,105 +5,98 @@ import { apiFetch } from "@/lib/api";
 import { Plus, Edit2, Trash2, X, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { useProducts, Product } from "@/hooks/queries/useProducts";
-import { useProductCategories } from "@/hooks/queries/useProductCategories";
+import { usePricingPlans, PricingPlan } from "@/hooks/queries/usePricingPlans";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-const productSchema = z.object({
+const pricingSchema = z.object({
   name: z.string().min(1, "Name is required"),
   slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9-]+$/, "Must be lowercase alphanumeric and dashes"),
-  shortDescription: z.string().optional(),
-  description: z.string().optional(),
-  categoryId: z.number().min(1, "Category is required"),
-  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
-  iconKey: z.string().optional(),
-  displayOrder: z.number().int().optional(),
+  priceMonthly: z.number().min(0),
+  priceYearly: z.number().min(0),
+  currency: z.string().default("USD"),
+  isFeatured: z.boolean().default(false),
+  displayOrder: z.number().int().default(0),
 });
 
-type ProductFormData = z.infer<typeof productSchema>;
+type PricingFormData = z.infer<typeof pricingSchema>;
 
-export default function AdminProducts() {
+export default function AdminPricing() {
   const queryClient = useQueryClient();
-  const { data: items = [], isLoading: loading } = useProducts();
-  const { data: categories = [] } = useProductCategories();
+  const { data: items = [], isLoading: loading } = usePricingPlans();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<Product | null>(null);
+  const [editingItem, setEditingItem] = useState<PricingPlan | null>(null);
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<PricingFormData>({
+    resolver: zodResolver(pricingSchema),
     defaultValues: {
       name: "",
       slug: "",
-      shortDescription: "",
-      description: "",
-      categoryId: undefined,
-      status: "DRAFT",
-      iconKey: "",
+      priceMonthly: 0,
+      priceYearly: 0,
+      currency: "USD",
+      isFeatured: false,
       displayOrder: 0,
     }
   });
 
-  const handleOpenModal = (item?: Product) => {
+  const handleOpenModal = (item?: PricingPlan) => {
     if (item) {
       setEditingItem(item);
       reset({
         name: item.name,
         slug: item.slug,
-        shortDescription: item.shortDescription || "",
-        description: item.description || "",
-        categoryId: item.category?.id,
-        status: item.status as any,
-        iconKey: item.iconKey || "",
+        priceMonthly: item.priceMonthly,
+        priceYearly: item.priceYearly,
+        currency: item.currency || "USD",
+        isFeatured: item.isFeatured,
         displayOrder: item.displayOrder || 0,
       });
     } else {
       setEditingItem(null);
-      reset({
-        name: "", slug: "", shortDescription: "", description: "", categoryId: undefined, status: "DRAFT", iconKey: "", displayOrder: 0
-      });
+      reset({ name: "", slug: "", priceMonthly: 0, priceYearly: 0, currency: "USD", isFeatured: false, displayOrder: 0 });
     }
     setIsModalOpen(true);
   };
 
-  const onSubmit = async (data: ProductFormData) => {
+  const onSubmit = async (data: PricingFormData) => {
     try {
       if (editingItem) {
-        await apiFetch(`/api/v1/admin/products/${editingItem.id}`, {
+        await apiFetch(`/api/v1/admin/pricing-plans/${editingItem.id}`, {
           method: "PUT",
           body: JSON.stringify(data)
         });
       } else {
-        await apiFetch("/api/v1/admin/products", {
+        await apiFetch("/api/v1/admin/pricing-plans", {
           method: "POST",
           body: JSON.stringify(data)
         });
       }
       setIsModalOpen(false);
-      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
-      toast.success(editingItem ? "Product updated successfully" : "Product created successfully");
+      queryClient.invalidateQueries({ queryKey: ['admin', 'pricing-plans'] });
+      toast.success(editingItem ? "Pricing plan updated successfully" : "Pricing plan created successfully");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to save product");
+      toast.error("Failed to save pricing plan");
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this product?")) {
+    if (confirm("Are you sure you want to delete this pricing plan?")) {
       try {
-        const res = await apiFetch(`/api/v1/admin/products/${id}`, { method: "DELETE" });
+        const res = await apiFetch(`/api/v1/admin/pricing-plans/${id}`, { method: "DELETE" });
         if (res.ok) {
-          queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
-          toast.success("Product deleted successfully");
+          queryClient.invalidateQueries({ queryKey: ['admin', 'pricing-plans'] });
+          toast.success("Pricing plan deleted successfully");
         } else {
-          toast.error("Failed to delete product");
+          toast.error("Failed to delete pricing plan");
         }
       } catch (err) {
         console.error(err);
-        toast.error("Failed to delete product");
+        toast.error("Failed to delete pricing plan");
       }
     }
   };
@@ -120,8 +113,8 @@ export default function AdminProducts() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Products</h1>
-          <p className="text-foreground/60 mt-1">Manage your software product portfolio.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Pricing Plans</h1>
+          <p className="text-foreground/60 mt-1">Manage your subscription tiers.</p>
         </div>
         
         <button
@@ -129,7 +122,7 @@ export default function AdminProducts() {
           className="flex items-center gap-2 bg-brand-accent text-black px-4 py-2 rounded-md font-medium hover:bg-brand-accent/90 transition-colors text-sm"
         >
           <Plus className="w-4 h-4" />
-          Add Product
+          Add Pricing Plan
         </button>
       </div>
 
@@ -139,9 +132,9 @@ export default function AdminProducts() {
             <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-6 border border-border">
               <Plus className="w-8 h-8 text-foreground/50" />
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-2">No products yet</h3>
+            <h3 className="text-xl font-bold text-foreground mb-2">No pricing plans yet</h3>
             <p className="text-foreground/50 max-w-md">
-              Start by adding a product to showcase to your prospects.
+              Start by adding your first subscription tier.
             </p>
           </div>
         ) : (
@@ -150,8 +143,9 @@ export default function AdminProducts() {
               <thead className="bg-background/50 border-b border-border">
                 <tr>
                   <th className="p-4 font-semibold text-foreground/70">Name</th>
-                  <th className="p-4 font-semibold text-foreground/70">Category</th>
-                  <th className="p-4 font-semibold text-foreground/70">Status</th>
+                  <th className="p-4 font-semibold text-foreground/70">Monthly</th>
+                  <th className="p-4 font-semibold text-foreground/70">Yearly</th>
+                  <th className="p-4 font-semibold text-foreground/70">Featured</th>
                   <th className="p-4 font-semibold text-foreground/70 text-right">Actions</th>
                 </tr>
               </thead>
@@ -168,12 +162,11 @@ export default function AdminProducts() {
                       <div className="font-medium text-foreground text-base mb-1">{item.name}</div>
                       <div className="text-foreground/50 text-xs">{item.slug}</div>
                     </td>
-                    <td className="p-4 align-top text-foreground/80">
-                      {item.category?.name || "Uncategorized"}
-                    </td>
+                    <td className="p-4 align-top text-foreground/80">${item.priceMonthly}/{item.currency}</td>
+                    <td className="p-4 align-top text-foreground/80">${item.priceYearly}/{item.currency}</td>
                     <td className="p-4 align-top">
-                      <span className={`px-2 py-1 text-[10px] font-bold rounded ${item.status === 'PUBLISHED' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                        {item.status}
+                      <span className={`px-2 py-1 text-[10px] font-bold rounded ${item.isFeatured ? 'bg-brand-accent/20 text-brand-accent' : 'bg-background text-foreground/50'}`}>
+                        {item.isFeatured ? 'FEATURED' : 'STANDARD'}
                       </span>
                     </td>
                     <td className="p-4 align-top text-right whitespace-nowrap">
@@ -210,14 +203,14 @@ export default function AdminProducts() {
               className="bg-surface border border-border w-full max-w-2xl rounded-2xl shadow-2xl relative z-10 flex flex-col max-h-[90vh]"
             >
               <div className="p-6 border-b border-border flex justify-between items-center shrink-0">
-                <h2 className="text-xl font-bold">{editingItem ? "Edit Product" : "Add Product"}</h2>
+                <h2 className="text-xl font-bold">{editingItem ? "Edit Pricing Plan" : "Add Pricing Plan"}</h2>
                 <button onClick={() => setIsModalOpen(false)} className="text-foreground/50 hover:text-foreground">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               
               <div className="p-6 overflow-y-auto">
-                <form id="product-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <form id="pricing-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-sm font-medium text-foreground">Name</label>
@@ -243,40 +236,44 @@ export default function AdminProducts() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Category</label>
-                      <select 
-                        {...register("categoryId", { valueAsNumber: true })}
+                      <label className="text-sm font-medium text-foreground">Monthly Price</label>
+                      <input 
+                        type="number"
+                        step="0.01"
+                        {...register("priceMonthly", { valueAsNumber: true })}
                         className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                      >
-                        <option value="">Select a category</option>
-                        {categories.map(cat => (
-                          <option key={cat.id} value={cat.id}>{cat.name}</option>
-                        ))}
-                      </select>
-                      {errors.categoryId && <p className="text-xs text-red-500">{errors.categoryId.message}</p>}
+                      />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Status</label>
-                      <select 
-                        {...register("status")}
+                      <label className="text-sm font-medium text-foreground">Yearly Price</label>
+                      <input 
+                        type="number"
+                        step="0.01"
+                        {...register("priceYearly", { valueAsNumber: true })}
                         className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                      >
-                        <option value="DRAFT">Draft</option>
-                        <option value="PUBLISHED">Published</option>
-                        <option value="ARCHIVED">Archived</option>
-                      </select>
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-foreground">Currency</label>
+                      <input 
+                        {...register("currency")}
+                        className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                      />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Icon Key (Lucide)</label>
-                      <input 
-                        {...register("iconKey")}
-                        className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                      />
+                    <div className="space-y-1 pt-8">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="checkbox"
+                          {...register("isFeatured")}
+                          className="w-5 h-5 bg-background border border-border rounded text-brand-accent focus:ring-brand-accent"
+                        />
+                        <span className="text-sm font-medium text-foreground">Featured Plan</span>
+                      </label>
                     </div>
                     <div className="space-y-1">
                       <label className="text-sm font-medium text-foreground">Display Order</label>
@@ -287,22 +284,6 @@ export default function AdminProducts() {
                       />
                     </div>
                   </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Short Description</label>
-                    <textarea 
-                      {...register("shortDescription")}
-                      className="w-full bg-background border border-border rounded-md p-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors h-20 resize-none"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Detailed Description</label>
-                    <textarea 
-                      {...register("description")}
-                      className="w-full bg-background border border-border rounded-md p-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors h-32 resize-none"
-                    />
-                  </div>
                 </form>
               </div>
 
@@ -310,9 +291,9 @@ export default function AdminProducts() {
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium border border-border bg-background rounded-md hover:bg-border/50 transition-colors">
                   Cancel
                 </button>
-                <button type="submit" form="product-form" className="px-4 py-2 text-sm font-medium bg-brand-accent text-black rounded-md hover:bg-brand-accent/90 transition-colors flex items-center gap-2">
+                <button type="submit" form="pricing-form" className="px-4 py-2 text-sm font-medium bg-brand-accent text-black rounded-md hover:bg-brand-accent/90 transition-colors flex items-center gap-2">
                   <Check className="w-4 h-4" />
-                  Save Product
+                  Save Plan
                 </button>
               </div>
             </motion.div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import Link from "next/link";
-import { LayoutDashboard, Users, Briefcase, LogOut, Code, Menu, X, Package, MonitorPlay, Mailbox, BookOpen, MessageSquareQuote } from "lucide-react";
+import { LayoutDashboard, Users, Briefcase, LogOut, Code, Menu, X, Package, MonitorPlay, Mailbox, BookOpen, MessageSquareQuote, HelpCircle, BadgeDollarSign, Building2, Contact } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 
 export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) {
@@ -65,6 +65,10 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
     { name: "Products", href: "/admin/products", icon: <Package className="w-5 h-5" /> },
     { name: "Blog", href: "/admin/blog", icon: <BookOpen className="w-5 h-5" /> },
     { name: "Testimonials", href: "/admin/testimonials", icon: <MessageSquareQuote className="w-5 h-5" /> },
+    { name: "Pricing", href: "/admin/pricing", icon: <BadgeDollarSign className="w-5 h-5" /> },
+    { name: "Industries", href: "/admin/industries", icon: <Building2 className="w-5 h-5" /> },
+    { name: "Careers", href: "/admin/careers", icon: <Contact className="w-5 h-5" /> },
+    { name: "FAQs", href: "/admin/faqs", icon: <HelpCircle className="w-5 h-5" /> },
   ];
 
   const handleLogout = async () => {
