@@ -15,10 +15,10 @@
   --color-primary-300: #bef264;
   --color-primary-400: #a3e635;
   --color-primary-500: #84cc16;
-  --color-primary-600: #65a30d;
-  --color-primary-700: #4d7c0f;
-  --color-primary-800: #3f6212;
-  --color-primary-900: #365314;
+  --color-primary-600: #4a780b; /* Darkened from #65a30d to pass 4.5:1 with white text */
+  --color-primary-700: #3f6212;
+  --color-primary-800: #304a0e;
+  --color-primary-900: #25380a;
 
   --color-brand-accent: var(--color-primary-400);
   --color-amber-accent: #e8934a;
@@ -54,7 +54,7 @@
   --bg: 0 0% 4%;
   --surface: 0 0% 8%;
   --text: 0 0% 98%;
-  --muted: 0 0% 65%;
+  --muted: 0 0% 70%; /* Lightened from 65% to guarantee >7:1 contrast on surface */
   --stroke: 0 0% 20%;
   --accent: 0 0% 98%;
 

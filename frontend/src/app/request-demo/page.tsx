@@ -56,6 +56,7 @@ Message: ${data.message || 'No additional message'}
           name: `${data.firstName} ${data.lastName}`,
           email: data.email,
           message: compiledMessage,
+          source: 'demo_request'
         }),
       });
 

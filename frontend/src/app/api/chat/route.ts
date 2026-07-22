@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
     
-    const formattedMessages = messages.map((m: any) => ({
+    const formattedMessages = messages.map((m: { role: string; content?: string; text?: string }) => ({
       role: m.role === "bot" ? "assistant" : m.role,
       content: m.text || m.content
     }));

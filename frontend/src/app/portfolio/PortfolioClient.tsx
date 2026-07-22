@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 interface PortfolioItem {
   id: number;
@@ -14,6 +14,16 @@ interface PortfolioItem {
   liveUrl: string | null;
   repoUrl: string | null;
   featured: boolean;
+  customerName?: string;
+  customerLogo?: string;
+  industry?: string;
+  problemStatement?: string;
+  solutionSummary?: string;
+  quantifiedResults?: string[];
+  testimonialQuote?: string;
+  testimonialAuthorName?: string;
+  testimonialAuthorTitle?: string;
+  testimonialAuthorCompany?: string;
 }
 
 const FALLBACK_PROJECTS: PortfolioItem[] = [
@@ -26,7 +36,13 @@ const FALLBACK_PROJECTS: PortfolioItem[] = [
     imageUrl: null,
     liveUrl: "#",
     repoUrl: null,
-    featured: true
+    featured: true,
+    customerName: "GlobalTrade Inc.",
+    industry: "FinTech",
+    quantifiedResults: ["+38% processing speed", "99.999% uptime achieved", "-15% infrastructure cost"],
+    testimonialQuote: "The new architecture completely transformed our ability to handle peak trading hours.",
+    testimonialAuthorName: "Sarah Jenkins",
+    testimonialAuthorTitle: "CTO"
   },
   {
     id: 2,
@@ -37,7 +53,13 @@ const FALLBACK_PROJECTS: PortfolioItem[] = [
     imageUrl: null,
     liveUrl: null,
     repoUrl: "#",
-    featured: false
+    featured: false,
+    customerName: "HealthFirst Regional",
+    industry: "Healthcare",
+    quantifiedResults: ["85% prediction accuracy", "2,000+ hours saved annually"],
+    testimonialQuote: "The insights provided by the dashboard have allowed us to optimize staffing efficiently.",
+    testimonialAuthorName: "Dr. James Chen",
+    testimonialAuthorTitle: "Chief Medical Officer"
   },
   {
     id: 3,
@@ -48,7 +70,13 @@ const FALLBACK_PROJECTS: PortfolioItem[] = [
     imageUrl: null,
     liveUrl: "#",
     repoUrl: null,
-    featured: false
+    featured: false,
+    customerName: "Luxe Apparel",
+    industry: "Retail",
+    quantifiedResults: ["40% increase in mobile conversions", "+25% session duration"],
+    testimonialQuote: "Our customers love the AR try-on. It's been a massive differentiator for our brand.",
+    testimonialAuthorName: "Elena Rodriguez",
+    testimonialAuthorTitle: "VP of Digital"
   }
 ];
 
@@ -100,7 +128,7 @@ export default function Portfolio() {
             transition={{ delay: 0.1 }}
             className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto"
           >
-            Explore how we've helped enterprises transform their operations through cutting-edge technology.
+            Explore how we&apos;ve helped enterprises transform their operations through cutting-edge technology.
           </motion.p>
         </div>
       </section>
@@ -135,6 +163,32 @@ export default function Portfolio() {
                           {tech}
                         </span>
                       ))}
+                    </div>
+
+                    <div className="bg-background/50 border border-white/5 rounded-xl p-4 mb-6 relative">
+                      {project.quantifiedResults && project.quantifiedResults.length > 0 ? (
+                        <ul className="space-y-2 mb-4">
+                          {project.quantifiedResults.map((res, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm text-foreground/80">
+                              <span className="text-brand-accent mt-0.5">•</span>
+                              <span className="font-semibold">{res}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="text-sm font-semibold text-brand-accent mb-4 border border-brand-accent/20 bg-brand-accent/5 px-3 py-2 rounded-lg inline-block">
+                          Impact Metrics Coming Soon
+                        </div>
+                      )}
+
+                      {project.testimonialQuote && (
+                        <div className="border-t border-border pt-4 mt-2">
+                          <p className="text-sm italic text-foreground/70 mb-2">&quot;{project.testimonialQuote}&quot;</p>
+                          <p className="text-xs font-semibold text-foreground/90">
+                            — {project.testimonialAuthorName}{project.testimonialAuthorTitle && `, ${project.testimonialAuthorTitle}`}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                   

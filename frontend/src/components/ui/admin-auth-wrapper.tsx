@@ -26,7 +26,7 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
         if (isLoginPage) {
           router.replace("/admin");
         }
-      } catch (error) {
+      } catch (_error) {
         if (!isLoginPage) {
           router.replace("/admin/login");
         }

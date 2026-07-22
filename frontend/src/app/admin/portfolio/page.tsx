@@ -1,25 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { Plus, Edit2, Trash2, ExternalLink, X, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface Portfolio {
-  id: number;
-  title: string;
-  summary: string;
-  description: string;
-  techStack: string[];
-  imageUrl: string | null;
-  liveUrl: string | null;
-  repoUrl: string | null;
-  featured: boolean;
-}
+import { useQueryClient } from "@tanstack/react-query";
+import { usePortfolio, PortfolioItem as Portfolio } from "@/hooks/queries/usePortfolio";
 
 export default function AdminPortfolio() {
-  const [items, setItems] = useState<Portfolio[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const { data: items = [], isLoading: loading } = usePortfolio();
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Portfolio | null>(null);
 
@@ -31,27 +22,19 @@ export default function AdminPortfolio() {
     imageUrl: "",
     liveUrl: "",
     repoUrl: "",
-    featured: false
+    featured: false,
+    customerName: "",
+    customerLogo: "",
+    industry: "",
+    problemStatement: "",
+    solutionSummary: "",
+    quantifiedResults: [],
+    testimonialQuote: "",
+    testimonialAuthorName: "",
+    testimonialAuthorTitle: ""
   });
   const [techInput, setTechInput] = useState("");
-
-  const fetchItems = async () => {
-    try {
-      const res = await apiFetch("/api/v1/portfolio");
-      if (res.ok) {
-        const data = await res.json();
-        setItems(data);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
+  const [resultInput, setResultInput] = useState("");
 
   const handleOpenModal = (item?: Portfolio) => {
     if (item) {
@@ -60,10 +43,12 @@ export default function AdminPortfolio() {
     } else {
       setEditingItem(null);
       setFormData({
-        title: "", summary: "", description: "", techStack: [], imageUrl: "", liveUrl: "", repoUrl: "", featured: false
+        title: "", summary: "", description: "", techStack: [], imageUrl: "", liveUrl: "", repoUrl: "", featured: false,
+        customerName: "", customerLogo: "", industry: "", problemStatement: "", solutionSummary: "", quantifiedResults: [], testimonialQuote: "", testimonialAuthorName: "", testimonialAuthorTitle: ""
       });
     }
     setTechInput("");
+    setResultInput("");
     setIsModalOpen(true);
   };
 
@@ -77,6 +62,18 @@ export default function AdminPortfolio() {
 
   const handleRemoveTech = (techToRemove: string) => {
     setFormData(prev => ({ ...prev, techStack: prev.techStack?.filter(t => t !== techToRemove) }));
+  };
+
+  const handleAddResult = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && resultInput.trim() !== '') {
+      e.preventDefault();
+      setFormData(prev => ({ ...prev, quantifiedResults: [...(prev.quantifiedResults || []), resultInput.trim()] }));
+      setResultInput("");
+    }
+  };
+
+  const handleRemoveResult = (resToRemove: string) => {
+    setFormData(prev => ({ ...prev, quantifiedResults: prev.quantifiedResults?.filter(r => r !== resToRemove) }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,7 +91,7 @@ export default function AdminPortfolio() {
         });
       }
       setIsModalOpen(false);
-      fetchItems();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'portfolio'] });
     } catch (err) {
       console.error(err);
     }
@@ -104,7 +101,7 @@ export default function AdminPortfolio() {
     if (confirm("Are you sure you want to delete this project?")) {
       try {
         await apiFetch(`/api/v1/portfolio/${id}`, { method: "DELETE" });
-        fetchItems();
+        queryClient.invalidateQueries({ queryKey: ['admin', 'portfolio'] });
       } catch (err) {
         console.error(err);
       }
@@ -262,6 +259,66 @@ export default function AdminPortfolio() {
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-foreground/70">Live URL</label>
                       <input type="url" value={formData.liveUrl || ''} onChange={e => setFormData({...formData, liveUrl: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
+                    </div>
+                  </div>
+
+                  <hr className="border-border my-4" />
+                  <h3 className="text-sm font-bold text-foreground">Case Study Details</h3>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-foreground/70">Customer Name</label>
+                      <input type="text" value={formData.customerName || ''} onChange={e => setFormData({...formData, customerName: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-foreground/70">Customer Logo URL</label>
+                      <input type="url" value={formData.customerLogo || ''} onChange={e => setFormData({...formData, customerLogo: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-foreground/70">Industry</label>
+                      <input type="text" value={formData.industry || ''} onChange={e => setFormData({...formData, industry: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-foreground/70">Problem Statement</label>
+                    <textarea value={formData.problemStatement || ''} onChange={e => setFormData({...formData, problemStatement: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none h-20 resize-none" />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-foreground/70">Solution Summary</label>
+                    <textarea value={formData.solutionSummary || ''} onChange={e => setFormData({...formData, solutionSummary: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none h-20 resize-none" />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-foreground/70">Quantified Results (Press Enter to add)</label>
+                    <div className="flex flex-col gap-2 mb-2">
+                      {formData.quantifiedResults?.map(res => (
+                        <div key={res} className="bg-brand-accent/10 text-brand-accent border border-brand-accent/20 px-3 py-2 rounded-md text-xs flex items-center justify-between gap-2">
+                          <span>• {res}</span>
+                          <button type="button" onClick={() => handleRemoveResult(res)}><X className="w-4 h-4 hover:text-red-400" /></button>
+                        </div>
+                      ))}
+                    </div>
+                    <input type="text" value={resultInput} onChange={e => setResultInput(e.target.value)} onKeyDown={handleAddResult} placeholder="e.g. +38% conversion rate" className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-foreground/70">Testimonial Quote</label>
+                    <textarea value={formData.testimonialQuote || ''} onChange={e => setFormData({...formData, testimonialQuote: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none h-20 resize-none" />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-foreground/70">Author Name</label>
+                      <input type="text" value={formData.testimonialAuthorName || ''} onChange={e => setFormData({...formData, testimonialAuthorName: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-foreground/70">Author Title</label>
+                      <input type="text" value={formData.testimonialAuthorTitle || ''} onChange={e => setFormData({...formData, testimonialAuthorTitle: e.target.value})} className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:border-brand-accent focus:outline-none" />
                     </div>
                   </div>
                 </form>

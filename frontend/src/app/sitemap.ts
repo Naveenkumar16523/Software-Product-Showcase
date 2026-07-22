@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }));
       return [...routes, ...projectRoutes];
     }
-  } catch (e) {
+  } catch (_e) {
     console.error("Could not fetch portfolio for sitemap");
   }
 

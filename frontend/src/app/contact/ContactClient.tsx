@@ -45,7 +45,8 @@ export default function Contact() {
         body: JSON.stringify({
           name: `${data.firstName} ${data.lastName}`.trim(),
           email: data.email,
-          message: data.message
+          message: data.message,
+          source: 'contact_page'
         })
       });
 

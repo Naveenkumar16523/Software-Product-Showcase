@@ -173,7 +173,7 @@ export default function CustomersClient() {
                   transition={{ duration: 0.5 }}
                 >
                   <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-6 leading-tight">
-                    "{testimonials[activeTestimonial].quote}"
+                    &quot;{testimonials[activeTestimonial].quote}&quot;
                   </h3>
                   <div className="font-semibold text-brand-accent text-lg">{testimonials[activeTestimonial].author}</div>
                   <div className="text-foreground/50">{testimonials[activeTestimonial].role}</div>

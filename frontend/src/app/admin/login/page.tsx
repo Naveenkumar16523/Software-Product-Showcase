@@ -29,7 +29,7 @@ export default function AdminLogin() {
 
       // Success, token is stored in HttpOnly cookie by the backend
       router.push("/admin");
-    } catch (err) {
+    } catch (_err) {
       setError("Invalid email or password.");
     } finally {
       setLoading(false);

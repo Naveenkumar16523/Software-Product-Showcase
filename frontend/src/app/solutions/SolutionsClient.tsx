@@ -107,7 +107,7 @@ export default function SolutionsClient() {
             Tailored <span className="text-brand-accent">Solutions</span>
           </Reveal>
           <Reveal as="p" intensity="subtle" delay={0.1} className="text-xl text-foreground/70 max-w-2xl mx-auto mb-10">
-            Discover how B&Y Technology addresses the unique challenges of your industry with our specialized software suites.
+            Whether you&apos;re looking to optimize supply chains, enhance customer experiences, or secure your infrastructure, we have the expertise to make it happen.
           </Reveal>
         </div>
       </section>
@@ -206,7 +206,7 @@ export default function SolutionsClient() {
         <Reveal as="div" intensity="subtle" className="container mx-auto px-4 max-w-4xl">
             <div className="glass-border rounded-3xl p-12 text-center relative overflow-hidden hover:border-brand-accent/20 transition-colors duration-500">
               <div className="absolute inset-0 bg-gradient-to-r from-brand-accent/5 via-transparent to-brand-accent/5 pointer-events-none"></div>
-              <h2 className="text-3xl font-display font-bold text-foreground mb-4 relative z-10">Don't see your industry?</h2>
+              <h2 className="text-3xl font-display font-bold text-foreground mb-4 relative z-10">Don&apos;t see your industry?</h2>
               <p className="text-foreground/70 mb-8 max-w-xl mx-auto relative z-10">
                 Our platform is highly customizable. Talk to our experts to learn how we can adapt our software to your specific business model.
               </p>

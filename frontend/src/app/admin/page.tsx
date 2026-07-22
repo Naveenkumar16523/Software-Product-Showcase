@@ -2,23 +2,29 @@
 
 import { Users, Briefcase, TrendingUp, Activity } from "lucide-react";
 import { motion } from "framer-motion";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, CartesianAxis } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 import { useAdminStats } from "@/hooks/queries/useAdminStats";
 
 const mockChartData = [
-  { name: "Mon", leads: 4 },
-  { name: "Tue", leads: 7 },
-  { name: "Wed", leads: 5 },
-  { name: "Thu", leads: 11 },
-  { name: "Fri", leads: 15 },
-  { name: "Sat", leads: 12 },
-  { name: "Sun", leads: 18 },
+  { name: "W1", leads: 12 },
+  { name: "W2", leads: 18 },
+  { name: "W3", leads: 15 },
+  { name: "W4", leads: 22 },
+  { name: "W5", leads: 25 },
+  { name: "W6", leads: 30 },
+  { name: "W7", leads: 28 },
+  { name: "W8", leads: 35 },
+  { name: "W9", leads: 40 },
+  { name: "W10", leads: 38 },
+  { name: "W11", leads: 45 },
+  { name: "W12", leads: 52 },
 ];
 
 const mockFunnelData = [
   { name: 'Visits', value: 12500, fill: '#333333' },
   { name: 'Demo Requests', value: 850, fill: '#4E85BF' },
   { name: 'Leads', value: 240, fill: '#84cc16' },
+  { name: 'Qualified', value: 110, fill: '#65a30d' },
   { name: 'Closed', value: 45, fill: '#a3e635' },
 ];
 
@@ -66,7 +72,7 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground font-display">Welcome Back</h1>
-        <p className="text-foreground/60 mt-2">Here is what's happening with your platform today.</p>
+        <p className="text-foreground/60 mt-2">Here&apos;s what&apos;s happening across your platform today.</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
@@ -98,9 +104,9 @@ export default function AdminDashboard() {
           <div>
             <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
               <Activity className="w-5 h-5 text-brand-accent" />
-              Lead Engagement (7 Days)
+              Lead Engagement (12 Weeks)
             </h2>
-            <p className="text-sm text-foreground/50 mt-1">Total incoming inquiries over the past week.</p>
+            <p className="text-sm text-foreground/50 mt-1">Total incoming inquiries over the past 12 weeks.</p>
           </div>
         </div>
         
@@ -158,6 +164,7 @@ export default function AdminDashboard() {
                 { name: 'Visits', value: stats.funnel.visits, fill: '#333333' },
                 { name: 'Demo Requests', value: stats.funnel.demoRequests, fill: '#4E85BF' },
                 { name: 'Leads', value: stats.funnel.leads, fill: '#84cc16' },
+                { name: 'Qualified', value: stats.funnel.qualified, fill: '#65a30d' },
                 { name: 'Closed', value: stats.funnel.closed, fill: '#a3e635' }
               ] : mockFunnelData}
               layout="vertical"

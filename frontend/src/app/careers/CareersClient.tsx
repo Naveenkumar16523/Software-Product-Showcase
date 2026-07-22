@@ -29,7 +29,7 @@ export default function Careers() {
             transition={{ delay: 0.1 }}
             className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto"
           >
-            We're always looking for talented individuals who are passionate about building the future of enterprise technology.
+            We&apos;re always looking for talented individuals who are passionate about building the future of enterprise technology.
           </motion.p>
         </div>
       </section>

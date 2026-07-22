@@ -1,41 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { apiFetch } from "@/lib/api";
-import { CheckCircle2, Circle, Clock, Mail, Trash2 } from "lucide-react";
+import { Mail, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
-
-interface Lead {
-  id: number;
-  name: string;
-  email: string;
-  message: string;
-  submittedAt: string;
-  status: "NEW" | "CONTACTED" | "CONVERTED" | "DISMISSED";
-}
+import { useQueryClient } from "@tanstack/react-query";
+import { useLeads } from "@/hooks/queries/useLeads";
 
 export default function AdminLeads() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const { data: leads = [], isLoading: loading } = useLeads();
   const [filter, setFilter] = useState<string>("ALL");
-
-  const fetchLeads = async () => {
-    try {
-      const res = await apiFetch("/api/v1/leads");
-      if (res.ok) {
-        const data = await res.json();
-        setLeads(data.sort((a: Lead, b: Lead) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()));
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLeads();
-  }, []);
 
   const updateStatus = async (id: number, newStatus: string) => {
     try {
@@ -44,7 +19,7 @@ export default function AdminLeads() {
         body: JSON.stringify({ status: newStatus })
       });
       if (res.ok) {
-        fetchLeads(); // Refresh
+        queryClient.invalidateQueries({ queryKey: ['admin', 'leads'] });
       }
     } catch (e) {
       console.error(e);

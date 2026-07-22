@@ -214,9 +214,9 @@ function IndustriesSection() {
           <div className="text-center max-w-3xl mx-auto backdrop-blur-sm bg-background/50 p-8 rounded-3xl border border-white/5 shadow-2xl">
             <h3 className="text-brand-accent font-bold tracking-widest uppercase mb-4 text-sm md:text-base">Tailored Solutions</h3>
             <h2 className="text-4xl md:text-6xl font-display font-extrabold mb-6">Tailored for Your Industry</h2>
-            <p className="text-foreground/70 text-lg md:text-xl">
-              We understand that every business is unique. Our solutions are customized to solve specific industry challenges.
-            </p>
+            <p className="text-xl md:text-2xl font-light text-foreground/90 max-w-4xl mx-auto leading-relaxed">
+            &quot;Your technology stack is the foundation of your business. We don&apos;t just build software; we engineer competitive advantages that last.&quot;
+          </p>
           </div>
         </div>
 
@@ -446,7 +446,7 @@ function TestimonialsSection() {
               <div className="flex text-amber-400 mb-6">
                 {[1,2,3,4,5].map(s => <Star key={s} size={18} fill="currentColor" />)}
               </div>
-              <p className="text-foreground/70 mb-8 italic text-sm md:text-base">"{review.text}"</p>
+              <p className="text-foreground/70 mb-8 italic text-sm md:text-base">&quot;{review.text}&quot;</p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-brand-accent/20 text-brand-accent rounded-full flex items-center justify-center font-bold text-lg shrink-0">
                   {review.name.charAt(0)}

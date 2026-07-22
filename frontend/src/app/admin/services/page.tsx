@@ -1,44 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { Plus, Edit2, Trash2, X, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface Service {
-  id: number;
-  name: string;
-  description: string;
-}
+import { useQueryClient } from "@tanstack/react-query";
+import { useServices, Service } from "@/hooks/queries/useServices";
 
 export default function AdminServices() {
-  const [items, setItems] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const { data: items = [], isLoading: loading } = useServices();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Service | null>(null);
 
   const [formData, setFormData] = useState<Partial<Service>>({
-    name: "",
+    title: "",
     description: "",
   });
-
-  const fetchItems = async () => {
-    try {
-      const res = await apiFetch("/api/v1/services");
-      if (res.ok) {
-        const data = await res.json();
-        setItems(data);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
 
   const handleOpenModal = (item?: Service) => {
     if (item) {
@@ -46,7 +24,7 @@ export default function AdminServices() {
       setFormData(item);
     } else {
       setEditingItem(null);
-      setFormData({ name: "", description: "" });
+      setFormData({ title: "", description: "" });
     }
     setIsModalOpen(true);
   };
@@ -66,7 +44,7 @@ export default function AdminServices() {
         });
       }
       setIsModalOpen(false);
-      fetchItems();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'services'] });
     } catch (err) {
       console.error(err);
     }
@@ -76,7 +54,7 @@ export default function AdminServices() {
     if (confirm("Are you sure you want to delete this service?")) {
       try {
         await apiFetch(`/api/v1/services/${id}`, { method: "DELETE" });
-        fetchItems();
+        queryClient.invalidateQueries({ queryKey: ['admin', 'services'] });
       } catch (err) {
         console.error(err);
       }
@@ -139,7 +117,7 @@ export default function AdminServices() {
                     className="hover:bg-background/30 transition-colors"
                   >
                     <td className="p-4 align-top">
-                      <div className="font-medium text-foreground text-base">{item.name}</div>
+                      <div className="font-medium text-foreground text-base">{item.title}</div>
                     </td>
                     <td className="p-4 align-top">
                       <p className="text-foreground/80 max-w-2xl">{item.description}</p>
@@ -191,8 +169,8 @@ export default function AdminServices() {
                     <input 
                       type="text" 
                       required 
-                      value={formData.name} 
-                      onChange={e => setFormData({...formData, name: e.target.value})} 
+                      value={formData.title} 
+                      onChange={e => setFormData({...formData, title: e.target.value})} 
                       className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
                       placeholder="e.g. Cloud Architecture"
                     />

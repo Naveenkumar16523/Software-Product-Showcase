@@ -10,6 +10,7 @@ export interface DashboardStats {
     visits: number;
     demoRequests: number;
     leads: number;
+    qualified: number;
     closed: number;
   };
 }

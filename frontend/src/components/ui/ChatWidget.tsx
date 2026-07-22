@@ -52,7 +52,7 @@ export function ChatWidget() {
           });
         }
       }
-    } catch (err) {
+    } catch (_err) {
       setMessages(prev => [...prev, { 
         role: 'bot', 
         text: "I'm having trouble connecting to our systems. Please try again later.", 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Reveal, RevealGroup } from "@/components/motion/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { industries as baseIndustries } from "@/lib/data/industries";

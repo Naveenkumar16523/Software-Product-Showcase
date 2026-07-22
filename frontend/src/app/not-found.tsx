@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Receipt, AlertCircle, ArrowLeft } from "lucide-react";
+import { Receipt, ArrowLeft } from "lucide-react";
 import { Scanline } from "@/components/effects/Scanline";
 
 export default function NotFound() {

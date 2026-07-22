@@ -1,8 +1,8 @@
 "use client";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import Image from "next/image";
 import { StatsBlock } from "@/components/ui/stats-block";
-import { Mail, Quote } from "lucide-react";
+import { ArrowRight, MapPin, Phone, Quote } from "lucide-react";
 import { SiX, SiGithub } from "@icons-pack/react-simple-icons";
 
 const SiLinkedin = ({ size = 24 }: { size?: number }) => (
@@ -110,7 +110,7 @@ export default function About() {
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
           <h2 className="text-3xl font-display font-bold mb-6 text-brand-accent relative z-10">Our Mission</h2>
           <p className="text-xl md:text-2xl font-light text-foreground/90 leading-relaxed relative z-10">
-            "To bridge the gap between complex business challenges and elegant, scalable technological solutions. We believe in writing code that not only functions flawlessly today but scales effortlessly tomorrow."
+            &quot;To bridge the gap between complex business challenges and elegant, scalable technological solutions. We believe in writing code that not only functions flawlessly today but scales effortlessly tomorrow.&quot;
           </p>
         </div>
       </section>
@@ -126,7 +126,7 @@ export default function About() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold text-foreground">Our Journey</h2>
-            <p className="text-foreground/60 mt-4 max-w-2xl mx-auto">From a small startup to an enterprise software provider serving thousands of locations globally.</p>
+            <p className="text-foreground/70 mb-8 max-w-2xl mx-auto">Whether you&apos;re looking to transform your enterprise operations or build the next disruptive platform, our team is ready to help.</p>
           </div>
           <Timeline />
         </div>
@@ -195,7 +195,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-display font-bold text-foreground mb-4">Visit Our Headquarters</h2>
-            <p className="text-foreground/60 max-w-2xl mx-auto">We're located in the heart of the tech district. Come say hello or schedule an office tour.</p>
+            <p className="text-foreground/60 max-w-2xl mx-auto">We&apos;re located in the heart of the tech district. Come say hello or schedule an office tour.</p>
           </div>
           <div className="w-full h-[400px] rounded-3xl overflow-hidden border border-white/10 glass-border relative">
             <iframe 
