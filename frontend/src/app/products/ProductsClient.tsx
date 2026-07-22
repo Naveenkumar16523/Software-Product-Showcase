@@ -187,9 +187,12 @@ export default function ProductsClient() {
                     ))}
                   </ul>
 
-                  <div className="pt-8">
+                  <div className="pt-8 flex flex-wrap gap-4">
                       <Link href={`/contact?product=${encodeURIComponent(product.title)}`} className="group inline-flex items-center h-14 px-8 rounded-xl bg-white text-black font-bold hover:bg-brand-accent hover:text-black transition-all duration-300 shadow-xl">
                         Request a Demo <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                      <Link href={`/products/${product.title.toLowerCase().replace(/\s+/g, '-')}`} className="group inline-flex items-center h-14 px-8 rounded-xl bg-surface-2 border border-white/10 text-foreground font-bold hover:bg-white/5 hover:border-brand-accent/50 transition-all duration-300 shadow-lg">
+                        View Product
                       </Link>
                   </div>
                 </div>
