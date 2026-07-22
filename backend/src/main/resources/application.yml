@@ -39,6 +39,20 @@ spring:
     user: sa
     password: 
     locations: classpath:db/empty
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+jwt:
+  secret: ${JWT_SECRET:supersecretkeythatisatleast32byteslongforlocaldev}
 
 logging:
   level:
@@ -67,6 +81,20 @@ spring:
     user: ${DB_USER}
     password: ${DB_PASSWORD}
     locations: classpath:db/postgresql-migration
+  mail:
+    host: ${SMTP_HOST:smtp.example.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USER:user}
+    password: ${SMTP_PASSWORD:pass}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  secret: ${JWT_SECRET}
 
 logging:
   level:

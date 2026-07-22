@@ -6,7 +6,10 @@ import com.bnytechnology.backend.entity.AppUser;
 import com.bnytechnology.backend.mapper.AppUserMapper;
 import com.bnytechnology.backend.repository.AppUserRepository;
 import com.bnytechnology.backend.security.JwtService;
-import jakarta.servlet.http.Cookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.core.env.Environment;
+import java.util.Arrays;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,12 +29,14 @@ public class AuthController {
     private final JwtService jwtService;
     private final AppUserRepository userRepository;
     private final AppUserMapper userMapper;
+    private final Environment env;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, AppUserRepository userRepository, AppUserMapper userMapper) {
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, AppUserRepository userRepository, AppUserMapper userMapper, Environment env) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.env = env;
     }
 
     @PostMapping("/login")
@@ -43,12 +48,15 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String jwt = jwtService.generateToken(userDetails);
 
-        Cookie cookie = new Cookie("auth_token", jwt);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false); // Should be true in prod, false for localhost dev
-        cookie.setPath("/");
-        cookie.setMaxAge(86400); // 1 day
-        response.addCookie(cookie);
+        boolean isProd = Arrays.asList(env.getActiveProfiles()).contains("prod");
+        ResponseCookie cookie = ResponseCookie.from("auth_token", jwt)
+                .httpOnly(true)
+                .secure(isProd)
+                .path("/")
+                .maxAge(86400) // 1 day
+                .sameSite("Strict")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         AppUser user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -58,12 +66,15 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("auth_token", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        boolean isProd = Arrays.asList(env.getActiveProfiles()).contains("prod");
+        ResponseCookie cookie = ResponseCookie.from("auth_token", "")
+                .httpOnly(true)
+                .secure(isProd)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.noContent().build();
     }
 
