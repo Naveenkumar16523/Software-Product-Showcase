@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageSquareText, X, Send, Paperclip, MoreHorizontal, Smile } from "lucide-react";
+import { MessageSquareText, X, Send, MoreHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function ChatWidget() {
@@ -107,10 +107,7 @@ export function ChatWidget() {
 
             {/* Input Area */}
             <div className="p-3 bg-white border-t border-gray-100">
-              <form onSubmit={handleSend} className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-xl p-1 focus-within:border-gray-400 focus-within:ring-1 focus-within:ring-gray-400 transition-all">
-                <button type="button" className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                  <Paperclip size={18} />
-                </button>
+              <form onSubmit={handleSend} className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-xl p-1 pl-3 focus-within:border-gray-400 focus-within:ring-1 focus-within:ring-gray-400 transition-all">
                 <textarea 
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
@@ -124,9 +121,6 @@ export function ChatWidget() {
                   className="flex-1 bg-transparent max-h-24 min-h-[40px] py-2.5 px-1 text-[13px] text-gray-800 focus:outline-none resize-none placeholder:text-gray-400"
                   rows={1}
                 />
-                <button type="button" className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                  <Smile size={18} />
-                </button>
                 <button 
                   type="submit" 
                   disabled={!inputValue.trim()}
