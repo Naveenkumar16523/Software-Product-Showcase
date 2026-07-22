@@ -34,7 +34,7 @@ export default function Footer() {
           WebkitMaskImage: "linear-gradient(180deg, transparent, black 10%, black 70%, transparent)"
         }}>
         <h1
-          className="text-[17vw] leading-[0.7] select-none font-sans font-black text-white/50 tracking-tighter scale-y-110 drop-shadow-[0_0_60px_rgba(255,255,255,0.15)] hover:text-white/50 hover:drop-shadow-[0_0_80px_rgba(163,230,53,0.3)] transition-all duration-700 cursor-default">
+          className="text-[17vw] leading-[0.7] select-none font-sans font-black text-white/10 tracking-tighter scale-y-110 drop-shadow-[0_0_60px_rgba(255,255,255,0.15)] hover:text-white/20 hover:drop-shadow-[0_0_80px_rgba(163,230,53,0.3)] transition-all duration-700 cursor-default">
           B&Y TECH
         </h1>
       </div>
