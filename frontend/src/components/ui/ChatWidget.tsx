@@ -112,10 +112,10 @@ export function ChatWidget() {
             <div className="flex-1 p-5 overflow-y-auto bg-gray-50 flex flex-col gap-4">
               <div className="text-center text-xs text-gray-400 my-2">Today</div>
               
-              {messages.map((msg) => {
+              {messages.map((msg, idx) => {
                 const isUser = msg.role === 'user';
                 return (
-                  <div key={msg.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full`}>
+                  <div key={idx} className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full`}>
                     {!isUser && (
                       <div className="w-6 h-6 bg-brand-accent rounded-full flex-shrink-0 flex items-center justify-center text-black font-bold text-[10px] mr-2 mt-1">
                         B
