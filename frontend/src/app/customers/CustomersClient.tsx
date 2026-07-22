@@ -2,8 +2,9 @@
 
 import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
-import { ArrowRight, Star, Quote } from "lucide-react";
-
+import { ArrowRight, Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { motion, useInView, animate } from "framer-motion";
 
 const customers = [
   {
@@ -40,11 +41,70 @@ const customers = [
   }
 ];
 
+const testimonials = [
+  {
+    quote: "B&Y Technology completely transformed our retail operations. We scaled from 10 to 50 stores seamlessly without any downtime.",
+    author: "Sarah Jenkins",
+    role: "CTO, National Retail Group",
+    metricValue: 300,
+    metricSuffix: "%",
+    metricText: "ROI in the first 6 months"
+  },
+  {
+    quote: "The unified inventory system saved us countless hours of manual counting. We now have 100% visibility across our entire supply chain.",
+    author: "Michael Chen",
+    role: "VP Operations, StyleHub",
+    metricValue: 40,
+    metricSuffix: "hrs",
+    metricText: "Saved per week on admin tasks"
+  },
+  {
+    quote: "Compliance used to keep me up at night. Since switching to B&Y, audits are a breeze and our stock loss is virtually zero.",
+    author: "Dr. Emily Rostova",
+    role: "Director, City Pharmacy",
+    metricValue: 90,
+    metricSuffix: "%",
+    metricText: "Reduction in stock loss"
+  }
+];
+
+const LOGOS = ["Acme Corp", "GlobalTech", "RetailGiant", "MegaStore", "PharmaPlus", "ElectroMart", "StyleIcon", "FreshFoods"];
+
+function AnimatedCounter({ value, suffix }: { value: number, suffix: string }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      const controls = animate(0, value, {
+        duration: 2,
+        ease: "easeOut",
+        onUpdate: (v) => setDisplayValue(Math.round(v))
+      });
+      return controls.stop;
+    }
+  }, [isInView, value]);
+
+  return <span ref={ref}>{displayValue}{suffix}</span>;
+}
+
 export default function CustomersClient() {
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+
+  const nextTestimonial = () => setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+  const prevTestimonial = () => setActiveTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+
+  // Auto advance carousel
+  useEffect(() => {
+    const timer = setInterval(nextTestimonial, 8000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="bg-background min-h-screen">
       {/* Hero Section */}
-      <section className="pt-32 pb-20 relative overflow-hidden">
+      <section className="pt-32 pb-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-brand-accent/5 to-background z-0"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">
           <Reveal as="h1" intensity="subtle" className="text-5xl md:text-6xl font-display font-extrabold text-foreground mb-6">
@@ -56,28 +116,87 @@ export default function CustomersClient() {
         </div>
       </section>
 
-      {/* Testimonial Feature */}
-      <section className="pb-16 relative z-10">
+      {/* Logo Marquee */}
+      <section className="pb-20 relative z-10 overflow-hidden">
+        <div className="flex whitespace-nowrap opacity-50">
+          <div className="animate-scroll-left inline-flex items-center gap-16 px-8">
+            {LOGOS.map((logo, i) => (
+              <span key={i} className="text-3xl font-display font-bold text-foreground/20 uppercase tracking-widest">{logo}</span>
+            ))}
+          </div>
+          <div className="animate-scroll-left inline-flex items-center gap-16 px-8">
+            {LOGOS.map((logo, i) => (
+              <span key={i + LOGOS.length} className="text-3xl font-display font-bold text-foreground/20 uppercase tracking-widest">{logo}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial Carousel */}
+      <section className="pb-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <Reveal as="div" intensity="subtle" className="glass-border rounded-3xl p-10 md:p-16 max-w-6xl mx-auto bg-brand-accent/5 border-brand-accent/30 relative overflow-hidden">
-            <Quote className="absolute -top-6 -left-6 w-32 h-32 text-brand-accent/10 rotate-180" />
-            <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-              <div>
+          <Reveal as="div" intensity="subtle" className="glass-border rounded-3xl p-10 md:p-16 max-w-6xl mx-auto bg-brand-accent/5 border-brand-accent/30 relative overflow-hidden group">
+            <Quote className="absolute -top-6 -left-6 w-32 h-32 text-brand-accent/10 rotate-180 transition-transform duration-700 group-hover:scale-110" />
+            
+            <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-6 z-20">
+               <button onClick={prevTestimonial} className="w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white hover:bg-brand-accent hover:text-black transition-colors backdrop-blur-md">
+                 <ChevronLeft size={20} />
+               </button>
+            </div>
+            
+            <div className="absolute top-1/2 -translate-y-1/2 right-4 md:right-6 z-20">
+               <button onClick={nextTestimonial} className="w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white hover:bg-brand-accent hover:text-black transition-colors backdrop-blur-md">
+                 <ChevronRight size={20} />
+               </button>
+            </div>
+
+            <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center px-8">
+              <div className="min-h-[250px] flex flex-col justify-center">
                 <div className="flex gap-1 mb-6 text-brand-accent">
-                  {[1, 2, 3, 4, 5].map(star => <Star key={star} className="fill-brand-accent" />)}
+                  {[1, 2, 3, 4, 5].map(star => <Star key={star} className="fill-brand-accent w-5 h-5" />)}
                 </div>
-                <h3 className="text-3xl font-display font-bold text-foreground mb-6 leading-tight">
-                  "B&Y Technology completely transformed our retail operations. We scaled from 10 to 50 stores seamlessly without any downtime."
-                </h3>
-                <div className="font-semibold text-foreground text-lg">Sarah Jenkins</div>
-                <div className="text-foreground/50">CTO, National Retail Group</div>
+                
+                <motion.div
+                  key={activeTestimonial}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-6 leading-tight">
+                    "{testimonials[activeTestimonial].quote}"
+                  </h3>
+                  <div className="font-semibold text-brand-accent text-lg">{testimonials[activeTestimonial].author}</div>
+                  <div className="text-foreground/50">{testimonials[activeTestimonial].role}</div>
+                </motion.div>
               </div>
+              
               <div className="flex justify-center md:justify-end">
-                 <div className="text-center p-8 glass-border rounded-2xl w-full max-w-sm bg-black/40">
-                    <div className="text-6xl font-extrabold text-brand-accent mb-2">300%</div>
-                    <div className="text-foreground/80 font-medium">ROI in the first 6 months</div>
-                 </div>
+                 <motion.div 
+                    key={`metric-${activeTestimonial}`}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, type: "spring" }}
+                    className="text-center p-10 glass-border rounded-3xl w-full max-w-sm bg-black/40 border-t border-l border-white/10 shadow-2xl relative overflow-hidden"
+                 >
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/20 to-transparent opacity-20"></div>
+                    <div className="text-6xl md:text-7xl font-extrabold text-brand-accent mb-4 drop-shadow-[0_0_15px_rgba(163,230,53,0.3)]">
+                      <AnimatedCounter value={testimonials[activeTestimonial].metricValue} suffix={testimonials[activeTestimonial].metricSuffix} />
+                    </div>
+                    <div className="text-foreground/80 font-medium text-lg uppercase tracking-wider text-xs">{testimonials[activeTestimonial].metricText}</div>
+                 </motion.div>
               </div>
+            </div>
+            
+            {/* Carousel Dots */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+               {testimonials.map((_, idx) => (
+                 <button 
+                   key={idx}
+                   onClick={() => setActiveTestimonial(idx)}
+                   className={`w-2 h-2 rounded-full transition-all duration-300 ${activeTestimonial === idx ? 'w-6 bg-brand-accent' : 'bg-white/20'}`}
+                 />
+               ))}
             </div>
           </Reveal>
         </div>
@@ -86,25 +205,28 @@ export default function CustomersClient() {
       {/* Case Studies Grid */}
       <section className="pb-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
+          <div className="mb-12 text-center">
+             <h2 className="text-3xl font-bold">Deep Dive Case Studies</h2>
+          </div>
           <RevealGroup stagger={0.1} className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {customers.map((customer, i) => (
-              <Reveal as="div" intensity="subtle" key={i} className="glass-border rounded-2xl overflow-hidden flex flex-col md:flex-row group hover:shadow-[0_0_30px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 transition-all duration-300 bg-white/5 hover:bg-white/10">
-                <div className="md:w-1/3 bg-black/60 group-hover:bg-brand-accent/10 transition-colors text-foreground flex flex-col items-center justify-center p-8 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="text-5xl font-display font-extrabold text-white group-hover:text-brand-accent transition-colors mb-2 relative z-10">{customer.logo}</div>
-                  <div className="text-xs font-bold opacity-70 uppercase tracking-widest text-center relative z-10">{customer.industry}</div>
+              <Reveal as="div" intensity="subtle" key={i} className="glass-border rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:shadow-[0_0_40px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 transition-all duration-500 bg-surface hover:bg-surface-2">
+                <div className="md:w-2/5 bg-black/60 group-hover:bg-brand-accent/10 transition-colors text-foreground flex flex-col items-center justify-center p-8 relative overflow-hidden min-h-[200px]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="text-6xl font-display font-extrabold text-white group-hover:text-brand-accent transition-colors duration-500 mb-2 relative z-10 drop-shadow-md">{customer.logo}</div>
+                  <div className="text-xs font-bold opacity-50 uppercase tracking-widest text-center relative z-10 group-hover:opacity-100 transition-opacity">{customer.industry}</div>
                 </div>
-                <div className="md:w-2/3 p-8 flex flex-col relative z-10">
-                  <h2 className="text-2xl font-bold text-foreground mb-4 group-hover:text-brand-accent transition-colors">{customer.name}</h2>
-                  <div className="mb-4">
-                    <span className="text-xs font-bold text-foreground/40 uppercase tracking-wider">The Challenge</span>
-                    <p className="text-foreground/80 mt-1">{customer.challenge}</p>
+                <div className="md:w-3/5 p-8 flex flex-col relative z-10">
+                  <h2 className="text-2xl font-bold text-foreground mb-6 group-hover:text-brand-accent transition-colors">{customer.name}</h2>
+                  <div className="mb-5 border-l-2 border-red-500/30 pl-4">
+                    <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1 block">The Challenge</span>
+                    <p className="text-foreground/80 text-sm leading-relaxed">{customer.challenge}</p>
                   </div>
-                  <div className="mb-6 flex-grow">
-                    <span className="text-xs font-bold text-foreground/40 uppercase tracking-wider">The Result</span>
-                    <p className="text-brand-accent font-semibold mt-1">{customer.result}</p>
+                  <div className="mb-6 border-l-2 border-brand-accent/50 pl-4 flex-grow">
+                    <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1 block">The Result</span>
+                    <p className="text-white font-semibold text-sm leading-relaxed">{customer.result}</p>
                   </div>
-                  <Link href={`/customers`} className="inline-flex items-center text-foreground font-semibold group-hover:text-brand-accent transition-colors mt-auto">
+                  <Link href={`/customers/${customer.name.toLowerCase().replace(' ', '-')}`} className="inline-flex items-center text-sm text-foreground/60 font-semibold group-hover:text-brand-accent transition-colors mt-auto pt-4 border-t border-white/5">
                     Read Full Story <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
