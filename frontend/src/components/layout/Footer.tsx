@@ -30,11 +30,11 @@ export default function Footer() {
       {/* Giant Brand Text */}
       <div className="text-center w-full mb-20 pr-4 pl-4"
         style={{
-          maskImage: "linear-gradient(180deg, transparent, black 0%, black 55%, transparent)",
-          WebkitMaskImage: "linear-gradient(180deg, transparent, black 0%, black 55%, transparent)"
+          maskImage: "linear-gradient(180deg, transparent, black 10%, black 70%, transparent)",
+          WebkitMaskImage: "linear-gradient(180deg, transparent, black 10%, black 70%, transparent)"
         }}>
         <h1
-          className="text-[17vw] leading-[0.7] select-none font-sans font-black text-[#141414] tracking-tighter mix-blend-screen scale-y-110">
+          className="text-[17vw] leading-[0.7] select-none font-sans font-black text-white/10 tracking-tighter scale-y-110 drop-shadow-[0_0_60px_rgba(255,255,255,0.15)] hover:text-white/20 hover:drop-shadow-[0_0_80px_rgba(163,230,53,0.3)] transition-all duration-700 cursor-default">
           B&Y TECH
         </h1>
       </div>
