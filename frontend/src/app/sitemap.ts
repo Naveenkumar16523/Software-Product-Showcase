@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1/portfolio");
     if (res.ok) {
       const projects = await res.json();
-      const projectRoutes = projects.map((project: any) => ({
+      const projectRoutes = projects.map((project: { id: string, title: string }) => ({
         url: `${baseUrl}/portfolio/${project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         lastModified: new Date(),
         changeFrequency: 'monthly' as const,

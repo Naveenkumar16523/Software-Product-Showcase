@@ -56,7 +56,7 @@ export const LogoMarquee = () => {
           <div ref={row1Ref} className="flex">
             {[...defaultLogos, ...defaultLogos].map((logo, i) => (
               <div key={i} className="mx-8 md:mx-12 shrink-0 glass-border px-6 py-3 rounded-lg flex items-center justify-center min-w-[160px]">
-                <span className="text-xl font-display font-bold text-foreground/40 hover:text-brand-accent transition-colors">
+                <span className="text-xl font-display font-bold text-foreground/50 hover:text-brand-accent transition-colors">
                   {logo}
                 </span>
               </div>
@@ -73,7 +73,7 @@ export const LogoMarquee = () => {
           <div ref={row2Ref} className="flex">
             {[...[...defaultLogos].reverse(), ...[...defaultLogos].reverse()].map((logo, i) => (
               <div key={i} className="mx-8 md:mx-12 shrink-0 glass-border px-6 py-3 rounded-lg flex items-center justify-center min-w-[160px]">
-                <span className="text-xl font-display font-bold text-foreground/40 hover:text-brand-accent transition-colors">
+                <span className="text-xl font-display font-bold text-foreground/50 hover:text-brand-accent transition-colors">
                   {logo}
                 </span>
               </div>

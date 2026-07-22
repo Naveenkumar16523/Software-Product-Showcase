@@ -106,9 +106,9 @@ export default function IndustriesClient() {
                     <div>
                       <div className="flex justify-between items-start mb-6">
                         <div className="text-brand-accent group-hover:scale-110 transition-transform duration-300 inline-block bg-surface-2 p-3 rounded-2xl border border-white/5 shadow-inner">
-                          {React.cloneElement(ind.icon as React.ReactElement<any>, { size: 32 })}
+                          {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 32 })}
                         </div>
-                        <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] uppercase tracking-wider font-bold text-foreground/40">
+                        <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] uppercase tracking-wider font-bold text-foreground/50">
                           {ind.category}
                         </div>
                       </div>

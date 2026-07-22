@@ -188,12 +188,12 @@ export default function PricingClient() {
                       <Check className="w-5 h-5 text-brand-accent mr-3 shrink-0" />
                       <Tooltip content={feat.tooltip}>
                         <span className="border-b border-dashed border-white/20 cursor-help">{feat.name}</span>
-                        <Info className="w-3.5 h-3.5 text-foreground/30 ml-2 mt-0.5" />
+                        <Info className="w-3.5 h-3.5 text-foreground/50 ml-2 mt-0.5" />
                       </Tooltip>
                     </li>
                   ))}
                   {plan.missing.map((feat, j) => (
-                    <li key={`missing-${j}`} className="flex items-start text-foreground/30 text-sm">
+                    <li key={`missing-${j}`} className="flex items-start text-foreground/50 text-sm">
                       <X className="w-5 h-5 mr-3 shrink-0" />
                       <span>{feat}</span>
                     </li>
@@ -264,21 +264,21 @@ export default function PricingClient() {
                              
                              <div className="text-center flex justify-center items-center">
                                {typeof feature.starter === "boolean" 
-                                 ? (feature.starter ? <Check className="w-5 h-5 text-brand-accent" /> : <X className="w-5 h-5 text-foreground/20" />)
+                                 ? (feature.starter ? <Check className="w-5 h-5 text-brand-accent" /> : <X className="w-5 h-5 text-foreground/50" />)
                                  : <span className="text-sm text-foreground/70">{feature.starter}</span>
                                }
                              </div>
                              
                              <div className="text-center flex justify-center items-center">
                                {typeof feature.pro === "boolean" 
-                                 ? (feature.pro ? <Check className="w-5 h-5 text-brand-accent" /> : <X className="w-5 h-5 text-foreground/20" />)
+                                 ? (feature.pro ? <Check className="w-5 h-5 text-brand-accent" /> : <X className="w-5 h-5 text-foreground/50" />)
                                  : <span className="text-sm text-brand-accent font-semibold">{feature.pro}</span>
                                }
                              </div>
                              
                              <div className="text-center flex justify-center items-center">
                                {typeof feature.enterprise === "boolean" 
-                                 ? (feature.enterprise ? <Check className="w-5 h-5 text-brand-accent" /> : <X className="w-5 h-5 text-foreground/20" />)
+                                 ? (feature.enterprise ? <Check className="w-5 h-5 text-brand-accent" /> : <X className="w-5 h-5 text-foreground/50" />)
                                  : <span className="text-sm text-foreground/70">{feature.enterprise}</span>
                                }
                              </div>

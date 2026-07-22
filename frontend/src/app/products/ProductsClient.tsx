@@ -15,7 +15,7 @@ function ProductMockup({ index }: { index: number }) {
       <div className="w-full h-full bg-[#0a0a0a] rounded-xl border border-white/10 p-4 flex flex-col gap-2 relative overflow-hidden group-hover:shadow-[0_0_40px_rgba(163,230,53,0.1)] transition-all duration-700">
         <div className="flex justify-between items-center pb-2 border-b border-white/5">
           <div className="flex gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-red-500/50"></div><div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div><div className="w-2.5 h-2.5 rounded-full bg-green-500/50"></div></div>
-          <div className="text-[10px] text-white/30 font-mono">B&Y_POS_v2.4</div>
+          <div className="text-[10px] text-white/50 font-mono">B&Y_POS_v2.4</div>
         </div>
         <div className="flex-1 grid grid-cols-3 gap-2 mt-2">
           <div className="col-span-2 grid grid-cols-2 gap-2">
@@ -54,7 +54,7 @@ function ProductMockup({ index }: { index: number }) {
                <div className="text-sm font-bold text-white">128</div>
              </div>
              <div className="w-1/3 h-12 rounded-lg bg-white/5 border border-white/10 flex flex-col justify-center px-3">
-               <div className="text-[9px] text-white/40">In Transit</div>
+               <div className="text-[9px] text-white/50">In Transit</div>
                <div className="text-sm font-bold text-white">3,040</div>
              </div>
           </div>
@@ -88,7 +88,7 @@ function ProductMockup({ index }: { index: number }) {
                   className="w-1/2 h-full bg-brand-accent"
                 />
              </div>
-             <div className="text-[10px] text-white/40 font-mono">Syncing enterprise modules...</div>
+             <div className="text-[10px] text-white/50 font-mono">Syncing enterprise modules...</div>
            </div>
         </div>
      );

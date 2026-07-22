@@ -163,7 +163,7 @@ function IndustriesSection() {
   const column1Ref = useRef<HTMLDivElement>(null);
   const column2Ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const [selectedIndustry, setSelectedIndustry] = useState<any>(null);
+  const [selectedIndustry, setSelectedIndustry] = useState<(typeof industries)[number] | null>(null);
 
   useGSAP(() => {
     if (reduce || window.innerWidth < 768) return;
@@ -202,8 +202,8 @@ function IndustriesSection() {
 
   }, { scope: sectionRef, dependencies: [reduce] });
 
-  // Add random rotations using useMemo so they don't change on re-render
-  const rotations = React.useMemo(() => industries.map(() => Math.random() * 10 - 5), []);
+  // Add pseudo-random rotations using useMemo and array index so they don't change on re-render and match server/client
+  const rotations = React.useMemo(() => industries.map((_, idx) => ((idx * 7) % 10) - 5), []);
 
   return (
     <>
@@ -235,7 +235,7 @@ function IndustriesSection() {
                         style={{ transform: `rotate(${rotations[i]}deg)` }}
                       >
                          <div className="w-20 h-20 bg-brand-accent/10 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                           {React.cloneElement(ind.icon as React.ReactElement<any>, { size: 40 })}
+                           {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 40 })}
                          </div>
                          <h3 className="text-2xl font-bold">{ind.title}</h3>
                       </div>
@@ -252,7 +252,7 @@ function IndustriesSection() {
                         style={{ transform: `rotate(${rotations[i + 3]}deg)` }}
                       >
                          <div className="w-20 h-20 bg-brand-accent/10 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                           {React.cloneElement(ind.icon as React.ReactElement<any>, { size: 40 })}
+                           {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 40 })}
                          </div>
                          <h3 className="text-2xl font-bold">{ind.title}</h3>
                       </div>
@@ -289,7 +289,7 @@ function IndustriesSection() {
               </button>
               
               <div className="w-24 h-24 bg-brand-accent/10 text-brand-accent rounded-3xl flex items-center justify-center mb-8">
-                {React.cloneElement(selectedIndustry.icon as React.ReactElement<any>, { size: 48 })}
+                {React.cloneElement(selectedIndustry.icon as React.ReactElement<{ size?: number }>, { size: 48 })}
               </div>
               
               <h3 className="text-3xl md:text-5xl font-display font-bold mb-6 text-foreground">{selectedIndustry.title}</h3>
@@ -340,7 +340,7 @@ function WhyChooseUsSection() {
                   {/* Content */}
                   <div className="relative z-10 flex flex-col items-center gap-4">
                     <div className="text-foreground/50 group-hover:text-brand-accent transition-colors duration-300">
-                      {React.cloneElement(f.icon as React.ReactElement<any>, { size: 32, strokeWidth: 1.5 })}
+                      {React.cloneElement(f.icon as React.ReactElement<{ size?: number; strokeWidth?: number }>, { size: 32, strokeWidth: 1.5 })}
                     </div>
                     <h4 className="text-sm md:text-base font-semibold text-foreground text-center">
                       {f.title}

@@ -1,81 +1,60 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, AlertCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-type FormData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  company: string;
-  industry: string;
-  businessSize: string;
-  productInterest: string;
-  message: string;
-};
+const demoSchema = z.object({
+  firstName: z.string().min(2, "First name is required"),
+  lastName: z.string().min(2, "Last name is required"),
+  email: z.string().email("Valid work email is required"),
+  phone: z.string().min(10, "Valid phone number is required"),
+  company: z.string().min(2, "Company name is required"),
+  industry: z.string().min(1, "Please select an industry"),
+  businessSize: z.string().min(1, "Please select business size"),
+  productInterest: z.string().min(1, "Please select a product"),
+  message: z.string().optional(),
+  botField: z.string().optional(), // Honeypot field
+});
+
+type DemoFormData = z.infer<typeof demoSchema>;
 
 export default function RequestDemoPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<DemoFormData>({
+    resolver: zodResolver(demoSchema),
+  });
+  
   const [isSuccess, setIsSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
-  
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    company: "",
-    industry: "",
-    businessSize: "",
-    productInterest: "",
-    message: "",
-  });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
-
-  const validate = (): boolean => {
-    const newErrors: Partial<Record<keyof FormData, string>> = {};
-    if (!formData.firstName || formData.firstName.length < 2) newErrors.firstName = "First name is required";
-    if (!formData.lastName || formData.lastName.length < 2) newErrors.lastName = "Last name is required";
-    if (!formData.email || !/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = "Valid work email is required";
-    if (!formData.phone || formData.phone.length < 10) newErrors.phone = "Valid phone number is required";
-    if (!formData.company || formData.company.length < 2) newErrors.company = "Company name is required";
-    if (!formData.industry) newErrors.industry = "Please select an industry";
-    if (!formData.businessSize) newErrors.businessSize = "Please select business size";
-    if (!formData.productInterest) newErrors.productInterest = "Please select a product";
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-    
-    setIsSubmitting(true);
+  const onSubmit = async (data: DemoFormData) => {
     setServerError("");
+    
+    // Honeypot check: If bot fills this, silently fail client-side
+    if (data.botField) {
+      console.log("Spam detected.");
+      setIsSuccess(true);
+      return;
+    }
     
     try {
       const compiledMessage = `
-Company: ${formData.company}
-Phone: ${formData.phone}
-Industry: ${formData.industry}
-Size: ${formData.businessSize}
-Interest: ${formData.productInterest}
-Message: ${formData.message || 'No additional message'}
+Company: ${data.company}
+Phone: ${data.phone}
+Industry: ${data.industry}
+Size: ${data.businessSize}
+Interest: ${data.productInterest}
+Message: ${data.message || 'No additional message'}
       `;
 
-      const response = await fetch("http://localhost:8080/api/v1/demo-requests", {
+      const response = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1/demo-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
+          name: `${data.firstName} ${data.lastName}`,
+          email: data.email,
           message: compiledMessage,
         }),
       });
@@ -85,10 +64,9 @@ Message: ${formData.message || 'No additional message'}
       }
 
       setIsSuccess(true);
-    } catch (err: any) {
-      setServerError(err.message || "An unexpected error occurred.");
-    } finally {
-      setIsSubmitting(false);
+      reset();
+    } catch (err) {
+      setServerError((err as Error).message || "An unexpected error occurred.");
     }
   };
 
@@ -148,48 +126,55 @@ Message: ${formData.message || 'No additional message'}
                 <h2 className="text-2xl font-bold text-foreground mb-8">Schedule Free Demo</h2>
                 
                 {serverError && (
-                  <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 border border-red-100 text-sm font-medium">
+                  <div className="bg-red-500/10 text-red-500 p-4 rounded-lg mb-6 border border-red-500/20 text-sm font-medium flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                     {serverError}
                   </div>
                 )}
                 
-                <form onSubmit={onSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  {/* Honeypot Field */}
+                  <div className="hidden" aria-hidden="true">
+                    <label>Do not fill this out if you are human</label>
+                    <input type="text" {...register("botField")} tabIndex={-1} autoComplete="off" />
+                  </div>
+
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-foreground/80">First Name <span className="text-red-500">*</span></label>
-                      <input name="firstName" value={formData.firstName} onChange={handleChange} className={`w-full px-4 py-3 rounded-lg border ${errors.firstName ? 'border-red-500' : 'border-border'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent`} />
-                      {errors.firstName && <p className="text-red-500 text-xs">{errors.firstName}</p>}
+                      <input {...register("firstName")} className={`w-full px-4 py-3 rounded-lg border ${errors.firstName ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-brand-accent focus:border-brand-accent'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 transition-colors`} />
+                      {errors.firstName && <p className="text-red-500 text-xs">{errors.firstName.message}</p>}
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-foreground/80">Last Name <span className="text-red-500">*</span></label>
-                      <input name="lastName" value={formData.lastName} onChange={handleChange} className={`w-full px-4 py-3 rounded-lg border ${errors.lastName ? 'border-red-500' : 'border-border'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent`} />
-                      {errors.lastName && <p className="text-red-500 text-xs">{errors.lastName}</p>}
+                      <input {...register("lastName")} className={`w-full px-4 py-3 rounded-lg border ${errors.lastName ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-brand-accent focus:border-brand-accent'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 transition-colors`} />
+                      {errors.lastName && <p className="text-red-500 text-xs">{errors.lastName.message}</p>}
                     </div>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-foreground/80">Work Email <span className="text-red-500">*</span></label>
-                      <input type="email" name="email" value={formData.email} onChange={handleChange} className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-border'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent`} />
-                      {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
+                      <input type="email" {...register("email")} className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-brand-accent focus:border-brand-accent'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 transition-colors`} />
+                      {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-foreground/80">Phone Number <span className="text-red-500">*</span></label>
-                      <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500' : 'border-border'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent`} />
-                      {errors.phone && <p className="text-red-500 text-xs">{errors.phone}</p>}
+                      <input type="tel" {...register("phone")} className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-brand-accent focus:border-brand-accent'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 transition-colors`} />
+                      {errors.phone && <p className="text-red-500 text-xs">{errors.phone.message}</p>}
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-foreground/80">Company Name <span className="text-red-500">*</span></label>
-                    <input name="company" value={formData.company} onChange={handleChange} className={`w-full px-4 py-3 rounded-lg border ${errors.company ? 'border-red-500' : 'border-border'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent`} />
-                    {errors.company && <p className="text-red-500 text-xs">{errors.company}</p>}
+                    <input {...register("company")} className={`w-full px-4 py-3 rounded-lg border ${errors.company ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-brand-accent focus:border-brand-accent'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 transition-colors`} />
+                    {errors.company && <p className="text-red-500 text-xs">{errors.company.message}</p>}
                   </div>
 
                   <div className="grid sm:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-foreground/80">Industry <span className="text-red-500">*</span></label>
-                      <select name="industry" value={formData.industry} onChange={handleChange} className={`w-full px-4 py-3 rounded-lg border ${errors.industry ? 'border-red-500' : 'border-border'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent`}>
+                      <select {...register("industry")} className={`w-full px-4 py-3 rounded-lg border ${errors.industry ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-brand-accent focus:border-brand-accent'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 transition-colors`}>
                         <option value="">Select...</option>
                         <option value="Supermarket">Supermarket</option>
                         <option value="Fashion">Fashion & Apparel</option>
@@ -197,41 +182,41 @@ Message: ${formData.message || 'No additional message'}
                         <option value="Electronics">Electronics</option>
                         <option value="Other">Other</option>
                       </select>
-                      {errors.industry && <p className="text-red-500 text-xs">{errors.industry}</p>}
+                      {errors.industry && <p className="text-red-500 text-xs">{errors.industry.message}</p>}
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-foreground/80">Business Size <span className="text-red-500">*</span></label>
-                      <select name="businessSize" value={formData.businessSize} onChange={handleChange} className={`w-full px-4 py-3 rounded-lg border ${errors.businessSize ? 'border-red-500' : 'border-border'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent`}>
+                      <select {...register("businessSize")} className={`w-full px-4 py-3 rounded-lg border ${errors.businessSize ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-brand-accent focus:border-brand-accent'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 transition-colors`}>
                         <option value="">Select...</option>
                         <option value="1-10">1-10 stores</option>
                         <option value="11-50">11-50 stores</option>
                         <option value="51-200">51-200 stores</option>
                         <option value="200+">200+ stores</option>
                       </select>
-                      {errors.businessSize && <p className="text-red-500 text-xs">{errors.businessSize}</p>}
+                      {errors.businessSize && <p className="text-red-500 text-xs">{errors.businessSize.message}</p>}
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-foreground/80">Interest <span className="text-red-500">*</span></label>
-                      <select name="productInterest" value={formData.productInterest} onChange={handleChange} className={`w-full px-4 py-3 rounded-lg border ${errors.productInterest ? 'border-red-500' : 'border-border'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent`}>
+                      <select {...register("productInterest")} className={`w-full px-4 py-3 rounded-lg border ${errors.productInterest ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-brand-accent focus:border-brand-accent'} bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 transition-colors`}>
                         <option value="">Select...</option>
                         <option value="POS">POS Software</option>
                         <option value="ERP">ERP Solution</option>
                         <option value="CRM">Retail CRM</option>
                         <option value="Full Suite">Full Suite</option>
                       </select>
-                      {errors.productInterest && <p className="text-red-500 text-xs">{errors.productInterest}</p>}
+                      {errors.productInterest && <p className="text-red-500 text-xs">{errors.productInterest.message}</p>}
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-foreground/80">Additional Information</label>
-                    <textarea name="message" value={formData.message} onChange={handleChange} rows={3} className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent resize-none" placeholder="Tell us about your current challenges..."></textarea>
+                    <textarea {...register("message")} rows={3} className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-brand-accent resize-none transition-colors" placeholder="Tell us about your current challenges..."></textarea>
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-brand-accent text-black font-bold py-4 rounded-lg hover:bg-brand-accent/90 transition-colors disabled:opacity-70 text-lg shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
+                    className="w-full bg-brand-accent text-black font-bold py-4 rounded-lg hover:bg-brand-accent/90 transition-all disabled:opacity-50 disabled:pointer-events-none text-lg shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)] active:scale-[0.99]"
                   >
                     {isSubmitting ? "Submitting Request..." : "Schedule Free Demo"}
                   </button>

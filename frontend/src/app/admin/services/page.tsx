@@ -112,7 +112,7 @@ export default function AdminServices() {
         {items.length === 0 ? (
           <div className="col-span-full p-16 flex flex-col items-center justify-center text-center">
             <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-6 border border-border">
-              <Plus className="w-8 h-8 text-foreground/40" />
+              <Plus className="w-8 h-8 text-foreground/50" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">No services offered yet</h3>
             <p className="text-foreground/50 max-w-md">

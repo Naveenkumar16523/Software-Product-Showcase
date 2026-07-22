@@ -15,10 +15,10 @@ const SiLinkedin = ({ size = 24 }: { size?: number }) => (
 import { useRef } from "react";
 
 const TEAM = [
-  { name: "Jane Doe", role: "CEO & Founder", bio: "Former VP of Engineering at RetailTech with 15+ years of enterprise software experience.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
-  { name: "John Smith", role: "CTO", bio: "Architect of scalable cloud systems handling millions of daily transactions.", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
-  { name: "Alice Johnson", role: "Lead Designer", bio: "Award-winning UX designer obsessed with creating frictionless digital experiences.", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
-  { name: "Bob Williams", role: "Head of Engineering", bio: "Open source contributor and AI enthusiast leading our machine learning initiatives.", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" }
+  { name: "Jane Doe", role: "CEO & Founder", bio: "Former VP of Engineering at RetailTech with 15+ years of enterprise software experience.", image: "/images/team/ceo.png" },
+  { name: "John Smith", role: "CTO", bio: "Architect of scalable cloud systems handling millions of daily transactions.", image: "/images/team/cto.png" },
+  { name: "Alice Johnson", role: "Lead Designer", bio: "Award-winning UX designer obsessed with creating frictionless digital experiences.", image: "/images/team/designer.png" },
+  { name: "Bob Williams", role: "Head of Engineering", bio: "Open source contributor and AI enthusiast leading our machine learning initiatives.", image: "/images/team/engineer.png" }
 ];
 
 const MILESTONES = [
@@ -64,7 +64,7 @@ function Timeline() {
             className={`flex items-center gap-8 ${idx % 2 === 0 ? 'flex-row-reverse' : ''}`}
           >
             <div className={`w-1/2 ${idx % 2 === 0 ? 'text-left pl-8 md:pl-12' : 'text-right pr-8 md:pr-12'}`}>
-              <div className="text-4xl font-display font-black text-white/20 mb-2">{milestone.year}</div>
+              <div className="text-4xl font-display font-black text-white/50 mb-2">{milestone.year}</div>
               <h3 className="text-2xl font-bold text-foreground mb-3">{milestone.title}</h3>
               <p className="text-foreground/70 leading-relaxed">{milestone.desc}</p>
             </div>
@@ -188,6 +188,24 @@ export default function About() {
                 </motion.div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+      <section className="py-20 relative bg-surface-2 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-display font-bold text-foreground mb-4">Visit Our Headquarters</h2>
+            <p className="text-foreground/60 max-w-2xl mx-auto">We're located in the heart of the tech district. Come say hello or schedule an office tour.</p>
+          </div>
+          <div className="w-full h-[400px] rounded-3xl overflow-hidden border border-white/10 glass-border relative">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.2528000654!2d-74.14448744577884!3d40.69763123330689!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1714488053531!5m2!1sen!2sus" 
+              className="absolute inset-0 w-full h-full" 
+              style={{ border: 0 }} 
+              allowFullScreen={true} 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </div>
       </section>

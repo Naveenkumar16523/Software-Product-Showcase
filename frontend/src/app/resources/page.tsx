@@ -29,7 +29,7 @@ export default async function ResourcesPage() {
   }
 
   // Filter only PUBLISHED posts if we fetched any
-  const publishedPosts = fetchedPosts.filter((post: any) => post.status === "PUBLISHED");
+  const publishedPosts = fetchedPosts.filter((post: { id: string; status: string; [key: string]: unknown }) => post.status === "PUBLISHED");
 
   return (
     <div className="bg-background min-h-screen pt-20 pb-24">
@@ -67,7 +67,7 @@ export default async function ResourcesPage() {
         <h3 className="text-2xl font-bold text-foreground mb-8 font-display">Latest Content</h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {publishedPosts.length > 0 ? (
-            publishedPosts.map((post: any, i: number) => (
+            publishedPosts.map((post: { id: string; title?: string; slug?: string; excerpt?: string; publishedAt?: string; [key: string]: unknown }, i: number) => (
               <Link key={post.id || i} href={`/resources/${post.slug || post.id}`} className="glass-border p-8 rounded-2xl hover:shadow-[0_0_20px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 hover:bg-white/5 transition-all group flex flex-col relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/10 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110 blur-xl"></div>
                 <div className="text-brand-accent mb-6 bg-brand-accent/10 border border-brand-accent/20 w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform relative z-10">

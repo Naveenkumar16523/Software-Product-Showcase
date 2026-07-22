@@ -90,7 +90,7 @@ export default function AdminLeads() {
         {filteredLeads.length === 0 ? (
           <div className="p-16 flex flex-col items-center justify-center text-center">
             <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-6 border border-border">
-              <Mail className="w-8 h-8 text-foreground/40" />
+              <Mail className="w-8 h-8 text-foreground/50" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">No leads yet</h3>
             <p className="text-foreground/50 max-w-md">
@@ -150,7 +150,7 @@ export default function AdminLeads() {
                     </td>
                     <td className="p-4 align-top text-right">
                       {/* Optional: Add a delete button or view details button */}
-                      <button className="text-foreground/40 hover:text-red-400 transition-colors p-1">
+                      <button className="text-foreground/50 hover:text-red-400 transition-colors p-1">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>

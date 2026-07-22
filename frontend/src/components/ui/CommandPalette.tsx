@@ -42,10 +42,10 @@ export function CommandPalette() {
           shouldFilter={true}
         >
           <div className="flex items-center border-b border-border px-4 py-3">
-            <Search className="w-5 h-5 text-foreground/40 mr-3 shrink-0" />
+            <Search className="w-5 h-5 text-foreground/50 mr-3 shrink-0" />
             <Command.Input 
               autoFocus
-              className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-foreground/40 text-lg" 
+              className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-foreground/50 text-lg" 
               placeholder="Type a command or search..." 
             />
             <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded bg-surface-2 px-2 font-mono text-[10px] font-medium text-foreground/60 border border-border">

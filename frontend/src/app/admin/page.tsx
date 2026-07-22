@@ -2,7 +2,7 @@
 
 import { Users, Briefcase, TrendingUp, Activity } from "lucide-react";
 import { motion } from "framer-motion";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, CartesianAxis } from "recharts";
 import { useAdminStats } from "@/hooks/queries/useAdminStats";
 
 const mockChartData = [
@@ -13,6 +13,13 @@ const mockChartData = [
   { name: "Fri", leads: 15 },
   { name: "Sat", leads: 12 },
   { name: "Sun", leads: 18 },
+];
+
+const mockFunnelData = [
+  { name: 'Visits', value: 12500, fill: '#333333' },
+  { name: 'Demo Requests', value: 850, fill: '#4E85BF' },
+  { name: 'Leads', value: 240, fill: '#84cc16' },
+  { name: 'Closed', value: 45, fill: '#a3e635' },
 ];
 
 export default function AdminDashboard() {
@@ -123,6 +130,53 @@ export default function AdminDashboard() {
                 animationDuration={2000}
               />
             </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </motion.div>
+
+      {/* Conversion Funnel */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-surface border border-border rounded-xl p-6 mt-8"
+      >
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <Activity className="w-5 h-5 text-brand-accent" />
+              Conversion Funnel
+            </h2>
+            <p className="text-sm text-foreground/50 mt-1">Lead scoring and conversion tracking from visits to closed deals.</p>
+          </div>
+        </div>
+        
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart 
+              data={stats.funnel ? [
+                { name: 'Visits', value: stats.funnel.visits, fill: '#333333' },
+                { name: 'Demo Requests', value: stats.funnel.demoRequests, fill: '#4E85BF' },
+                { name: 'Leads', value: stats.funnel.leads, fill: '#84cc16' },
+                { name: 'Closed', value: stats.funnel.closed, fill: '#a3e635' }
+              ] : mockFunnelData}
+              layout="vertical"
+              margin={{ top: 10, right: 30, left: 40, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={false} />
+              <XAxis type="number" stroke="#666" tick={{ fill: '#888', fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" stroke="#ccc" tick={{ fill: '#ccc', fontSize: 13, fontWeight: 'bold' }} axisLine={false} tickLine={false} width={120} />
+              <Tooltip 
+                cursor={{ fill: '#ffffff0a' }}
+                contentStyle={{ backgroundColor: '#141414', borderColor: '#333', borderRadius: '8px' }}
+                itemStyle={{ color: '#fff' }}
+              />
+              <Bar dataKey="value" radius={[0, 4, 4, 0]} animationDuration={2000} barSize={40}>
+                {mockFunnelData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </motion.div>

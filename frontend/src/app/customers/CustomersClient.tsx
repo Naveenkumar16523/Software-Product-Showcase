@@ -2,6 +2,7 @@
 
 import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView, animate } from "framer-motion";
@@ -10,34 +11,42 @@ const customers = [
   {
     name: "FreshMart",
     industry: "Supermarkets",
-    logo: "FM",
+    logo: "/images/logos/freshmart.png",
     challenge: "Frequent stockouts and high spoilage rates due to manual inventory tracking.",
     solution: "Implemented B&Y ERP with real-time inventory and predictive ordering.",
     result: "45% increase in inventory turnover and 30% reduction in spoilage.",
+    roi: "3.2x",
+    timeframe: "6 months"
   },
   {
     name: "StyleHub",
     industry: "Fashion & Apparel",
-    logo: "SH",
+    logo: "/images/logos/stylehub.png",
     challenge: "Disconnected online and offline systems leading to poor customer experience.",
     solution: "Unified Omnichannel POS and CRM integration.",
     result: "2x omnichannel revenue and a 40% increase in customer loyalty program engagement.",
+    roi: "4.5x",
+    timeframe: "12 months"
   },
   {
     name: "City Pharmacy",
     industry: "Healthcare",
-    logo: "CP",
+    logo: "/images/logos/citypharmacy.png",
     challenge: "Struggled with compliance and tracking near-expiry medications across 20 branches.",
     solution: "Pharmacy-specific module with automated batch tracking and alerts.",
     result: "Zero compliance violations in 2 years and 90% reduction in expired stock losses.",
+    roi: "2.8x",
+    timeframe: "8 months"
   },
   {
     name: "ElectroWorld",
     industry: "Electronics",
-    logo: "EW",
+    logo: "/images/logos/electroworld.png",
     challenge: "Inefficient warranty management and repair ticketing system.",
     solution: "Custom CRM with serial number tracking and integrated ticketing.",
     result: "Customer satisfaction score (CSAT) improved from 3.2 to 4.8 out of 5.",
+    roi: "5.1x",
+    timeframe: "4 months"
   }
 ];
 
@@ -121,12 +130,12 @@ export default function CustomersClient() {
         <div className="flex whitespace-nowrap opacity-50">
           <div className="animate-scroll-left inline-flex items-center gap-16 px-8">
             {LOGOS.map((logo, i) => (
-              <span key={i} className="text-3xl font-display font-bold text-foreground/20 uppercase tracking-widest">{logo}</span>
+              <span key={i} className="text-3xl font-display font-bold text-foreground/50 uppercase tracking-widest">{logo}</span>
             ))}
           </div>
           <div className="animate-scroll-left inline-flex items-center gap-16 px-8">
             {LOGOS.map((logo, i) => (
-              <span key={i + LOGOS.length} className="text-3xl font-display font-bold text-foreground/20 uppercase tracking-widest">{logo}</span>
+              <span key={i + LOGOS.length} className="text-3xl font-display font-bold text-foreground/50 uppercase tracking-widest">{logo}</span>
             ))}
           </div>
         </div>
@@ -213,17 +222,25 @@ export default function CustomersClient() {
               <Reveal as="div" intensity="subtle" key={i} className="glass-border rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:shadow-[0_0_40px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 transition-all duration-500 bg-surface hover:bg-surface-2">
                 <div className="md:w-2/5 bg-black/60 group-hover:bg-brand-accent/10 transition-colors text-foreground flex flex-col items-center justify-center p-8 relative overflow-hidden min-h-[200px]">
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <div className="text-6xl font-display font-extrabold text-white group-hover:text-brand-accent transition-colors duration-500 mb-2 relative z-10 drop-shadow-md">{customer.logo}</div>
+                  <div className="text-6xl font-display font-extrabold text-white group-hover:text-brand-accent transition-colors duration-500 mb-2 relative z-10 drop-shadow-md">
+                    <Image src={customer.logo} alt={`${customer.name} logo`} width={80} height={80} className="object-contain" />
+                  </div>
                   <div className="text-xs font-bold opacity-50 uppercase tracking-widest text-center relative z-10 group-hover:opacity-100 transition-opacity">{customer.industry}</div>
                 </div>
                 <div className="md:w-3/5 p-8 flex flex-col relative z-10">
-                  <h2 className="text-2xl font-bold text-foreground mb-6 group-hover:text-brand-accent transition-colors">{customer.name}</h2>
+                  <div className="flex justify-between items-start mb-6">
+                    <h2 className="text-2xl font-bold text-foreground group-hover:text-brand-accent transition-colors">{customer.name}</h2>
+                    <div className="text-right">
+                      <div className="text-2xl font-black text-brand-accent">{customer.roi}</div>
+                      <div className="text-[10px] uppercase tracking-widest text-foreground/50">ROI in {customer.timeframe}</div>
+                    </div>
+                  </div>
                   <div className="mb-5 border-l-2 border-red-500/30 pl-4">
-                    <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1 block">The Challenge</span>
+                    <span className="text-[10px] font-bold text-foreground/50 uppercase tracking-widest mb-1 block">The Challenge</span>
                     <p className="text-foreground/80 text-sm leading-relaxed">{customer.challenge}</p>
                   </div>
                   <div className="mb-6 border-l-2 border-brand-accent/50 pl-4 flex-grow">
-                    <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1 block">The Result</span>
+                    <span className="text-[10px] font-bold text-foreground/50 uppercase tracking-widest mb-1 block">The Result</span>
                     <p className="text-white font-semibold text-sm leading-relaxed">{customer.result}</p>
                   </div>
                   <Link href={`/customers/${customer.name.toLowerCase().replace(' ', '-')}`} className="inline-flex items-center text-sm text-foreground/60 font-semibold group-hover:text-brand-accent transition-colors mt-auto pt-4 border-t border-white/5">

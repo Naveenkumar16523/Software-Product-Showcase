@@ -3,23 +3,38 @@ import { motion } from "framer-motion";
 import { Circle, CheckCircle2, AlertCircle } from "lucide-react";
 import React, { useState } from "react";
 
+import Image from "next/image";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const contactSchema = z.object({
+  firstName: z.string().min(2, "First name is required"),
+  lastName: z.string().min(2, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+  botField: z.string().optional()
+});
+
+type ContactFormValues = z.infer<typeof contactSchema>;
+
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    message: ""
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: { firstName: "", lastName: "", email: "", message: "" }
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("loading");
+  const onSubmit = async (data: ContactFormValues) => {
+    setStatus("idle");
+    
+    // Honeypot check
+    if (data.botField) {
+      console.log("Spam detected.");
+      setStatus("success");
+      return;
+    }
     
     try {
       const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1/leads", {
@@ -28,9 +43,9 @@ export default function Contact() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          name: `${formData.firstName} ${formData.lastName}`.trim(),
-          email: formData.email,
-          message: formData.message
+          name: `${data.firstName} ${data.lastName}`.trim(),
+          email: data.email,
+          message: data.message
         })
       });
 
@@ -39,7 +54,7 @@ export default function Contact() {
       }
 
       setStatus("success");
-      setFormData({ firstName: "", lastName: "", email: "", message: "" });
+      reset();
     } catch (err) {
       console.error(err);
       setStatus("error");
@@ -50,23 +65,19 @@ export default function Contact() {
   return (
     <div className="flex min-h-[calc(100vh-4rem)] w-full bg-background text-foreground selection:bg-brand-accent/30 p-2 transition-all duration-500 lg:overflow-hidden lg:p-4">
       {/* Left Column (Hero) */}
-      <div className="hidden lg:flex w-[52%] relative flex-col items-center justify-end pb-32 px-12 rounded-2xl overflow-hidden shadow-2xl h-full min-h-[600px] border border-border bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center">
-        <video
-          className="absolute inset-0 w-full h-full object-cover opacity-70 hue-rotate-180 contrast-125 saturate-150 motion-reduce:hidden"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
-        >
-          <source
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260506_081238_406ed0e3-5d83-436e-a512-0bbff7ec5b95.mp4"
-            type="video/mp4"
-          />
-        </video>
+      <div className="hidden lg:flex w-[52%] relative flex-col items-center justify-end pb-32 px-12 rounded-2xl overflow-hidden shadow-2xl h-full min-h-[600px] border border-border">
+        <Image src="/images/hero-bg.png" alt="Hero background" fill className="object-cover absolute inset-0 z-0 opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent z-10" />
         
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+        <div className="relative z-20 text-center w-full max-w-lg">
+          <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 mx-auto border border-white/20 shadow-lg group-hover:scale-110 transition-transform duration-500">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        </div>
 
         <motion.div
           className="z-10 w-full max-w-xs space-y-8"
@@ -129,12 +140,12 @@ export default function Contact() {
         >
           <div>
             <h2 className="text-3xl font-semibold tracking-tight">Get in Touch</h2>
-            <p className="text-foreground/40 text-sm mt-2">
+            <p className="text-foreground/50 text-sm mt-2">
               Input your details and how we can help you begin the journey.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {status === "success" && (
               <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-md flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
@@ -149,30 +160,34 @@ export default function Contact() {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
-              <InputGroup label="First Name" name="firstName" placeholder="John" type="text" value={formData.firstName} onChange={handleChange} required />
-              <InputGroup label="Last Name" name="lastName" placeholder="Doe" type="text" value={formData.lastName} onChange={handleChange} required />
+            {/* Honeypot Field */}
+            <div className="hidden" aria-hidden="true">
+              <label>Do not fill this out if you are human</label>
+              <input type="text" {...register("botField")} tabIndex={-1} autoComplete="off" />
             </div>
-            <InputGroup label="Email" name="email" placeholder="john@example.com" type="email" value={formData.email} onChange={handleChange} required />
+
+            <div className="grid grid-cols-2 gap-4">
+              <InputGroup label="First Name" placeholder="John" type="text" {...register("firstName")} error={errors.firstName?.message} />
+              <InputGroup label="Last Name" placeholder="Doe" type="text" {...register("lastName")} error={errors.lastName?.message} />
+            </div>
+            <InputGroup label="Email" placeholder="john@example.com" type="email" {...register("email")} error={errors.email?.message} />
             
             <div className="space-y-1">
               <label className="text-sm font-medium text-foreground">Message</label>
               <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                className="w-full bg-surface border border-border rounded-md p-4 text-foreground placeholder:text-foreground/20 focus:ring-1 focus:ring-amber-accent focus:border-amber-accent resize-none h-32 focus:outline-none transition-colors"
+                {...register("message")}
+                className={`w-full bg-surface border ${errors.message ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-amber-accent focus:border-amber-accent'} rounded-md p-4 text-foreground placeholder:text-foreground/50 focus:ring-1 resize-none h-32 focus:outline-none transition-colors`}
                 placeholder="How can we help you?"
               ></textarea>
+              {errors.message && <p className="text-xs text-red-500 mt-1">{errors.message.message}</p>}
             </div>
 
             <button
               type="submit"
-              disabled={status === "loading"}
+              disabled={isSubmitting}
               className="w-full h-12 bg-brand-accent text-black font-semibold rounded-md hover:bg-brand-accent/90 active:scale-[0.98] mt-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none"
             >
-              {status === "loading" ? "Sending..." : "Send a message"}
+              {isSubmitting ? "Sending..." : "Send a message"}
             </button>
             
             <div className="text-center mt-6">
@@ -196,7 +211,7 @@ function StepItem({ number, text, active }: { number: number; text: string; acti
     >
       <div
         className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-          active ? "bg-brand-accent text-black" : "bg-border text-foreground/40"
+          active ? "bg-brand-accent text-black" : "bg-border text-foreground/50"
         }`}
       >
         {number}
@@ -206,29 +221,24 @@ function StepItem({ number, text, active }: { number: number; text: string; acti
   );
 }
 
-interface InputGroupProps {
+interface InputGroupProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  name: string;
-  placeholder: string;
-  type: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
+  error?: string;
 }
 
-function InputGroup({ label, name, placeholder, type, value, onChange, required }: InputGroupProps) {
-  return (
-    <div className="space-y-1 flex flex-col w-full relative">
-      <label className="text-sm font-medium text-foreground">{label}</label>
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        required={required}
-        placeholder={placeholder}
-        className="bg-surface border border-border rounded-md h-11 px-4 text-foreground placeholder:text-foreground/20 focus:ring-1 focus:ring-amber-accent focus:border-amber-accent focus:outline-none w-full transition-colors"
-      />
-    </div>
-  );
-}
+const InputGroup = React.forwardRef<HTMLInputElement, InputGroupProps>(
+  ({ label, error, ...props }, ref) => {
+    return (
+      <div className="space-y-1 flex flex-col w-full relative">
+        <label className="text-sm font-medium text-foreground">{label}</label>
+        <input
+          ref={ref}
+          {...props}
+          className={`bg-surface border ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-border focus:ring-amber-accent focus:border-amber-accent'} rounded-md h-11 px-4 text-foreground placeholder:text-foreground/50 focus:ring-1 focus:outline-none w-full transition-colors`}
+        />
+        {error && <span className="text-xs text-red-500 mt-1">{error}</span>}
+      </div>
+    );
+  }
+);
+InputGroup.displayName = "InputGroup";

@@ -60,7 +60,7 @@ export default function AdminLogin() {
           <div className="space-y-1 relative">
             <label className="text-sm font-medium text-foreground">Email</label>
             <div className="relative">
-              <Mail className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40" />
+              <Mail className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/50" />
               <input
                 type="email"
                 value={email}
@@ -75,7 +75,7 @@ export default function AdminLogin() {
           <div className="space-y-1 relative">
             <label className="text-sm font-medium text-foreground">Password</label>
             <div className="relative">
-              <Lock className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40" />
+              <Lock className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/50" />
               <input
                 type="password"
                 value={password}

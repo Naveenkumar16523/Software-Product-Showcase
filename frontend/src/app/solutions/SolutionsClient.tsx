@@ -12,10 +12,10 @@ const solutions = [
     title: "Supermarkets & Grocery",
     desc: "Manage thousands of SKUs, handle high volume checkouts efficiently, and automate restocking.",
     features: [
-      { name: "Batch & Expiry tracking", detail: "Automated alerts for near-expiry items and FEFO (First Expired First Out) stock rotation." },
-      { name: "Fast checkout POS", detail: "Optimized for speed with barcode scanning, scale integration, and offline mode capabilities." },
-      { name: "Weighing scale integration", detail: "Direct communication with deli and produce scales to reduce manual entry errors." },
-      { name: "Vendor management", detail: "Automated PO generation based on predictive par levels and AI forecasting." }
+      { title: "Batch & Expiry tracking", desc: "Automated alerts for near-expiry items and FEFO (First Expired First Out) stock rotation." },
+      { title: "Fast checkout POS", desc: "Optimized for speed with barcode scanning, scale integration, and offline mode capabilities." },
+      { title: "Weighing scale integration", desc: "Direct communication with deli and produce scales to reduce manual entry errors." },
+      { title: "Vendor management", desc: "Automated PO generation based on predictive par levels and AI forecasting." }
     ],
     icon: <ShoppingCart className="w-6 h-6" />,
     imageBg: "from-blue-500/20 to-cyan-500/5"
@@ -25,10 +25,10 @@ const solutions = [
     title: "Fashion & Apparel",
     desc: "Handle complex variants, sizes, colors, and seasonal inventory across multiple stores.",
     features: [
-      { name: "Size & Color matrix", detail: "Intuitive grid interface for creating and managing product variants effortlessly." },
-      { name: "Loyalty programs", detail: "Points-based reward systems, tier levels, and targeted SMS/email marketing." },
-      { name: "Omnichannel syncing", detail: "Real-time stock synchronization between your physical stores and Shopify/WooCommerce." },
-      { name: "Store transfers", detail: "Seamless stock transferring between branches with transit tracking." }
+      { title: "Size & Color matrix", desc: "Intuitive grid interface for creating and managing product variants effortlessly." },
+      { title: "Loyalty programs", desc: "Points-based reward systems, tier levels, and targeted SMS/email marketing." },
+      { title: "Omnichannel syncing", desc: "Real-time stock synchronization between your physical stores and Shopify/WooCommerce." },
+      { title: "Store transfers", desc: "Seamless stock transferring between branches with transit tracking." }
     ],
     icon: <ShirtIcon className="w-6 h-6" />,
     imageBg: "from-purple-500/20 to-pink-500/5"
@@ -38,10 +38,10 @@ const solutions = [
     title: "Pharmacy & Healthcare",
     desc: "Ensure compliance, batch tracking, expiry management, and prescription handling.",
     features: [
-      { name: "FDA Compliance", detail: "Built-in regulatory reporting and compliance checks for controlled substances." },
-      { name: "Substitute medicines", detail: "Smart recommendations for generic alternatives during billing." },
-      { name: "Refrigeration alerts", detail: "Integration with IoT temperature sensors for cold-chain medications." },
-      { name: "Supplier integration", detail: "Direct API connections with major pharmaceutical distributors." }
+      { title: "FDA Compliance", desc: "Built-in regulatory reporting and compliance checks for controlled substances." },
+      { title: "Substitute medicines", desc: "Smart recommendations for generic alternatives during billing." },
+      { title: "Refrigeration alerts", desc: "Integration with IoT temperature sensors for cold-chain medications." },
+      { title: "Supplier integration", desc: "Direct API connections with major pharmaceutical distributors." }
     ],
     icon: <PillIcon className="w-6 h-6" />,
     imageBg: "from-emerald-500/20 to-teal-500/5"
@@ -51,17 +51,17 @@ const solutions = [
     title: "Electronics & Appliances",
     desc: "Track serial numbers, manage warranties, and handle after-sales service requests.",
     features: [
-      { name: "IMEI/Serial tracking", detail: "Trace every individual unit from receiving to point-of-sale and return." },
-      { name: "Warranty management", detail: "Digital warranty cards and automated tracking of coverage periods." },
-      { name: "Repair ticketing", detail: "Built-in service center module to track customer repairs and spare parts." },
-      { name: "Bundle pricing", detail: "Create dynamic combos (e.g. Phone + Case + Insurance) with special pricing." }
+      { title: "IMEI/Serial tracking", desc: "Trace every individual unit from receiving to point-of-sale and return." },
+      { title: "Warranty management", desc: "Digital warranty cards and automated tracking of coverage periods." },
+      { title: "Repair ticketing", desc: "Built-in service center module to track customer repairs and spare parts." },
+      { title: "Bundle pricing", desc: "Create dynamic combos (e.g. Phone + Case + Insurance) with special pricing." }
     ],
     icon: <Smartphone className="w-6 h-6" />,
     imageBg: "from-amber-500/20 to-orange-500/5"
   },
 ];
 
-function Accordion({ feature, isOpen, onClick }: { feature: any, isOpen: boolean, onClick: () => void }) {
+function Accordion({ feature, isOpen, onClick }: { feature: { title: string, desc: string, icon?: React.ReactNode }, isOpen: boolean, onClick: () => void }) {
   return (
     <div className="border border-white/10 rounded-xl overflow-hidden bg-surface-2 transition-colors hover:border-white/20">
       <button 
@@ -69,8 +69,8 @@ function Accordion({ feature, isOpen, onClick }: { feature: any, isOpen: boolean
         onClick={onClick}
       >
         <div className="flex items-center gap-3">
-          <CheckCircle2 className={`w-5 h-5 transition-colors ${isOpen ? 'text-brand-accent' : 'text-foreground/30'}`} />
-          <span className="font-semibold text-foreground">{feature.name}</span>
+          <CheckCircle2 className={`w-5 h-5 transition-colors ${isOpen ? 'text-brand-accent' : 'text-foreground/50'}`} />
+          <span className="font-semibold text-foreground">{feature.title}</span>
         </div>
         <ChevronDown className={`w-5 h-5 text-foreground/50 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -83,7 +83,7 @@ function Accordion({ feature, isOpen, onClick }: { feature: any, isOpen: boolean
             transition={{ duration: 0.3 }}
           >
             <div className="px-5 pb-5 pt-1 pl-13 text-foreground/70 text-sm leading-relaxed border-t border-white/5 mx-5 mt-2 pt-4">
-              {feature.detail}
+              {feature.desc}
             </div>
           </motion.div>
         )}
@@ -119,7 +119,7 @@ export default function SolutionsClient() {
             
             {/* Sidebar Tabs */}
             <div className="lg:w-1/3 flex flex-col gap-2">
-              <div className="text-xs font-bold text-foreground/40 uppercase tracking-widest mb-4 px-4">Select Industry</div>
+              <div className="text-xs font-bold text-foreground/50 uppercase tracking-widest mb-4 px-4">Select Industry</div>
               {solutions.map((sol) => (
                 <button
                   key={sol.id}
@@ -164,7 +164,7 @@ export default function SolutionsClient() {
                   <div className={`h-40 w-full bg-gradient-to-br ${activeSolution.imageBg} relative overflow-hidden flex items-center px-10`}>
                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
                      <div className="relative z-10 p-4 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 text-brand-accent shadow-xl">
-                        {React.cloneElement(activeSolution.icon as React.ReactElement<any>, { size: 40 })}
+                        {React.cloneElement(activeSolution.icon as React.ReactElement<{ size?: number }>, { size: 40 })}
                      </div>
                   </div>
                   

@@ -6,6 +6,12 @@ export interface DashboardStats {
   totalLeads: number;
   newLeadsThisWeek: number;
   totalPortfolio: number;
+  funnel?: {
+    visits: number;
+    demoRequests: number;
+    leads: number;
+    closed: number;
+  };
 }
 
 export function useAdminStats() {

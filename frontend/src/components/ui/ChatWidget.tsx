@@ -6,11 +6,60 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
   const [messages, setMessages] = useState<{role: 'bot' | 'user', text: string, time: string}[]>([
     { role: 'bot', text: 'Hello! Welcome to B & Y Technology. How can our team help you today?', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
   ]);
-  const [inputValue, setInputValue] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+    
+    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    const newUserMsg = { role: 'user' as const, text: inputValue, time };
+    const newMessages = [...messages, newUserMsg];
+    
+    setMessages(newMessages);
+    setInputValue("");
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: newMessages })
+      });
+
+      if (!response.body) throw new Error("No body");
+      
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      
+      setMessages(prev => [...prev, { role: 'bot', text: '', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }]);
+      
+      let done = false;
+      let accumulatedText = "";
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        if (value) {
+          accumulatedText += decoder.decode(value, { stream: true });
+          setMessages(prev => {
+            const copy = [...prev];
+            copy[copy.length - 1] = { ...copy[copy.length - 1], text: accumulatedText };
+            return copy;
+          });
+        }
+      }
+    } catch (err) {
+      setMessages(prev => [...prev, { 
+        role: 'bot', 
+        text: "I'm having trouble connecting to our systems. Please try again later.", 
+        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
+      }]);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -19,21 +68,6 @@ export function ChatWidget() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isOpen]);
-
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
-
-    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    
-    setMessages(prev => [...prev, { role: 'user', text: inputValue, time }]);
-    setInputValue("");
-
-    // Simulate bot response
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'bot', text: "Thank you for your message. A specialist will be with you shortly. In the meantime, feel free to browse our solutions.", time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }]);
-    }, 1500);
-  };
 
   return (
     <div className="fixed bottom-6 right-6 md:left-6 md:right-auto z-[100] font-sans">
@@ -78,10 +112,10 @@ export function ChatWidget() {
             <div className="flex-1 p-5 overflow-y-auto bg-gray-50 flex flex-col gap-4">
               <div className="text-center text-xs text-gray-400 my-2">Today</div>
               
-              {messages.map((msg, idx) => {
+              {messages.map((msg) => {
                 const isUser = msg.role === 'user';
                 return (
-                  <div key={idx} className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full`}>
+                  <div key={msg.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full`}>
                     {!isUser && (
                       <div className="w-6 h-6 bg-brand-accent rounded-full flex-shrink-0 flex items-center justify-center text-black font-bold text-[10px] mr-2 mt-1">
                         B
@@ -97,7 +131,6 @@ export function ChatWidget() {
                       >
                         {msg.text}
                       </div>
-                      <span className="text-[10px] text-gray-400 mt-1 px-1">{msg.time}</span>
                     </div>
                   </div>
                 );

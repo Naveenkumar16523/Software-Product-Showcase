@@ -31,7 +31,7 @@ export default function SupportClient() {
             <input 
               type="text" 
               placeholder="Search for answers, guides, and tutorials..." 
-              className="w-full pl-14 pr-6 py-5 rounded-2xl bg-surface/80 border border-white/10 text-foreground focus:outline-none focus:ring-2 focus:ring-brand-accent placeholder:text-foreground/40 text-lg shadow-[0_0_30px_rgba(163,230,53,0.05)] backdrop-blur-md transition-all duration-300"
+              className="w-full pl-14 pr-6 py-5 rounded-2xl bg-surface/80 border border-white/10 text-foreground focus:outline-none focus:ring-2 focus:ring-brand-accent placeholder:text-foreground/50 text-lg shadow-[0_0_30px_rgba(163,230,53,0.05)] backdrop-blur-md transition-all duration-300"
             />
           </Reveal>
         </div>

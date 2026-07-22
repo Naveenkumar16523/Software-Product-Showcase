@@ -77,7 +77,7 @@ export function ProductScrollyTelling() {
         {/* Layer 1: Hardware */}
         <div className="layer-1 opacity-0 absolute w-64 h-64 border border-white/10 bg-surface-2 rounded-2xl shadow-2xl flex items-center justify-center" 
              style={{ transformStyle: 'preserve-3d', transform: 'scale(0.9) rotateX(12deg) rotateY(-15deg)' }}>
-          <div className="text-foreground/40 font-mono text-sm absolute bottom-4 right-4">NODE_01</div>
+          <div className="text-foreground/50 font-mono text-sm absolute bottom-4 right-4">NODE_01</div>
           <Box size={64} className="text-brand-accent/50" />
         </div>
 

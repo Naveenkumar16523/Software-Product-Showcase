@@ -9,10 +9,13 @@ const words = ["Scale", "Optimize", "Transform"];
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [count, setCount] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   useEffect(() => {
-    setMounted(true);
     let startTime: number | null = null;
     const duration = 2700;
     let animationFrameId: number;

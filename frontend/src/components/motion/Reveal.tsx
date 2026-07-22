@@ -14,7 +14,7 @@ export function Reveal({ children, className, delay = 0, y, as = "div", intensit
   const reduce = useReducedMotion();
   const distance = y ?? (intensity === "bold" ? 32 : 14);
   const duration = intensity === "bold" ? 0.7 : 0.4;
-  const Component = motion[as as keyof typeof motion] as any;
+  const Component = motion[as as keyof typeof motion] as React.ElementType;
 
   return (
     <Component
