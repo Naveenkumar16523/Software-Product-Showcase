@@ -148,13 +148,13 @@ export default function ProductsClient() {
         <div className="container mx-auto px-4">
           <RevealGroup stagger={0.1} className="space-y-32">
             {products.map((product, idx) => (
-              <Reveal 
-                as="div"
-                key={idx}
-                intensity="subtle"
-                id={`product-${idx}`}
-                className={`product-section flex flex-col ${idx % 2 !== 0 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12 pt-8 scroll-mt-32`}
-              >
+              <div id={`product-${idx}`} className="scroll-mt-32">
+                <Reveal 
+                  as="div"
+                  key={idx}
+                  intensity="subtle"
+                  className={`product-section flex flex-col ${idx % 2 !== 0 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12 pt-8`}
+                >
                 {/* Visual Side: Interactive Mockup */}
                 <div className="w-full lg:w-1/2">
                   <div className="relative aspect-[4/3] md:aspect-video rounded-2xl overflow-hidden glass-border p-2 bg-surface/50 group transition-all duration-500">
@@ -194,7 +194,8 @@ export default function ProductsClient() {
                       </Link>
                   </div>
                 </div>
-              </Reveal>
+                </Reveal>
+              </div>
             ))}
           </RevealGroup>
         </div>
