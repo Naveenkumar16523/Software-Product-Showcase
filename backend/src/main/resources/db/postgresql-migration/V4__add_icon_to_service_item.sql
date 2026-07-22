@@ -1,0 +1,1 @@
+ALTER TABLE service_item ADD COLUMN icon VARCHAR(255);
