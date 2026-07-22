@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/industrys")
+@RequestMapping("/api/v1/admin/industries")
 public class IndustryController {
 
     private final IndustryService service;

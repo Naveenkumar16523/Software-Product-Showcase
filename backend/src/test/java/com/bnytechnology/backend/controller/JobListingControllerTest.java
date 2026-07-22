@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -57,13 +58,13 @@ public class JobListingControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getAll_ReturnsPageOfJobListing() throws Exception {
-        Page<JobListingResponse> page = new PageImpl<>(Collections.singletonList(new JobListingResponse()));
-        when(service.findAll(any(Pageable.class))).thenReturn(page);
+    void getAll_ReturnsListOfJobListing() throws Exception {
+        List<JobListingResponse> list = Collections.singletonList(new JobListingResponse());
+        when(service.findAll()).thenReturn(list);
 
-        mockMvc.perform(get("/api/v1/admin/jobs"))
+        mockMvc.perform(get("/api/v1/admin/job-listings"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray());
+                .andExpect(jsonPath("$").isArray());
     }
 
     @Test
