@@ -148,10 +148,9 @@ export default function ProductsClient() {
         <div className="container mx-auto px-4">
           <RevealGroup stagger={0.1} className="space-y-32">
             {products.map((product, idx) => (
-              <div id={`product-${idx}`} className="scroll-mt-32">
+              <div key={idx} id={`product-${idx}`} className="scroll-mt-32">
                 <Reveal 
                   as="div"
-                  key={idx}
                   intensity="subtle"
                   className={`product-section flex flex-col ${idx % 2 !== 0 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12 pt-8`}
                 >
