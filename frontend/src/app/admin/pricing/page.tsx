@@ -16,9 +16,9 @@ const pricingSchema = z.object({
   slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9-]+$/, "Must be lowercase alphanumeric and dashes"),
   priceMonthly: z.number().min(0),
   priceYearly: z.number().min(0),
-  currency: z.string().default("USD"),
-  isFeatured: z.boolean().default(false),
-  displayOrder: z.number().int().default(0),
+  currency: z.string(),
+  isFeatured: z.boolean(),
+  displayOrder: z.number().int(),
 });
 
 type PricingFormData = z.infer<typeof pricingSchema>;
