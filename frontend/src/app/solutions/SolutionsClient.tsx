@@ -3,7 +3,7 @@
 import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ChevronRight, ShoppingCart, ShirtIcon, Smartphone, PillIcon } from "lucide-react";
-import MagneticButton from "@/components/ui/MagneticButton";
+
 
 const industries = [
   {
@@ -83,11 +83,9 @@ export default function SolutionsClient() {
             <p className="text-foreground/70 mb-8 max-w-xl mx-auto relative z-10">
               Our platform is highly customizable. Talk to our experts to learn how we can adapt our software to your specific business model.
             </p>
-            <MagneticButton className="relative z-10">
-              <Link href="/contact" className="inline-flex h-12 items-center justify-center bg-brand-accent text-black px-8 rounded-lg font-bold hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)]">
+              <Link href="/contact" className="relative z-10 inline-flex h-12 items-center justify-center bg-brand-accent text-black px-8 rounded-lg font-bold hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)]">
                 Contact Our Experts
               </Link>
-            </MagneticButton>
           </Reveal>
         </div>
       </section>

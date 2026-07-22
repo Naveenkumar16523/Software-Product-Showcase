@@ -5,9 +5,10 @@ import Link from "next/link";
 import { ArrowRight, Box } from "lucide-react";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import MagneticButton from "@/components/ui/MagneticButton";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
 import { Scanline } from "@/components/effects/Scanline";
-// Removed MagneticCursor import
 
 const Aurora = dynamic(() => import("@/components/effects/Aurora"), { ssr: false });
 
@@ -22,6 +23,22 @@ export const Hero = () => {
   
   // Parallax the Aurora background
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+
+  useGSAP(() => {
+    if (reduce) return;
+    
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    
+    tl.fromTo(".name-reveal", 
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1.2, delay: 0.1 }
+    )
+    .fromTo(".blur-in",
+      { opacity: 0, filter: "blur(10px)", y: 20 },
+      { opacity: 1, filter: "blur(0px)", y: 0, duration: 1, stagger: 0.1 },
+      0.3 // start at 0.3s absolute time
+    );
+  }, { scope: containerRef, dependencies: [reduce] });
 
   const headline = "Empower Your Retail Business with Intelligent Solutions".split(" ");
 
@@ -41,60 +58,40 @@ export const Hero = () => {
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
             
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="inline-flex items-center rounded-full glass-border px-3 py-1 text-sm font-semibold text-brand-accent tracking-wide"
-            >
+            <div className="blur-in inline-flex items-center rounded-full glass-border px-3 py-1 text-xs text-muted uppercase tracking-[0.3em]">
               Enterprise Grade Software
-            </motion.div>
+            </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-extrabold tracking-tight text-foreground leading-[1.1]">
+            <h1 className="name-reveal text-5xl sm:text-6xl lg:text-7xl font-display italic font-bold tracking-tight text-text-primary leading-[1.1]">
               {headline.map((word, i) => (
-                <motion.span
+                <span
                   key={i}
                   className={word === "Intelligent" || word === "Solutions" ? "gradient-text inline-block mr-3" : "inline-block mr-3"}
-                  initial={{ opacity: 0, y: reduce ? 0 : 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.04, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 >
                   {word}
-                </motion.span>
+                </span>
               ))}
             </h1>
             
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="text-xl text-foreground/70 max-w-2xl mx-auto leading-relaxed"
-            >
+            <p className="blur-in text-sm md:text-base text-muted max-w-md mx-auto leading-relaxed">
               Simplify retail operations, optimize inventory management, automate billing, and accelerate business growth with our AI-powered SaaS platform.
-            </motion.p>
+            </p>
             
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-              className="flex flex-col sm:flex-row gap-4 pt-4"
-            >
-              <MagneticButton>
-                <Link href="/products" className="inline-flex h-14 items-center justify-center rounded-lg bg-brand-accent px-8 font-bold text-black transition-colors hover:bg-brand-accent/90 shadow-[0_0_20px_rgba(163,230,53,0.3)] hover:shadow-[0_0_30px_rgba(163,230,53,0.5)]">
-                  <Box className="mr-2 h-5 w-5" />
+            <div className="blur-in flex flex-col sm:flex-row gap-4 pt-4">
+                <Link href="/products" className="inline-flex h-12 items-center justify-center rounded-full bg-brand-accent px-7 py-3.5 text-sm font-bold text-black transition-all hover:bg-brand-accent/90 shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)] hover:scale-105">
+                  <Box className="mr-2 h-4 w-4" />
                   Explore Products
                 </Link>
-              </MagneticButton>
               
-              <MagneticButton>
-                <Link href="/request-demo" className="inline-flex h-14 items-center justify-center rounded-lg glass-border px-8 font-bold text-foreground transition-colors hover:bg-white/10">
-                  Contact Sales <ArrowRight className="ml-2 h-5 w-5" />
+                <Link href="/request-demo" className="inline-flex h-12 items-center justify-center rounded-full border-2 border-brand-accent/50 bg-transparent text-foreground px-7 py-3.5 text-sm font-bold transition-all hover:bg-brand-accent/10 hover:border-brand-accent hover:scale-105">
+                  Contact Sales <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
-              </MagneticButton>
-            </motion.div>
+            </div>
             
           </div>
         </div>
+
+
       </section>
     </>
   );

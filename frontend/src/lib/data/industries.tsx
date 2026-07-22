@@ -1,5 +1,5 @@
 import React from "react";
-import { ShoppingCart, Smartphone } from "lucide-react";
+import { ShoppingCart, Smartphone, Utensils, Car } from "lucide-react";
 
 // Minimal Icons for UI that aren't in lucide-react default
 function ShirtIcon(props: any) {
@@ -15,4 +15,6 @@ export const industries = [
   { title: "Fashion & Apparel", desc: "Handle variants, sizes, colors, and seasonal inventory.", icon: <ShirtIcon /> },
   { title: "Pharmacy", desc: "Batch tracking, expiry management, and compliance made easy.", icon: <PillIcon /> },
   { title: "Electronics", desc: "Serial number tracking and warranty management.", icon: <Smartphone /> },
+  { title: "Restaurants & Cafes", desc: "Streamline orders, tables, and kitchen management seamlessly.", icon: <Utensils /> },
+  { title: "Automotive", desc: "Manage service histories, spare parts, and vehicle sales.", icon: <Car /> },
 ];

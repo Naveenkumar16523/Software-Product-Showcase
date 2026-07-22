@@ -1,10 +1,11 @@
 "use client";
-import { motion, useScroll, useTransform, useReducedMotion, useSpring, useMotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { Hero } from "@/components/home/Hero";
+import LoadingScreen from "@/components/effects/LoadingScreen";
 import { LogoMarquee } from "@/components/effects/LogoMarquee";
-import { ArrowRight, CheckCircle2, ChevronRight, Cloud, Database, Package, Shield, Star, Store, Users, Zap, Cpu, ScanLine, Receipt } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronRight, Cloud, Database, Package, Shield, Star, Store, Users, Zap, Cpu, ScanLine, Receipt, BarChart, X } from "lucide-react";
 import React, { useRef, MouseEvent, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -17,19 +18,28 @@ import { Scanline } from "@/components/effects/Scanline";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <Hero />
-      <LogoMarquee />
-      <ProductsSection />
-      <FeaturesSection />
-      <IndustriesSection />
-      <WhyChooseUsSection />
-      <SuccessStoriesSection />
-      <TestimonialsSection />
-      <StatsSection />
-      <DemoRequestSection />
-    </div>
+    <>
+      <AnimatePresence>
+        {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+      </AnimatePresence>
+      
+      {!isLoading && (
+        <div className="flex flex-col min-h-screen bg-bg">
+          <Hero />
+          <LogoMarquee />
+          <ProductsSection />
+          <IndustriesSection />
+          <WhyChooseUsSection />
+          <SuccessStoriesSection />
+          <TestimonialsSection />
+          <StatsSection />
+          <DemoRequestSection />
+        </div>
+      )}
+    </>
   );
 }
 
@@ -92,52 +102,211 @@ function ProductsSection() {
           <p className="text-lg text-foreground/70">Everything you need to run your retail business efficiently, unified in one powerful ecosystem.</p>
         </Reveal>
         
-        <RevealGroup stagger={0.1} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product, i) => (
-            <Reveal key={i} as="div" intensity="bold">
-              <TiltCard className="w-full h-[480px] group mx-auto p-2 glass-border bg-surface-2 overflow-hidden rounded-md text-foreground cursor-pointer hover:-translate-y-1 transition-transform">
-                <figure className="w-full h-80 group-hover:h-72 transition-all duration-300 p-2 rounded-md relative overflow-hidden">
-                  <div
-                    style={{
-                      background: 'linear-gradient(123.9deg, #0B65ED 1.52%, rgba(0, 0, 0, 0) 68.91%)',
-                    }}
-                    className="absolute top-0 left-0 w-full h-full group-hover:opacity-100 opacity-0 transition-all duration-300"
-                  ></div>
-                  <Image
-                    src={'/og.jpg'}
-                    alt={product.title}
-                    width={600}
-                    height={600}
-                    className="absolute -bottom-1 group-hover:-bottom-5 right-0 h-64 w-[80%] group-hover:border-4 border-4 group-hover:border-[#76aaf82d] rounded-lg object-cover transition-all duration-300"
-                  />
-                  <div className="absolute top-4 left-4 w-12 h-12 glass-border rounded-xl flex items-center justify-center text-brand-accent shadow-sm z-10 group-hover:bg-white/10 transition-colors" style={{ transform: "translateZ(30px)" }}>
+        <RevealGroup stagger={0.1} className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6">
+          {products.map((product, i) => {
+            const spanClass = i % 4 === 0 || i % 4 === 3 ? "md:col-span-7" : "md:col-span-5";
+            return (
+              <Reveal key={i} as="div" intensity="bold" className={spanClass}>
+                <div className="w-full aspect-[4/3] md:aspect-auto md:h-[480px] group relative bg-surface border border-stroke rounded-3xl overflow-hidden text-foreground cursor-pointer flex flex-col justify-end">
+                  
+                  {/* Background Image & Halftone */}
+                  <div className="absolute inset-0 z-0">
+                    <Image
+                      src={'/og.jpg'}
+                      alt={product.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div 
+                      className="absolute inset-0 opacity-20 mix-blend-multiply" 
+                      style={{ backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)", backgroundSize: "4px 4px" }}
+                    ></div>
+                    {/* Hover Backdrop */}
+                    <div className="absolute inset-0 bg-bg/70 opacity-0 group-hover:opacity-100 backdrop-blur-lg transition-all duration-500 z-10 flex flex-col justify-center items-center text-center p-8">
+                       <h3 className="text-2xl font-display font-bold italic mb-4">{product.title}</h3>
+                       <p className="text-muted text-sm">{product.desc}</p>
+                    </div>
+                  </div>
+
+                  {/* Initial Label */}
+                  <div className="absolute top-6 left-6 z-20 w-12 h-12 glass-border rounded-xl flex items-center justify-center text-text-primary shadow-sm group-hover:opacity-0 transition-opacity duration-300">
                     {product.icon}
                   </div>
-                </figure>
-                <article className="p-4 space-y-2 relative" style={{ transform: "translateZ(20px)" }}>
-                  <div className="absolute top-4 right-4 h-8 w-20 bg-brand-accent/20 rounded-md"></div>
-                  <h1 className="text-xl font-semibold capitalize text-foreground mt-2">{product.title}</h1>
-                  <p className="text-base leading-[120%] text-foreground/70 line-clamp-2">
-                    {product.desc}
-                  </p>
-                  <Link
-                    href="/products"
-                    className="text-base text-brand-accent font-normal group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex items-center gap-1 transition-all duration-300"
-                  >
-                    Learn about {product.title}
-                    <ChevronRight className="w-4 h-4" />
-                  </Link>
-                </article>
-              </TiltCard>
-            </Reveal>
-          ))}
+                  
+                  {/* Hover Pill Label */}
+                  <div className="absolute top-6 right-6 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                    <div className="inline-flex items-center rounded-full bg-white text-black px-4 py-2 text-sm font-medium border-accent-gradient shadow-lg">
+                      View — <span className="font-display italic ml-1 font-bold">{product.title}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Bottom Text Area (fades out on hover) */}
+                  <div className="relative z-10 p-6 bg-gradient-to-t from-black/80 to-transparent pt-20 group-hover:opacity-0 transition-opacity duration-300">
+                    <h1 className="text-2xl font-bold text-text-primary">{product.title}</h1>
+                  </div>
+
+                </div>
+              </Reveal>
+            );
+          })}
         </RevealGroup>
       </div>
     </section>
   );
 }
 
-function FeaturesSection() {
+
+
+function IndustriesSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const column1Ref = useRef<HTMLDivElement>(null);
+  const column2Ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const [selectedIndustry, setSelectedIndustry] = useState<any>(null);
+
+  useGSAP(() => {
+    if (reduce || window.innerWidth < 768) return;
+
+    // Pin the text center
+    ScrollTrigger.create({
+      trigger: sectionRef.current,
+      pin: contentRef.current,
+      start: "top top",
+      end: "bottom bottom",
+      pinSpacing: false,
+    });
+
+    // Parallax columns
+    gsap.to(column1Ref.current, {
+      y: () => -(column1Ref.current!.scrollHeight - window.innerHeight),
+      ease: "none",
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+      }
+    });
+
+    gsap.to(column2Ref.current, {
+      y: () => -(column2Ref.current!.scrollHeight - window.innerHeight + 200),
+      ease: "none",
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+      }
+    });
+
+  }, { scope: sectionRef, dependencies: [reduce] });
+
+  // Add random rotations using useMemo so they don't change on re-render
+  const rotations = React.useMemo(() => industries.map(() => Math.random() * 10 - 5), []);
+
+  return (
+    <>
+      <section ref={sectionRef} className="min-h-[300vh] relative bg-background overflow-hidden text-foreground">
+        
+        {/* Layer 1: Pinned Center */}
+        <div ref={contentRef} className="h-screen w-full flex items-center justify-center pointer-events-none z-10 absolute top-0 left-0 px-4">
+          <div className="text-center max-w-3xl mx-auto backdrop-blur-sm bg-background/50 p-8 rounded-3xl border border-white/5 shadow-2xl">
+            <h3 className="text-brand-accent font-bold tracking-widest uppercase mb-4 text-sm md:text-base">Tailored Solutions</h3>
+            <h2 className="text-4xl md:text-6xl font-display font-extrabold mb-6">Tailored for Your Industry</h2>
+            <p className="text-foreground/70 text-lg md:text-xl">
+              We understand that every business is unique. Our solutions are customized to solve specific industry challenges.
+            </p>
+          </div>
+        </div>
+
+        {/* Layer 2: Parallax Columns */}
+        <div className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none pt-[100vh]">
+           <div className="container mx-auto px-4 md:px-6 max-w-[1400px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-40 relative">
+                
+                {/* Column 1 */}
+                <div ref={column1Ref} className="flex flex-col gap-24 items-center md:items-end md:pr-10 pt-24 pointer-events-auto pb-48">
+                   {industries.slice(0, 3).map((ind, i) => (
+                      <div 
+                        key={i} 
+                        onClick={() => setSelectedIndustry(ind)}
+                        className="group w-full max-w-[320px] aspect-square glass-border rounded-3xl p-8 hover:bg-white/10 transition-all cursor-pointer flex flex-col justify-center items-center text-center shadow-xl hover:shadow-[0_0_40px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 hover:scale-105 bg-surface"
+                        style={{ transform: `rotate(${rotations[i]}deg)` }}
+                      >
+                         <div className="w-20 h-20 bg-brand-accent/10 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                           {React.cloneElement(ind.icon as React.ReactElement<any>, { size: 40 })}
+                         </div>
+                         <h3 className="text-2xl font-bold">{ind.title}</h3>
+                      </div>
+                   ))}
+                </div>
+
+                {/* Column 2 */}
+                <div ref={column2Ref} className="flex flex-col gap-32 items-center md:items-start md:pl-10 pt-[30vh] pointer-events-auto pb-48">
+                   {industries.slice(3, 6).map((ind, i) => (
+                      <div 
+                        key={i + 3} 
+                        onClick={() => setSelectedIndustry(ind)}
+                        className="group w-full max-w-[320px] aspect-square glass-border rounded-3xl p-8 hover:bg-white/10 transition-all cursor-pointer flex flex-col justify-center items-center text-center shadow-xl hover:shadow-[0_0_40px_rgba(163,230,53,0.15)] hover:border-brand-accent/50 hover:scale-105 bg-surface"
+                        style={{ transform: `rotate(${rotations[i + 3]}deg)` }}
+                      >
+                         <div className="w-20 h-20 bg-brand-accent/10 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                           {React.cloneElement(ind.icon as React.ReactElement<any>, { size: 40 })}
+                         </div>
+                         <h3 className="text-2xl font-bold">{ind.title}</h3>
+                      </div>
+                   ))}
+                </div>
+
+              </div>
+           </div>
+        </div>
+      </section>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {selectedIndustry && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedIndustry(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-xl p-4 cursor-pointer"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-surface glass-border rounded-3xl p-8 md:p-12 max-w-2xl w-full relative shadow-2xl cursor-default border-brand-accent/20"
+            >
+              <button 
+                onClick={() => setSelectedIndustry(null)}
+                className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors text-foreground/50 hover:text-foreground"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="w-24 h-24 bg-brand-accent/10 text-brand-accent rounded-3xl flex items-center justify-center mb-8">
+                {React.cloneElement(selectedIndustry.icon as React.ReactElement<any>, { size: 48 })}
+              </div>
+              
+              <h3 className="text-3xl md:text-5xl font-display font-bold mb-6 text-foreground">{selectedIndustry.title}</h3>
+              <p className="text-xl text-foreground/70 leading-relaxed mb-10">{selectedIndustry.desc}</p>
+              
+              <Link href="/industries" className="inline-flex h-14 items-center justify-center px-8 bg-brand-accent text-black font-bold rounded-xl hover:bg-brand-accent/90 transition-colors shadow-[0_0_20px_rgba(163,230,53,0.3)]">
+                Explore Solution
+              </Link>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+function WhyChooseUsSection() {
   const features = [
     { title: "Point of Sale", icon: <Store /> },
     { title: "Inventory Management", icon: <Package /> },
@@ -152,113 +321,33 @@ function FeaturesSection() {
   return (
     <section className="py-24 bg-background">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-col md:flex-row gap-12 items-center">
-          <Reveal as="div" intensity="bold" className="md:w-1/3">
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">Powerful Features Out of the Box</h2>
-            <p className="text-foreground/70 mb-8">Our platform is packed with enterprise-grade features designed to streamline every aspect of your operations.</p>
-            <Link href="/products" className="inline-flex items-center text-brand-accent font-semibold hover:text-brand-accent/80 transition-colors">
-              View all features <ArrowRight className="ml-2 w-4 h-4" />
-            </Link>
-          </Reveal>
-          <RevealGroup stagger={0.05} className="md:w-2/3 grid grid-cols-2 md:grid-cols-4 gap-4">
-            {features.map((feature, i) => (
-              <Reveal as="div" intensity="bold" key={i} className="glass-border p-6 rounded-xl flex flex-col items-center text-center hover:bg-white/10 hover:border-white/20 transition-colors group">
-                <div className="text-foreground/40 group-hover:text-brand-accent mb-4 transition-colors">
-                  {feature.icon}
-                </div>
-                <h4 className="font-semibold text-sm text-foreground">{feature.title}</h4>
-              </Reveal>
-            ))}
-          </RevealGroup>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function IndustriesSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollWrapperRef = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-
-  useGSAP(() => {
-    if (reduce || !containerRef.current || !scrollWrapperRef.current) return;
-    
-    // Check if mobile
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
-
-    gsap.to(scrollWrapperRef.current, {
-      x: () => -(scrollWrapperRef.current!.scrollWidth - window.innerWidth),
-      ease: "none",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        pin: true,
-        pinSpacing: true,
-        scrub: 1,
-        invalidateOnRefresh: true,
-        end: () => "+=" + (window.innerWidth * 3)
-      }
-    });
-  }, { scope: containerRef, dependencies: [reduce] });
-
-  return (
-    <section ref={containerRef} className="py-24 bg-surface text-white relative">
-      {/* Grid background removed */}
-      <div className="container mx-auto px-4 md:px-6 relative z-10 mb-16">
-        <Reveal as="div" intensity="bold" className="text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Tailored for Your Industry</h2>
-          <p className="text-foreground/60 text-lg">We understand that every business is unique. Our solutions are customized to solve specific industry challenges.</p>
-        </Reveal>
-      </div>
-      
-      {/* Scroll Wrapper */}
-      <div className="overflow-hidden">
-        <div ref={scrollWrapperRef} className="flex md:flex-row flex-col md:w-[400vw] lg:w-[300vw] w-full px-4 md:px-6 gap-6">
-          {industries.map((ind, i) => (
-            <div key={i} className="industry-card md:w-[80vw] lg:w-[70vw] w-full shrink-0 flex items-center justify-center">
-               <div className="glass-border rounded-2xl p-10 md:p-16 hover:bg-white/10 transition-colors w-full h-full flex flex-col justify-center items-center text-center">
-                  <div className="w-20 h-20 bg-brand-accent text-black rounded-xl flex items-center justify-center mb-8">
-                    {React.cloneElement(ind.icon as React.ReactElement<any>, { size: 40 })}
-                  </div>
-                  <h3 className="text-3xl md:text-4xl font-bold mb-6">{ind.title}</h3>
-                  <p className="text-foreground/60 text-lg md:text-xl mb-10 max-w-2xl">{ind.desc}</p>
-                  <Link href={`/industries`} className="text-lg font-semibold flex items-center hover:text-brand-accent transition-colors">
-                    View Solution <ChevronRight className="w-5 h-5 ml-2" />
-                  </Link>
-               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function WhyChooseUsSection() {
-  const reasons = [
-    { title: "Secure Cloud Platform", icon: <Cloud /> },
-    { title: "Fast Deployment", icon: <Zap /> },
-    { title: "24/7 Support", icon: <Star /> }, // Used star instead of headphones as placeholder
-    { title: "Enterprise Security", icon: <Shield /> },
-    { title: "Scalable Architecture", icon: <Database /> },
-    { title: "Affordable Pricing", icon: <Store /> }, // Used store instead of wallet
-  ];
-
-  return (
-    <section className="py-24 bg-background">
-      <div className="container mx-auto px-4 md:px-6">
         <Reveal as="div" intensity="bold" className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">Why Choose B&Y Technology</h2>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">Powerful Features for Retail</h2>
           <p className="text-foreground/70 text-lg">Built for speed, security, and scale, ensuring your business never stops growing.</p>
         </Reveal>
-        <RevealGroup stagger={0.1} className="grid grid-cols-2 md:grid-cols-3 gap-8">
-           {reasons.map((r, i) => (
-             <Reveal as="div" intensity="bold" key={i} className="flex flex-col items-center text-center space-y-4 p-6 hover:-translate-y-2 transition-transform cursor-default">
-                <div className="w-16 h-16 bg-brand-accent/10 text-brand-accent rounded-full flex items-center justify-center">
-                  {r.icon}
+        
+        <RevealGroup stagger={0.1} className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto">
+           {features.map((f, i) => (
+             <Reveal as="div" intensity="bold" key={i}>
+                <div className="border border-white/5 relative group w-full cursor-pointer aspect-[4/3] grid place-content-center p-6 bg-surface/50 hover:bg-surface rounded-2xl overflow-hidden transition-colors">
+                  
+                  {/* Background Hover Effect (BuyMeCoffee Style) */}
+                  <div 
+                    className="absolute inset-0 w-full h-full scale-150 group-hover:scale-50 opacity-20 group-hover:opacity-0 transition-all duration-700 ease-out pointer-events-none"
+                    style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.15) 2px, transparent 2px)', backgroundSize: '32px 32px' }}
+                  ></div>
+                  
+                  {/* Content */}
+                  <div className="relative z-10 flex flex-col items-center gap-4">
+                    <div className="text-foreground/50 group-hover:text-brand-accent transition-colors duration-300">
+                      {React.cloneElement(f.icon as React.ReactElement<any>, { size: 32, strokeWidth: 1.5 })}
+                    </div>
+                    <h4 className="text-sm md:text-base font-semibold text-foreground text-center">
+                      {f.title}
+                    </h4>
+                  </div>
+                  
                 </div>
-                <h4 className="text-lg font-bold text-foreground">{r.title}</h4>
              </Reveal>
            ))}
         </RevealGroup>
@@ -283,40 +372,49 @@ function SuccessStoriesSection() {
           </Reveal>
         </div>
         
-        <RevealGroup stagger={0.1} className="grid md:grid-cols-2 gap-8">
-          <Reveal as="div" intensity="bold" className="glass-border bg-surface-2 rounded-2xl overflow-hidden shadow-soft flex flex-col md:flex-row group cursor-pointer hover:shadow-hover transition-shadow hover:-translate-y-1">
-            <div className="md:w-2/5 bg-white/5 h-48 md:h-auto relative">
-               <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-foreground font-bold text-2xl group-hover:bg-black/60 transition-colors">
-                 FreshMart
-               </div>
-            </div>
-            <div className="p-8 md:w-3/5">
-              <div className="text-sm text-brand-accent font-bold mb-2">SUPERMARKETS</div>
-              <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-brand-accent transition-colors">How FreshMart increased inventory turnover by 45%</h3>
-              <p className="text-foreground/70 text-sm mb-6 line-clamp-3">
-                By implementing our AI-driven ERP and inventory modules, FreshMart reduced stockouts to near zero across their 50+ locations.
-              </p>
-              <Link href="/customers" className="text-sm font-semibold flex items-center hover:text-brand-accent transition-colors">
-                Read Case Study <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </div>
+        <RevealGroup stagger={0.1} className="flex flex-col gap-4">
+          <Reveal as="div" intensity="bold">
+            <Link href="/customers" className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-4 rounded-[40px] sm:rounded-full bg-surface/30 hover:bg-surface border border-stroke transition-all group">
+              <div className="flex items-center gap-6 w-full sm:w-auto">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-stroke relative overflow-hidden shrink-0">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-text-primary font-bold text-xs group-hover:scale-110 transition-transform">
+                    FM
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted font-bold mb-1 uppercase tracking-wider">Supermarkets</div>
+                  <h3 className="text-lg sm:text-xl font-bold text-text-primary group-hover:text-amber-accent transition-colors">How FreshMart increased inventory turnover by 45%</h3>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 px-4 pb-2 sm:pb-0 w-full sm:w-auto justify-between sm:justify-end">
+                <span className="text-sm text-muted">5 min read</span>
+                <span className="w-10 h-10 rounded-full bg-bg border border-stroke flex items-center justify-center group-hover:border-transparent group-hover:bg-text-primary group-hover:text-bg transition-colors border-accent-gradient">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            </Link>
           </Reveal>
-          <Reveal as="div" intensity="bold" className="glass-border bg-surface-2 rounded-2xl overflow-hidden shadow-soft flex flex-col md:flex-row group cursor-pointer hover:shadow-hover transition-shadow hover:-translate-y-1">
-            <div className="md:w-2/5 bg-white/5 h-48 md:h-auto relative">
-               <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-foreground font-bold text-2xl group-hover:bg-black/60 transition-colors">
-                 StyleHub
-               </div>
-            </div>
-            <div className="p-8 md:w-3/5">
-              <div className="text-sm text-brand-accent font-bold mb-2">FASHION & APPAREL</div>
-              <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-brand-accent transition-colors">StyleHub achieves 2x omnichannel revenue</h3>
-              <p className="text-foreground/70 text-sm mb-6 line-clamp-3">
-                Integrating online and offline sales with our unified POS solution allowed StyleHub to deliver a seamless shopping experience.
-              </p>
-              <Link href="/customers" className="text-sm font-semibold flex items-center hover:text-brand-accent transition-colors">
-                Read Case Study <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </div>
+          
+          <Reveal as="div" intensity="bold">
+            <Link href="/customers" className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-4 rounded-[40px] sm:rounded-full bg-surface/30 hover:bg-surface border border-stroke transition-all group">
+              <div className="flex items-center gap-6 w-full sm:w-auto">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-stroke relative overflow-hidden shrink-0">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-text-primary font-bold text-xs group-hover:scale-110 transition-transform">
+                    SH
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted font-bold mb-1 uppercase tracking-wider">Fashion & Apparel</div>
+                  <h3 className="text-lg sm:text-xl font-bold text-text-primary group-hover:text-amber-accent transition-colors">StyleHub achieves 2x omnichannel revenue</h3>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 px-4 pb-2 sm:pb-0 w-full sm:w-auto justify-between sm:justify-end">
+                <span className="text-sm text-muted">4 min read</span>
+                <span className="w-10 h-10 rounded-full bg-bg border border-stroke flex items-center justify-center group-hover:border-transparent group-hover:bg-text-primary group-hover:text-bg transition-colors border-accent-gradient">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            </Link>
           </Reveal>
         </RevealGroup>
         <div className="mt-8 text-center md:hidden">

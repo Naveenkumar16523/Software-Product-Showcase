@@ -24,8 +24,6 @@ export default function AppNavbar() {
     { name: "Industries", link: "/industries" },
     { name: "Solutions", link: "/solutions" },
     { name: "Customers", link: "/customers" },
-    { name: "Resources", link: "/resources" },
-    { name: "Support", link: "/support" },
     { name: "About Us", link: "/about" },
     { name: "Contact", link: "/contact" },
   ];
@@ -39,14 +37,14 @@ export default function AppNavbar() {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/login" 
-            className="text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
+            className="text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
           >
             Login
           </Link>
           <NavbarButton 
             variant="primary" 
             onClick={() => router.push('/request-demo')}
-            className="bg-brand-accent hover:bg-brand-accent/90 text-black border-none shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
+            className="border-none shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
           >
             Request Demo
           </NavbarButton>
@@ -72,7 +70,7 @@ export default function AppNavbar() {
               key={`mobile-link-${idx}`}
               href={item.link}
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-3 px-4 rounded-md text-foreground/80 hover:bg-surface hover:text-brand-accent transition-colors font-medium"
+              className="block py-3 px-4 rounded-md text-foreground/80 hover:text-brand-accent transition-colors font-medium relative after:content-[''] after:absolute after:-bottom-1 after:left-4 after:h-[2px] after:w-[calc(100%-2rem)] after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
             >
               {item.name}
             </Link>
@@ -81,7 +79,7 @@ export default function AppNavbar() {
             <Link
               href="/admin/login"
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative self-center after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
+              className="py-2 text-sm font-medium text-foreground hover:text-brand-accent transition-colors relative self-center after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
             >
               Login
             </Link>
@@ -91,7 +89,7 @@ export default function AppNavbar() {
                 router.push('/request-demo');
               }}
               variant="primary"
-              className="w-full h-12 bg-brand-accent hover:bg-brand-accent/90 text-black border-none shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
+              className="w-full h-12 border-none shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
             >
               Request Demo
             </NavbarButton>

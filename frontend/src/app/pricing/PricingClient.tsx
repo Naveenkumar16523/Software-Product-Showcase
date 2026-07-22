@@ -3,7 +3,7 @@
 import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { Check, X } from "lucide-react";
-import MagneticButton from "@/components/ui/MagneticButton";
+
 
 const plans = [
   {
@@ -93,11 +93,9 @@ export default function PricingClient() {
                 
                 <div className="mt-auto pt-4">
                   {plan.popular ? (
-                    <MagneticButton className="w-full">
-                      <Link href={plan.href} className="flex justify-center items-center w-full bg-brand-accent text-black px-6 py-4 rounded-xl font-bold hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)]">
+                      <Link href={plan.href} className="w-full flex justify-center items-center bg-brand-accent text-black px-6 py-4 rounded-xl font-bold hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)]">
                         {plan.cta}
                       </Link>
-                    </MagneticButton>
                   ) : (
                     <Link href={plan.href} className="flex justify-center items-center w-full bg-white/5 text-foreground px-6 py-4 rounded-xl font-bold hover:bg-white/10 transition-colors border border-white/10">
                       {plan.cta}

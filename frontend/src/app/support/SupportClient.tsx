@@ -3,7 +3,7 @@
 import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { HelpCircle, Book, MessageCircle, FileText, Ticket, PlayCircle, Search } from "lucide-react";
-import MagneticButton from "@/components/ui/MagneticButton";
+
 
 const supportOptions = [
   { title: "Documentation", desc: "Detailed technical guides and API references.", icon: <Book />, link: "/support" },
@@ -62,11 +62,9 @@ export default function SupportClient() {
               Our dedicated support team is available 24/7 to assist you with any technical issues or account inquiries.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <MagneticButton>
                 <Link href="/contact" className="inline-flex items-center justify-center px-8 h-14 bg-brand-accent text-black font-bold rounded-xl hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)] w-full sm:w-auto">
                   Contact Support
                 </Link>
-              </MagneticButton>
               <Link href="tel:+919941070555" className="inline-flex items-center justify-center px-8 h-14 bg-transparent text-foreground border border-white/20 font-semibold rounded-xl hover:bg-white/10 transition-colors w-full sm:w-auto">
                 Call +91 99410 70555
               </Link>

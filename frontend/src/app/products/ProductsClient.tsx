@@ -3,7 +3,7 @@
 import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import MagneticButton from "@/components/ui/MagneticButton";
+
 import { products } from "@/lib/data/products";
 import React from "react";
 import { ProductScrollyTelling } from "@/components/ui/ProductScrollyTelling";
@@ -71,11 +71,9 @@ export default function ProductsClient() {
                   </ul>
 
                   <div className="pt-6">
-                    <MagneticButton>
                       <Link href={`/products`} className="inline-flex items-center h-12 px-6 rounded-lg bg-brand-accent text-black font-bold hover:bg-brand-accent/90 transition-colors shadow-[0_0_15px_rgba(163,230,53,0.3)]">
                         Explore {product.title} <ArrowRight className="ml-2 w-4 h-4" />
                       </Link>
-                    </MagneticButton>
                   </div>
                 </div>
               </Reveal>

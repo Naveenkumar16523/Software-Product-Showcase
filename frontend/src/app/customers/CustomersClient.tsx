@@ -3,7 +3,7 @@
 import { Reveal, RevealGroup } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ArrowRight, Star, Quote } from "lucide-react";
-import MagneticButton from "@/components/ui/MagneticButton";
+
 
 const customers = [
   {

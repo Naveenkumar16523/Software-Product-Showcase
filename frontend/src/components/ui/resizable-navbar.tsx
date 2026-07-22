@@ -46,7 +46,7 @@ export function NavItems({
         <li key={idx}>
           <Link
             href={item.link}
-            className="text-sm font-medium text-foreground/80 hover:text-brand-accent transition-colors"
+            className="text-sm font-medium text-foreground/80 hover:text-brand-accent transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-brand-accent after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
           >
             {item.name}
           </Link>
