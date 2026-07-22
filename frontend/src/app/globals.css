@@ -88,11 +88,24 @@ svg.lucide {
 }
 
 .glass-border {
-  @apply border border-white/10 bg-white/5 backdrop-blur-md;
+  @apply border border-white/10 bg-white/5 backdrop-blur-md hover:border-brand-accent/30 transition-colors duration-500;
 }
 
 .liquid-glass {
-  @apply border border-white/20 bg-white/10 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+  @apply relative border border-transparent bg-white/10 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+  background-clip: padding-box;
+}
+
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1;
+  margin: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(163, 230, 53, 0.4) 50%, rgba(255,255,255,0.1) 100%);
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
 }
 
 @keyframes scroll-left {

@@ -67,6 +67,8 @@ const jsonLd = {
 import Script from "next/script";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import { CommandPalette } from "@/components/ui/CommandPalette";
+import { FloatingCTA } from "@/components/ui/FloatingCTA";
+import { ChatWidget } from "@/components/ui/ChatWidget";
 import QueryProvider from "@/components/providers/query-provider";
 
 export default function RootLayout({
@@ -94,6 +96,8 @@ export default function RootLayout({
             <Footer />
           </SmoothScrollProvider>
           <CommandPalette />
+          <FloatingCTA />
+          <ChatWidget />
         </QueryProvider>
         
         {gaId && (

@@ -26,6 +26,7 @@ export default function AppNavbar() {
     { name: "Customers", link: "/customers" },
     { name: "About Us", link: "/about" },
     { name: "Contact", link: "/contact" },
+    { name: "Pricing", link: "/pricing" },
   ];
 
   return (

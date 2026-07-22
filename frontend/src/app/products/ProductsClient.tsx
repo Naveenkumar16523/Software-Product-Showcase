@@ -6,7 +6,6 @@ import { ArrowRight } from "lucide-react";
 
 import { products } from "@/lib/data/products";
 import React from "react";
-import { ProductScrollyTelling } from "@/components/ui/ProductScrollyTelling";
 
 export default function ProductsClient() {
   return (
@@ -23,9 +22,6 @@ export default function ProductsClient() {
           </Reveal>
         </div>
       </section>
-
-      {/* GSAP ScrollyTelling Section */}
-      <ProductScrollyTelling />
 
       {/* Products Grid */}
       <section className="pb-32 relative z-10">

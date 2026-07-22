@@ -22,23 +22,51 @@ export default function IndustriesClient() {
         </div>
       </section>
 
-      {/* Grid Section */}
+      {/* Bento Grid Section */}
       <section className="pb-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <RevealGroup stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {industries.map((ind, i) => (
-              <Reveal as="div" intensity="subtle" key={i} className="glass-border rounded-xl p-8 hover:bg-white/5 transition-colors group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-150"></div>
-                <div className="text-brand-accent mb-6 group-hover:scale-110 transition-transform duration-300 inline-block">
-                  {React.cloneElement(ind.icon as React.ReactElement<any>, { size: 32 })}
-                </div>
-                <h2 className="text-2xl font-bold mb-4 text-foreground">{ind.title}</h2>
-                <p className="text-foreground/70 mb-8">{ind.desc}</p>
-                <Link href="/solutions" className="inline-flex items-center text-brand-accent font-semibold group-hover:text-brand-accent/80 transition-colors">
-                  Explore Solution <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Reveal>
-            ))}
+          <RevealGroup stagger={0.1} className="grid grid-cols-1 md:grid-cols-3 auto-rows-[250px] gap-6">
+            {industries.map((ind, i) => {
+              // Bento layout logic for 6 items
+              const bentoClasses = [
+                "md:col-span-2 md:row-span-1", // 0: Wide
+                "md:col-span-1 md:row-span-2", // 1: Tall
+                "md:col-span-1 md:row-span-1", // 2: Standard
+                "md:col-span-1 md:row-span-1", // 3: Standard
+                "md:col-span-2 md:row-span-1", // 4: Wide
+                "md:col-span-1 md:row-span-1", // 5: Standard
+              ];
+              
+              const className = bentoClasses[i % bentoClasses.length];
+
+              return (
+                <Reveal 
+                  as="div" 
+                  intensity="subtle" 
+                  key={i} 
+                  className={`glass-border rounded-2xl p-8 hover:bg-white/5 hover:border-brand-accent/30 transition-all duration-300 group relative overflow-hidden flex flex-col justify-between ${className}`}
+                >
+                  {/* Dynamic border glow on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/0 to-brand-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-brand-accent/10 rounded-full blur-2xl -z-10 group-hover:bg-brand-accent/20 transition-colors duration-500"></div>
+                  
+                  <div>
+                    <div className="text-brand-accent mb-6 group-hover:scale-110 transition-transform duration-300 inline-block bg-surface-2 p-3 rounded-xl border border-white/5">
+                      {React.cloneElement(ind.icon as React.ReactElement<any>, { size: 28 })}
+                    </div>
+                    <h2 className="text-2xl font-bold mb-3 text-foreground tracking-tight">{ind.title}</h2>
+                    <p className="text-foreground/70">{ind.desc}</p>
+                  </div>
+                  
+                  <div className="pt-6 mt-auto">
+                    <Link href="/solutions" className="inline-flex items-center text-sm text-brand-accent font-semibold group-hover:text-brand-accent/80 transition-colors">
+                      Explore Solution <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </Reveal>
+              );
+            })}
           </RevealGroup>
         </div>
       </section>

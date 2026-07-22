@@ -112,9 +112,16 @@ export default function ContactPage() {
 
         {/* Map */}
         <div className="mt-12 bg-black/40 rounded-3xl h-[400px] border border-border flex items-center justify-center relative overflow-hidden shadow-sm">
-           <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-foreground/40 font-bold text-2xl">
-              Google Maps Integration Placeholder
-           </div>
+           <iframe 
+             src="https://maps.google.com/maps?q=No.624,%20Khivraj%20Building,%20Anna%20Salai,%20Chennai-600006&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+             width="100%" 
+             height="100%" 
+             style={{ border: 0 }} 
+             allowFullScreen 
+             loading="lazy" 
+             referrerPolicy="no-referrer-when-downgrade"
+             className="absolute inset-0"
+           ></iframe>
         </div>
       </div>
     </div>
