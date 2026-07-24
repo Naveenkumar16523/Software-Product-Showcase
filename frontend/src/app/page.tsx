@@ -318,12 +318,7 @@ function WhyChooseUsSection() {
                   className="w-full h-full aspect-[4/3] group cursor-pointer"
                 >
                   <div className="w-full h-full grid place-content-center p-6 bg-surface/50 hover:bg-surface rounded-2xl overflow-hidden transition-colors relative">
-                    {/* Background Hover Effect */}
-                    <div 
-                      className="absolute inset-0 w-full h-full scale-150 group-hover:scale-50 opacity-20 group-hover:opacity-0 transition-all duration-700 ease-out pointer-events-none"
-                      style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.15) 2px, transparent 2px)', backgroundSize: '32px 32px' }}
-                    ></div>
-                    
+
                     {/* Content */}
                     <div className="relative z-10 flex flex-col items-center gap-4">
                       <div className="text-foreground/50 group-hover:text-brand-accent transition-colors duration-300">
@@ -415,37 +410,69 @@ function SuccessStoriesSection() {
 }
 
 function TestimonialsSection() {
+  const rowRef = useRef<HTMLDivElement>(null);
+  
+  useGSAP(() => {
+    if (rowRef.current) {
+      gsap.to(rowRef.current, {
+        xPercent: -50,
+        duration: 40,
+        ease: "none",
+        repeat: -1
+      });
+    }
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (rowRef.current) gsap.getTweensOf(rowRef.current).forEach(t => t.pause());
+  };
+  
+  const handleMouseLeave = () => {
+    if (rowRef.current) gsap.getTweensOf(rowRef.current).forEach(t => t.play());
+  };
+
   const reviews = [
     { name: "Sarah Jenkins", role: "CTO, MegaRetail", text: "The transition to B&Y Technology was flawless. The platform's scalability is exactly what we needed to support our aggressive expansion plans." },
     { name: "David Chen", role: "Owner, City Pharmacy", text: "Compliance and batch tracking used to be a nightmare. Now, it's completely automated. I sleep much better at night." },
-    { name: "Amanda Ross", role: "Director of Operations, StyleHub", text: "The real-time analytics have fundamentally changed how we order seasonal inventory. We've minimized dead stock entirely." }
+    { name: "Amanda Ross", role: "Director of Operations, StyleHub", text: "The real-time analytics have fundamentally changed how we order seasonal inventory. We've minimized dead stock entirely." },
+    { name: "Michael Patel", role: "Manager, FreshMarket", text: "With B&Y, our checkout queues are practically non-existent. The POS system is lightning fast and handles offline modes perfectly." },
+    { name: "Emily Wong", role: "Founder, Luxe Boutique", text: "Customer loyalty tracking has never been easier. We've seen a 30% increase in returning shoppers since we switched over." }
   ];
 
   return (
-    <section className="py-24 bg-background">
-      <div className="container mx-auto px-4 md:px-6">
-        <Reveal as="div" intensity="bold" className="text-center mb-16">
+    <section className="py-24 bg-background overflow-hidden flex flex-col items-center">
+      <div className="container mx-auto px-4 md:px-6 mb-16">
+        <Reveal as="div" intensity="bold" className="text-center">
            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">Loved by Retail Leaders</h2>
         </Reveal>
-        <RevealGroup stagger={0.1} className="grid md:grid-cols-3 gap-8">
-          {reviews.map((review, i) => (
-            <Reveal as="div" intensity="bold" key={i} className="glass-border bg-surface-2 p-8 rounded-2xl relative shadow-sm hover:-translate-y-1 transition-transform">
-              <div className="flex text-amber-400 mb-6">
-                {[1,2,3,4,5].map(s => <Star key={s} size={18} fill="currentColor" />)}
-              </div>
-              <p className="text-foreground/70 mb-8 italic text-sm md:text-base">&quot;{review.text}&quot;</p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-brand-accent/20 text-brand-accent rounded-full flex items-center justify-center font-bold text-lg shrink-0">
-                  {review.name.charAt(0)}
+      </div>
+
+      <div className="w-full relative max-w-[100vw]" style={{ maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' }}>
+        <div 
+          className="flex whitespace-nowrap w-max"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div ref={rowRef} className="flex gap-8 pl-8">
+            {[...reviews, ...reviews].map((review, i) => (
+              <div key={i} className="glass-border bg-surface-2 p-8 rounded-2xl relative shadow-sm hover:-translate-y-1 transition-transform w-[400px] shrink-0 whitespace-normal">
+                <div className="flex text-amber-400 mb-6">
+                  {[1,2,3,4,5].map(s => <Star key={s} size={18} fill="currentColor" />)}
                 </div>
-                <div>
-                  <div className="font-bold text-foreground">{review.name}</div>
-                  <div className="text-sm text-foreground/60">{review.role}</div>
+                <p className="text-foreground/70 mb-8 italic text-sm md:text-base">&quot;{review.text}&quot;</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-brand-accent/20 text-brand-accent rounded-full flex items-center justify-center font-bold text-lg shrink-0">
+                    {review.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-bold text-foreground">{review.name}</div>
+                    <div className="text-sm text-foreground/60">{review.role}</div>
+                  </div>
                 </div>
               </div>
-            </Reveal>
-          ))}
-        </RevealGroup>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
