@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, AlertCircle } from "lucide-react";
+import { Lock, Mail, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 
 export default function AdminLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -77,13 +78,24 @@ export default function AdminLogin() {
             <div className="relative">
               <Lock className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/50" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full h-11 bg-background border border-border rounded-md pl-10 pr-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                className="w-full h-11 bg-background border border-border rounded-md pl-10 pr-12 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
                 placeholder="••••••••"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-foreground focus:outline-none"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
             </div>
           </div>
 
