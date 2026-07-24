@@ -3,7 +3,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ChevronRight, ShoppingCart, ShirtIcon, Smartphone, PillIcon, CheckCircle2, ChevronDown } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const solutions = [
@@ -96,6 +96,20 @@ export default function SolutionsClient() {
   const [activeTab, setActiveTab] = useState(solutions[0].id);
   const activeSolution = solutions.find(s => s.id === activeTab) || solutions[0];
   const [openAccordion, setOpenAccordion] = useState<number>(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+
+  useEffect(() => {
+    if (!isAutoPlay) return;
+    const interval = setInterval(() => {
+      setActiveTab(current => {
+        const currentIndex = solutions.findIndex(s => s.id === current);
+        const nextIndex = (currentIndex + 1) % solutions.length;
+        return solutions[nextIndex].id;
+      });
+      setOpenAccordion(0);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isAutoPlay]);
 
   return (
     <div className="bg-background min-h-screen">
@@ -126,6 +140,7 @@ export default function SolutionsClient() {
                   onClick={() => {
                     setActiveTab(sol.id);
                     setOpenAccordion(0); // Reset accordion on tab change
+                    setIsAutoPlay(false); // Stop autoplay on user interaction
                   }}
                   className={`relative w-full text-left px-6 py-5 rounded-2xl transition-all duration-300 flex items-center gap-4 group ${
                     activeTab === sol.id ? 'bg-surface border border-white/10 shadow-lg' : 'hover:bg-white/5 border border-transparent'
