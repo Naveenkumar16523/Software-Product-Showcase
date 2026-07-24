@@ -108,12 +108,15 @@ function ProductsSection() {
             const spanClass = i % 4 === 0 || i % 4 === 3 ? "md:col-span-7" : "md:col-span-5";
             return (
               <Reveal key={i} as="div" intensity="bold" className={spanClass}>
-                <div className="w-full aspect-[4/3] md:aspect-auto md:h-[320px] group relative bg-surface border border-stroke rounded-3xl overflow-hidden text-foreground cursor-pointer flex flex-col justify-end">
+                <div 
+                  className="w-full aspect-[4/3] md:aspect-auto md:h-[320px] group relative bg-surface border border-stroke rounded-3xl overflow-hidden text-foreground cursor-pointer flex flex-col justify-end"
+                  onClick={() => ('link' in product && product.link) ? window.open(product.link, '_blank') : undefined}
+                >
                   
                   {/* Background Image & Halftone */}
                   <div className="absolute inset-0 z-0">
                     <Image
-                      src={'/og.jpg'}
+                      src={('img' in product && product.img) ? (product.img as string) : '/og.jpg'}
                       alt={product.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"

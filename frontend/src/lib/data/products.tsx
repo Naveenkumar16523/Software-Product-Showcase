@@ -2,10 +2,11 @@ import React from "react";
 import { Store, Package, Database, Users, BarChart3, LineChart } from "lucide-react";
 
 export const products = [
-  { title: "POS Software", desc: "Fast, reliable point of sale system for seamless checkout.", benefits: ["Offline Mode", "Multi-payment", "Receipt Customization"], icon: <Store /> },
-  { title: "Inventory Management", desc: "Track stock levels across multiple locations in real-time.", benefits: ["Barcode Scanning", "Low Stock Alerts", "Supplier POs"], icon: <Package /> },
-  { title: "ERP Solution", desc: "Comprehensive enterprise resource planning for large retailers.", benefits: ["Financials", "Supply Chain", "HR Integration"], icon: <Database /> },
-  { title: "Retail CRM", desc: "Build lasting relationships with personalized marketing.", benefits: ["Loyalty Points", "Email Campaigns", "Purchase History"], icon: <Users /> },
-  { title: "Billing & Accounting", desc: "Automate invoicing and tax compliance effortlessly.", benefits: ["GST Ready", "Automated Invoicing", "Ledger Management"], icon: <BarChart3 /> },
-  { title: "Analytics Dashboard", desc: "Make data-driven decisions with powerful insights.", benefits: ["Custom Reports", "Sales Forecasting", "Profit Analysis"], icon: <LineChart /> },
+  { title: "B&Y Fitness", desc: "Redefining fitness with modern equipment and personalized tracking.", benefits: ["Workout Tracking", "Diet Plans", "Membership CRM"], icon: <Users />, img: "/gym-preview-v2.jpg", link: "https://gym-ii9k.vercel.app/" },
+  { title: "Marque RC", desc: "India's Best Price Hobby RC Car Dealer.", benefits: ["RC Cars", "Batteries", "Accessories"], icon: <Store />, img: "/marque-preview.jpg", link: "https://www.marque.co.in/" },
+  { title: "E.A.S. Academy", desc: "A premium early childhood experience fostering growth.", benefits: ["Admissions", "Admin Portal", "Virtual Tour"], icon: <Package />, img: "/school-preview-v2.png", link: "https://schoolerp-livid.vercel.app/" },
+  { title: "Lumina Spa", desc: "Experience transformative rituals designed to harmonize mind, body, and spirit.", benefits: ["Online Booking", "Spa Packages", "Loyalty Rewards"], icon: <Database />, img: "/salon-preview.jpg", link: "https://salon-website-rose-six.vercel.app/" },
+  { title: "Shopease", desc: "A modern and responsive e-commerce website with elegant design.", benefits: ["Fast & Optimized", "Responsive UI", "Premium Experience"], icon: <Store />, img: "/ecommerce-preview.jpg", link: "https://ecommerce-website-shopease.vercel.app/" },
+  { title: "B&Y CRM Dashboard", desc: "A powerful CRM solution to manage leads, track deals, and grow efficiently.", benefits: ["Lead Management", "Deal Tracking", "Analytics & Reports"], icon: <BarChart3 />, img: "/crm-preview.png", link: "https://bnycrm1.vercel.app" },
+  { title: "Clarix Dashboard", desc: "A powerful and intuitive dashboard to manage your business operations.", benefits: ["Real-time Analytics", "Smart Insights", "Data Security"], icon: <LineChart />, img: "/erp-preview.png", link: "https://erp-software-mmbt.vercel.app/" },
 ];
