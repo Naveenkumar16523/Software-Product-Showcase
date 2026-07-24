@@ -5,59 +5,7 @@ import Link from "next/link";
 import { Check, X, Info, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const plans = [
-  {
-    name: "Starter",
-    desc: "For single-store retailers just getting started.",
-    monthlyPrice: 99,
-    features: [
-      { name: "1 Store Location", tooltip: "Manage a single physical store or warehouse." },
-      { name: "Basic Inventory", tooltip: "Track up to 10,000 SKUs." },
-      { name: "Standard POS", tooltip: "Web-based point of sale system." },
-      { name: "Email Support", tooltip: "Response within 24 hours." },
-      { name: "Basic Reporting", tooltip: "Standard sales and tax reports." }
-    ],
-    missing: ["Omnichannel", "Advanced API", "Dedicated Success Manager"],
-    popular: false,
-    cta: "Get Started",
-    href: "/request-demo"
-  },
-  {
-    name: "Professional",
-    desc: "For growing brands with multiple locations and channels.",
-    monthlyPrice: 299,
-    features: [
-      { name: "Up to 10 Locations", tooltip: "Manage multiple branches from one dashboard." },
-      { name: "Advanced Inventory AI", tooltip: "Predictive ordering and auto-replenishment." },
-      { name: "Omnichannel POS", tooltip: "Sync with Shopify, WooCommerce, and Amazon." },
-      { name: "Priority 24/7 Support", tooltip: "Phone and chat support available 24/7." },
-      { name: "Advanced Analytics", tooltip: "Custom dashboards and predictive insights." },
-      { name: "E-commerce Integration", tooltip: "Bi-directional sync with leading platforms." }
-    ],
-    missing: ["Dedicated Success Manager"],
-    popular: true,
-    cta: "Start Free Trial",
-    href: "/request-demo"
-  },
-  {
-    name: "Enterprise",
-    desc: "For large scale operations requiring custom solutions.",
-    monthlyPrice: "Custom",
-    features: [
-      { name: "Unlimited Locations", tooltip: "Scale without limits." },
-      { name: "Custom AI Models", tooltip: "Machine learning models trained on your specific data." },
-      { name: "Headless Commerce API", tooltip: "Build custom frontends with our robust GraphQL API." },
-      { name: "Dedicated Success Manager", tooltip: "A named contact for your account." },
-      { name: "On-premise deployment option", tooltip: "Host on your own servers for maximum security." },
-      { name: "SLA Guarantees", tooltip: "99.99% uptime guarantee." }
-    ],
-    missing: [],
-    popular: false,
-    cta: "Contact Sales",
-    href: "/contact"
-  }
-];
+import { usePublicPricingPlans } from "@/hooks/queries/usePublicPricingPlans";
 
 const comparisonData = [
   {
@@ -102,6 +50,7 @@ function Tooltip({ children, content }: { children: React.ReactNode, content: st
 export default function PricingClient() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
+  const { data: plans, isLoading } = usePublicPricingPlans();
 
   return (
     <div className="bg-background min-h-screen">
@@ -140,16 +89,30 @@ export default function PricingClient() {
       {/* Pricing Grid */}
       <section className="pb-20 relative z-10">
         <div className="container mx-auto px-4">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <div className="w-10 h-10 border-4 border-brand-accent border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : (
           <RevealGroup stagger={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {plans.map((plan, i) => {
-              
-              const price = typeof plan.monthlyPrice === "number" 
-                ? (isAnnual ? Math.floor(plan.monthlyPrice * 0.8) : plan.monthlyPrice)
-                : plan.monthlyPrice;
+            {plans?.length === 0 ? (
+              <div className="col-span-full text-center py-20 bg-surface-2 rounded-3xl border border-white/5">
+                <h3 className="text-2xl font-bold text-foreground mb-3">No Pricing Plans Available</h3>
+                <p className="text-foreground/60 max-w-md mx-auto">
+                  Our pricing plans are currently being updated. Please check back later or contact our sales team for custom enterprise quotes.
+                </p>
+                <Link href="/contact" className="inline-block mt-6 px-6 py-3 bg-brand-accent text-black font-bold rounded-xl hover:bg-brand-accent/90 transition-colors">
+                  Contact Sales
+                </Link>
+              </div>
+            ) : plans?.map((plan, i) => {
+              const price = plan.priceMonthly !== null
+                ? (isAnnual ? plan.priceYearly : plan.priceMonthly)
+                : "Custom";
 
               return (
-              <Reveal as="div" intensity="subtle" key={i} className={`relative glass-border rounded-3xl p-8 flex flex-col ${plan.popular ? 'border-brand-accent/50 shadow-[0_0_40px_rgba(163,230,53,0.1)] md:-translate-y-4 bg-surface' : 'bg-surface-2 hover:bg-surface'} transition-all duration-300`}>
-                {plan.popular && (
+              <Reveal as="div" intensity="subtle" key={i} className={`relative glass-border rounded-3xl p-8 flex flex-col ${plan.isFeatured ? 'border-brand-accent/50 shadow-[0_0_40px_rgba(163,230,53,0.1)] md:-translate-y-4 bg-surface' : 'bg-surface-2 hover:bg-surface'} transition-all duration-300`}>
+                {plan.isFeatured && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-brand-accent text-black px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase shadow-[0_0_15px_rgba(163,230,53,0.5)]">
                     Most Popular
                   </div>
@@ -157,7 +120,7 @@ export default function PricingClient() {
                 
                 <div className="mb-6 border-b border-white/5 pb-6">
                   <h3 className="text-2xl font-bold mb-3 text-foreground">{plan.name}</h3>
-                  <p className="text-foreground/60 h-10 text-sm leading-relaxed">{plan.desc}</p>
+                  <p className="text-foreground/60 h-10 text-sm leading-relaxed">{plan.slug}</p>
                 </div>
                 
                 <div className="mb-8 relative h-20">
@@ -183,37 +146,35 @@ export default function PricingClient() {
                 </div>
                 
                 <ul className="space-y-4 mb-8 flex-grow">
-                  {plan.features.map((feat, j) => (
+                  {plan.features?.filter(f => f.included).map((feat, j) => (
                     <li key={j} className="flex items-start text-foreground/80 text-sm">
                       <Check className="w-5 h-5 text-brand-accent mr-3 shrink-0" />
-                      <Tooltip content={feat.tooltip}>
-                        <span className="border-b border-dashed border-white/20 cursor-help">{feat.name}</span>
-                        <Info className="w-3.5 h-3.5 text-foreground/50 ml-2 mt-0.5" />
-                      </Tooltip>
+                      <span>{feat.featureText}</span>
                     </li>
                   ))}
-                  {plan.missing.map((feat, j) => (
+                  {plan.features?.filter(f => !f.included).map((feat, j) => (
                     <li key={`missing-${j}`} className="flex items-start text-foreground/50 text-sm">
                       <X className="w-5 h-5 mr-3 shrink-0" />
-                      <span>{feat}</span>
+                      <span>{feat.featureText}</span>
                     </li>
                   ))}
                 </ul>
                 
                 <div className="mt-auto pt-4">
-                  {plan.popular ? (
-                      <Link href={plan.href} className="w-full flex justify-center items-center bg-brand-accent text-black px-6 py-4 rounded-xl font-bold hover:bg-brand-accent/90 transition-colors shadow-lg hover:shadow-brand-accent/30">
-                        {plan.cta}
+                  {plan.isFeatured ? (
+                      <Link href="/request-demo" className="w-full flex justify-center items-center bg-brand-accent text-black px-6 py-4 rounded-xl font-bold hover:bg-brand-accent/90 transition-colors shadow-lg hover:shadow-brand-accent/30">
+                        Start Free Trial
                       </Link>
                   ) : (
-                    <Link href={plan.href} className="flex justify-center items-center w-full bg-white/5 text-foreground px-6 py-4 rounded-xl font-bold hover:bg-white/10 transition-colors border border-white/10">
-                      {plan.cta}
+                    <Link href="/request-demo" className="flex justify-center items-center w-full bg-white/5 text-foreground px-6 py-4 rounded-xl font-bold hover:bg-white/10 transition-colors border border-white/10">
+                      Get Started
                     </Link>
                   )}
                 </div>
               </Reveal>
             )})}
           </RevealGroup>
+          )}
         </div>
       </section>
 
