@@ -2,6 +2,7 @@
 
 import { Reveal } from "@/components/motion/Reveal";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { industries as baseIndustries } from "@/lib/data/industries";
 import React, { useState } from "react";
@@ -69,62 +70,64 @@ export default function IndustriesClient() {
       {/* Bento Grid Section */}
       <section className="pb-32 relative z-10 min-h-[600px]">
         <div className="container mx-auto px-4 md:px-6">
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-3 auto-rows-[280px] gap-6">
+          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">
-              {filteredIndustries.map((ind, i) => {
-                // Bento layout logic based on the filtered list index
-                const bentoClasses = [
-                  "md:col-span-2 md:row-span-1", 
-                  "md:col-span-1 md:row-span-2", 
-                  "md:col-span-1 md:row-span-1", 
-                  "md:col-span-1 md:row-span-1", 
-                  "md:col-span-2 md:row-span-1", 
-                  "md:col-span-1 md:row-span-1", 
-                ];
-                
-                // If it's a filtered list, we just make them all standard size to avoid broken grids,
-                // OR we can keep the bento pattern if there's enough items. Let's just apply the pattern based on the index.
-                const className = activeCategory === "All" 
-                  ? bentoClasses[i % bentoClasses.length]
-                  : "md:col-span-1 md:row-span-1"; // simpler grid when filtered
+              {filteredIndustries.map((ind, i) => (
+                <motion.div 
+                  layout
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.3, type: "spring" }}
+                  key={ind.title} 
+                  className="w-full aspect-[4/3] group relative bg-surface border border-stroke rounded-3xl overflow-hidden text-foreground flex flex-col justify-end"
+                >
+                  {/* Background Image & Halftone */}
+                  <div className="absolute inset-0 z-0">
+                    <Image
+                      src={ind.img || '/og.jpg'}
+                      alt={ind.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div 
+                      className="absolute inset-0 opacity-40 mix-blend-multiply" 
+                      style={{ backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)", backgroundSize: "4px 4px" }}
+                    ></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+                    
+                    {/* Hover Backdrop */}
+                    <div className="absolute inset-0 bg-bg/80 opacity-0 group-hover:opacity-100 backdrop-blur-md transition-all duration-500 z-10 flex flex-col justify-center items-center text-center p-8">
+                       <h3 className="text-2xl font-display font-bold italic mb-4">{ind.title}</h3>
+                       <p className="text-muted text-sm mb-6">{ind.desc}</p>
+                       <Link href={`/solutions?industry=${encodeURIComponent(ind.title)}`} className="inline-flex items-center text-brand-accent font-semibold group-hover:text-brand-accent/80 transition-colors">
+                         Explore Solution <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                       </Link>
+                    </div>
+                  </div>
 
-                return (
-                  <motion.div 
-                    layout
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3, type: "spring" }}
-                    key={ind.title} 
-                    className={`glass-border rounded-3xl p-8 hover:bg-white/5 hover:border-brand-accent/30 transition-all duration-300 group relative overflow-hidden flex flex-col justify-between ${className}`}
-                  >
-                    {/* Dynamic border glow on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/0 to-brand-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    
-                    <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-brand-accent/10 rounded-full blur-2xl -z-10 group-hover:bg-brand-accent/20 transition-colors duration-500"></div>
-                    
-                    <div>
-                      <div className="flex justify-between items-start mb-6">
-                        <div className="text-brand-accent group-hover:scale-110 transition-transform duration-300 inline-block bg-surface-2 p-3 rounded-2xl border border-white/5 shadow-inner">
-                          {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 32 })}
-                        </div>
-                        <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] uppercase tracking-wider font-bold text-foreground/50">
-                          {ind.category}
-                        </div>
-                      </div>
-                      
-                      <h2 className="text-2xl font-bold mb-3 text-foreground tracking-tight">{ind.title}</h2>
-                      <p className="text-foreground/70">{ind.desc}</p>
+                  {/* Initial Label */}
+                  <div className="absolute top-6 left-6 z-20 w-12 h-12 glass-border rounded-xl flex items-center justify-center bg-surface-2 text-text-primary shadow-sm group-hover:opacity-0 transition-opacity duration-300">
+                    {React.cloneElement(ind.icon as React.ReactElement<{ size?: number }>, { size: 24 })}
+                  </div>
+                  
+                  {/* Hover Pill Label */}
+                  <div className="absolute top-6 right-6 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                    <div className="inline-flex items-center rounded-full bg-white text-black px-4 py-2 text-sm font-medium border-accent-gradient shadow-lg">
+                      {ind.category}
                     </div>
-                    
-                    <div className="pt-6 mt-auto">
-                      <Link href={`/solutions?industry=${encodeURIComponent(ind.title)}`} className="inline-flex items-center text-sm text-brand-accent font-semibold group-hover:text-brand-accent/80 transition-colors">
-                        Explore Solution <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                  </div>
+                  
+                  {/* Bottom Text Area (fades out on hover) */}
+                  <div className="relative z-10 p-6 pt-20 group-hover:opacity-0 transition-opacity duration-300">
+                    <div className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[10px] uppercase tracking-wider font-bold text-white max-w-fit mb-3">
+                      {ind.category}
                     </div>
-                  </motion.div>
-                );
-              })}
+                    <h2 className="text-2xl font-bold text-white">{ind.title}</h2>
+                  </div>
+
+                </motion.div>
+              ))}
             </AnimatePresence>
           </motion.div>
           
