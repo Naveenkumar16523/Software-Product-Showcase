@@ -57,6 +57,7 @@ public class AuthController {
                 .sameSite(isProd ? "None" : "Strict")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        response.addHeader("X-Auth-Token", jwt);
 
         AppUser user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
