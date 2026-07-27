@@ -56,13 +56,13 @@ public class AuthController {
                 .maxAge(86400) // 1 day
                 .sameSite(isProd ? "None" : "Strict")
                 .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        response.addHeader("X-Auth-Token", jwt);
-
         AppUser user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return ResponseEntity.ok(userMapper.toResponse(user));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .header("X-Auth-Token", jwt)
+                .body(userMapper.toResponse(user));
     }
 
     @PostMapping("/logout")
@@ -75,8 +75,9 @@ public class AuthController {
                 .maxAge(0)
                 .sameSite(isProd ? "None" : "Strict")
                 .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
     }
 
     @GetMapping("/me")
