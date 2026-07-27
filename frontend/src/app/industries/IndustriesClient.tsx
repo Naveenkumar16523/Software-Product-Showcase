@@ -8,23 +8,15 @@ import { industries as baseIndustries } from "@/lib/data/industries";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Map over existing industries to assign categories for filtering
-const categorizedIndustries = baseIndustries.map(ind => {
-  let category = "Retail";
-  if (ind.title.includes("Pharmacy")) category = "Healthcare";
-  if (ind.title.includes("Restaurants")) category = "Hospitality";
-  if (ind.title.includes("Automotive")) category = "Specialized";
-  return { ...ind, category };
-});
-
-const categories = ["All", "Retail", "Healthcare", "Hospitality", "Specialized"];
+// Extract unique categories dynamically from the data
+const categories = ["All", ...Array.from(new Set(baseIndustries.map(ind => ind.category)))];
 
 export default function IndustriesClient() {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filteredIndustries = activeCategory === "All" 
-    ? categorizedIndustries 
-    : categorizedIndustries.filter(ind => ind.category === activeCategory);
+    ? baseIndustries 
+    : baseIndustries.filter(ind => ind.category === activeCategory);
 
   return (
     <div className="bg-background min-h-screen">
