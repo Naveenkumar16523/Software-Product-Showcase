@@ -23,7 +23,7 @@ export function ChatWidget() {
     
     setMessages(newMessages);
     setInputValue("");
-
+    
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -87,9 +87,7 @@ export function ChatWidget() {
               <div className="relative z-10 flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-10 h-10 bg-brand-accent rounded-full flex items-center justify-center text-black font-bold text-lg shadow-sm">
-                      B
-                    </div>
+                    <img src="/icon.png" alt="B&Y Bot" className="w-10 h-10 rounded-full object-cover shadow-sm bg-brand-accent p-1" />
                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0a0a0a] rounded-full"></div>
                   </div>
                   <div>
@@ -98,9 +96,7 @@ export function ChatWidget() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button className="text-white/70 hover:text-white transition-colors p-1 rounded-md hover:bg-white/10">
-                    <MoreHorizontal size={16} />
-                  </button>
+
                   <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white transition-colors p-1 rounded-md hover:bg-white/10">
                     <X size={18} />
                   </button>
@@ -117,9 +113,7 @@ export function ChatWidget() {
                 return (
                   <div key={idx} className={`flex ${isUser ? 'justify-end' : 'justify-start'} w-full`}>
                     {!isUser && (
-                      <div className="w-6 h-6 bg-brand-accent rounded-full flex-shrink-0 flex items-center justify-center text-black font-bold text-[10px] mr-2 mt-1">
-                        B
-                      </div>
+                      <img src="/icon.png" alt="B&Y Bot" className="w-6 h-6 rounded-full object-cover flex-shrink-0 mr-2 mt-1 bg-brand-accent p-0.5" />
                     )}
                     <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[75%]`}>
                       <div 
