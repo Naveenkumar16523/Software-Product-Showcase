@@ -19,7 +19,11 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        List<String> origins = new java.util.ArrayList<>(Arrays.asList(allowedOrigins.split(",")));
+        if (!origins.contains("https://software-product-showcase.vercel.app")) {
+            origins.add("https://software-product-showcase.vercel.app");
+        }
+        configuration.setAllowedOrigins(origins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
         configuration.setExposedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
