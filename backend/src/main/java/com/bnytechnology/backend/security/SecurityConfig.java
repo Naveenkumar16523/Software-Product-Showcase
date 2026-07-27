@@ -48,7 +48,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/demo-requests").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/newsletter-subscribers").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/actuator/**", "/h2-console/**", "/uploads/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/uploads/**").permitAll()
+                        .requestMatchers("/actuator/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // for h2-console

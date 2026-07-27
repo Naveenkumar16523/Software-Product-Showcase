@@ -2,7 +2,7 @@
 
 import { Reveal } from "@/components/motion/Reveal";
 import Link from "next/link";
-import { ChevronRight, ShoppingCart, ShirtIcon, Smartphone, PillIcon, CheckCircle2, ChevronDown } from "lucide-react";
+import { ChevronRight, ShoppingCart, ShirtIcon, Smartphone, PillIcon, CheckCircle2, ChevronDown, Dumbbell, Scissors, Globe, Gem, LayoutDashboard } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -59,6 +59,71 @@ const solutions = [
     icon: <Smartphone className="w-6 h-6" />,
     imageBg: "from-amber-500/20 to-orange-500/5"
   },
+  {
+    id: "fitness",
+    title: "Fitness & Wellness",
+    desc: "Streamline gym operations, membership management, and client engagement with an all-in-one fitness platform.",
+    features: [
+      { title: "Membership management", desc: "Handle recurring memberships, trial passes, freeze requests, and automated renewal reminders." },
+      { title: "Class & trainer scheduling", desc: "Drag-and-drop scheduling for group classes, personal training sessions, and facility bookings." },
+      { title: "Attendance & access control", desc: "Biometric or QR-code check-in integrated with turnstile access and real-time occupancy tracking." },
+      { title: "Progress tracking", desc: "Member dashboards with body metrics, workout history, and personalized goal tracking." }
+    ],
+    icon: <Dumbbell className="w-6 h-6" />,
+    imageBg: "from-rose-500/20 to-red-500/5"
+  },
+  {
+    id: "beauty",
+    title: "Beauty & Salon",
+    desc: "Manage appointments, stylist schedules, product inventory, and client preferences seamlessly.",
+    features: [
+      { title: "Online appointment booking", desc: "Clients book services, choose stylists, and receive automated SMS/email confirmations and reminders." },
+      { title: "Stylist commission tracking", desc: "Automatic commission calculations based on services rendered, product sales, and tips." },
+      { title: "Client profile & history", desc: "Detailed records of past services, product preferences, allergies, and style notes per client." },
+      { title: "Retail product inventory", desc: "Track salon product stock, set reorder alerts, and manage supplier purchase orders." }
+    ],
+    icon: <Scissors className="w-6 h-6" />,
+    imageBg: "from-pink-500/20 to-fuchsia-500/5"
+  },
+  {
+    id: "ecommerce",
+    title: "E-Commerce",
+    desc: "Build and scale your online storefront with powerful catalog, order, and fulfillment management tools.",
+    features: [
+      { title: "Multi-channel selling", desc: "Unified dashboard to manage inventory and orders across your website, Amazon, Flipkart, and social commerce." },
+      { title: "Cart & checkout optimization", desc: "One-click checkout, abandoned cart recovery emails, and dynamic discount code engine." },
+      { title: "Shipping & logistics", desc: "Integrated shipping rate calculators, label printing, and real-time tracking across multiple couriers." },
+      { title: "Analytics & conversion tracking", desc: "Funnel analysis, heatmaps, and A/B testing tools to optimize product pages and boost conversions." }
+    ],
+    icon: <Globe className="w-6 h-6" />,
+    imageBg: "from-indigo-500/20 to-violet-500/5"
+  },
+  {
+    id: "jewels",
+    title: "Jewellery & Precious Metals",
+    desc: "Manage intricate catalogs with karat, weight, and gemstone details alongside dynamic gold-rate pricing.",
+    features: [
+      { title: "Live gold/silver rate pricing", desc: "Automatically update product prices based on real-time precious metal market rates." },
+      { title: "Karat & weight management", desc: "Detailed tracking of purity (22K, 18K, etc.), gross weight, net weight, and stone weight per item." },
+      { title: "Custom order & design tracking", desc: "Manage bespoke jewelry orders from sketch approval through production to delivery." },
+      { title: "Hallmarking & certification", desc: "Track BIS hallmark numbers, GIA certificates, and maintain compliance documentation." }
+    ],
+    icon: <Gem className="w-6 h-6" />,
+    imageBg: "from-yellow-500/20 to-amber-500/5"
+  },
+  {
+    id: "erp-crm",
+    title: "ERP & CRM",
+    desc: "Unify your entire business — from finance and HR to sales pipelines and customer relationships — in one platform.",
+    features: [
+      { title: "Financial management", desc: "General ledger, accounts payable/receivable, multi-currency support, and automated reconciliation." },
+      { title: "Sales pipeline & lead scoring", desc: "Visual Kanban pipelines, AI-powered lead scoring, and automated follow-up sequences." },
+      { title: "HR & payroll", desc: "Employee lifecycle management, attendance tracking, leave approvals, and payroll processing." },
+      { title: "Custom dashboards & reports", desc: "Drag-and-drop report builder with role-based dashboards and scheduled email reports." }
+    ],
+    icon: <LayoutDashboard className="w-6 h-6" />,
+    imageBg: "from-sky-500/20 to-blue-500/5"
+  },
 ];
 
 function Accordion({ feature, isOpen, onClick }: { feature: { title: string, desc: string, icon?: React.ReactNode }, isOpen: boolean, onClick: () => void }) {
@@ -96,10 +161,9 @@ export default function SolutionsClient() {
   const [activeTab, setActiveTab] = useState(solutions[0].id);
   const activeSolution = solutions.find(s => s.id === activeTab) || solutions[0];
   const [openAccordion, setOpenAccordion] = useState<number>(0);
-  const [isAutoPlay, setIsAutoPlay] = useState(true);
+  const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
-    if (!isAutoPlay) return;
     const interval = setInterval(() => {
       setActiveTab(current => {
         const currentIndex = solutions.findIndex(s => s.id === current);
@@ -109,7 +173,7 @@ export default function SolutionsClient() {
       setOpenAccordion(0);
     }, 5000);
     return () => clearInterval(interval);
-  }, [isAutoPlay]);
+  }, [resetKey]);
 
   return (
     <div className="bg-background min-h-screen">
@@ -139,8 +203,8 @@ export default function SolutionsClient() {
                   key={sol.id}
                   onClick={() => {
                     setActiveTab(sol.id);
-                    setOpenAccordion(0); // Reset accordion on tab change
-                    setIsAutoPlay(false); // Stop autoplay on user interaction
+                    setOpenAccordion(0);
+                    setResetKey(k => k + 1); // Reset the 5s timer from this tab
                   }}
                   className={`relative w-full text-left px-6 py-5 rounded-2xl transition-all duration-300 flex items-center gap-4 group ${
                     activeTab === sol.id ? 'bg-surface border border-white/10 shadow-lg' : 'hover:bg-white/5 border border-transparent'

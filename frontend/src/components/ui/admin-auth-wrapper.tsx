@@ -60,11 +60,11 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
     if (pathname === "/admin/demo-requests") {
       // Admin is on the page, update seen ID
       localStorage.setItem("demoRequests:lastSeenId", maxId.toString());
-      setUnseenDemoCount(0);
+      setUnseenDemoCount((prev) => prev !== 0 ? 0 : prev);
     } else {
       // Calculate unseen count
       const unseen = demoRequests.filter(r => r.id > lastSeenId).length;
-      setUnseenDemoCount(unseen);
+      setUnseenDemoCount((prev) => prev !== unseen ? unseen : prev);
     }
 
     // Handle notifications for genuinely new items

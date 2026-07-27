@@ -36,8 +36,22 @@ public class FileSystemStorageService implements StorageService {
             }
             
             String contentType = file.getContentType();
-            if (contentType == null || !(contentType.startsWith("image/") || contentType.equals("image/svg+xml"))) {
+            if (contentType == null || !contentType.startsWith("image/")) {
                 throw new RuntimeException("Only image files are allowed.");
+            }
+            if (contentType.equals("image/svg+xml")) {
+                throw new RuntimeException("SVG uploads are disabled for security reasons.");
+            }
+
+            // Magic byte validation
+            try (InputStream is = file.getInputStream()) {
+                byte[] header = new byte[12];
+                if (is.read(header) == -1) {
+                    throw new RuntimeException("Failed to read file.");
+                }
+                if (!isImageMagicBytes(header)) {
+                    throw new RuntimeException("Invalid file format. Magic bytes do not match expected image types.");
+                }
             }
             
             String originalFilename = file.getOriginalFilename();
@@ -63,5 +77,29 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Path load(String filename) {
         return rootLocation.resolve(filename);
+    }
+
+    private boolean isImageMagicBytes(byte[] header) {
+        if (header.length < 4) return false;
+        
+        // JPEG: FF D8 FF
+        if ((header[0] & 0xFF) == 0xFF && (header[1] & 0xFF) == 0xD8 && (header[2] & 0xFF) == 0xFF) {
+            return true;
+        }
+        // PNG: 89 50 4E 47 0D 0A 1A 0A
+        if ((header[0] & 0xFF) == 0x89 && (header[1] & 0xFF) == 0x50 && (header[2] & 0xFF) == 0x4E && (header[3] & 0xFF) == 0x47) {
+            return true;
+        }
+        // GIF: GIF87a or GIF89a
+        if (header[0] == 'G' && header[1] == 'I' && header[2] == 'F' && header[3] == '8') {
+            return true;
+        }
+        // WebP: RIFF ... WEBP
+        if (header.length >= 12 && 
+            header[0] == 'R' && header[1] == 'I' && header[2] == 'F' && header[3] == 'F' &&
+            header[8] == 'W' && header[9] == 'E' && header[10] == 'B' && header[11] == 'P') {
+            return true;
+        }
+        return false;
     }
 }
