@@ -6,6 +6,7 @@ export interface DashboardStats {
   totalLeads: number;
   newLeadsThisWeek: number;
   totalPortfolio: number;
+  totalProducts: number;
   funnel?: {
     visits: number;
     demoRequests: number;

@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/product-categorys")
+@RequestMapping("/api/v1/admin/product-categories")
 public class ProductCategoryController {
 
     private final ProductCategoryService service;

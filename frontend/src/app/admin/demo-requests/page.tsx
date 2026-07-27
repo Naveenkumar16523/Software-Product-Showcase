@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { apiFetch } from "@/lib/api";
 import { MonitorPlay, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -12,6 +12,24 @@ export default function AdminDemoRequests() {
   const queryClient = useQueryClient();
   const { data: leads = [], isLoading: loading } = useDemoRequests();
   const [filter, setFilter] = useState<string>("ALL");
+  const prevLeadsRef = useRef<number[]>([]);
+  const [newLeadIds, setNewLeadIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (leads.length > 0) {
+      const prevIds = prevLeadsRef.current;
+      if (prevIds.length > 0) {
+        const newlyAdded = leads.filter(l => !prevIds.includes(l.id)).map(l => l.id);
+        if (newlyAdded.length > 0) {
+          setNewLeadIds(prev => [...prev, ...newlyAdded]);
+          setTimeout(() => {
+            setNewLeadIds(prev => prev.filter(id => !newlyAdded.includes(id)));
+          }, 4000); // highlight for 4 seconds
+        }
+      }
+      prevLeadsRef.current = leads.map(l => l.id);
+    }
+  }, [leads]);
 
   const updateStatus = async (lead: any, newStatus: string) => {
     try {
@@ -112,7 +130,11 @@ export default function AdminDemoRequests() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="hover:bg-background/30 transition-colors"
+                    className={`transition-all duration-700 border-l-4 ${
+                      newLeadIds.includes(lead.id) 
+                        ? "border-brand-accent bg-brand-accent/10" 
+                        : "border-transparent hover:bg-background/30"
+                    }`}
                   >
                     <td className="p-4 align-top">
                       <div className="font-medium text-foreground">{lead.name}</div>

@@ -20,8 +20,8 @@ public class ProductMediaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductMediaResponse>> getAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<List<ProductMediaResponse>> getAll(@RequestParam(required = false) Long productId) {
+        return ResponseEntity.ok(service.findAll(productId));
     }
 
     @GetMapping("/{id}")

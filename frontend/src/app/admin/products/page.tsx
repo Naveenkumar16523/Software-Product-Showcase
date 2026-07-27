@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
-import { Plus, Edit2, Trash2, X, Check } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Check, Image as ImageIcon, List as ListIcon, Info, Upload, ArrowUp, ArrowDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { useProducts, Product } from "@/hooks/queries/useProducts";
 import { useProductCategories } from "@/hooks/queries/useProductCategories";
+import { useProductMedia, useCreateProductMedia, useUpdateProductMedia, useDeleteProductMedia } from "@/hooks/queries/useProductMedia";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,22 +31,58 @@ export default function AdminProducts() {
   const { data: items = [], isLoading: loading } = useProducts();
   const { data: categories = [] } = useProductCategories();
   
+  // Modals and tabs
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Product | null>(null);
+  const [activeTab, setActiveTab] = useState<'details' | 'media' | 'features'>('details');
+
+  // List View State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Media & Features Data
+  const { data: productMedia = [], isLoading: mediaLoading } = useProductMedia(editingItem?.id);
+  const createMedia = useCreateProductMedia();
+  const updateMedia = useUpdateProductMedia();
+  const deleteMedia = useDeleteProductMedia();
+
+  const { data: allFeatures = [], refetch: refetchFeatures } = useQuery({
+    queryKey: ['admin', 'product-features'],
+    queryFn: async () => {
+      const res = await apiFetch("/api/v1/admin/product-features");
+      const json = await res.json();
+      return json.content || json;
+    }
+  });
+
+  const productFeatures = useMemo(() => allFeatures.filter((f: any) => editingItem && f.productId === editingItem.id), [allFeatures, editingItem]);
 
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      slug: "",
-      shortDescription: "",
-      description: "",
-      categoryId: undefined,
-      status: "DRAFT",
-      iconKey: "",
-      displayOrder: 0,
+      name: "", slug: "", shortDescription: "", description: "", categoryId: undefined, status: "DRAFT", iconKey: "", displayOrder: 0,
     }
   });
+
+  const [featureTitle, setFeatureTitle] = useState("");
+  const [featureDesc, setFeatureDesc] = useState("");
+  
+  const [uploading, setUploading] = useState(false);
+  const [processingId, setProcessingId] = useState<number | null>(null);
+
+  // List View Filtering
+  const filteredItems = useMemo(() => {
+    return items.filter(item => {
+      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.slug.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "ALL" || item.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [items, searchQuery, statusFilter]);
+
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const currentItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleOpenModal = (item?: Product) => {
     if (item) {
@@ -66,6 +103,7 @@ export default function AdminProducts() {
         name: "", slug: "", shortDescription: "", description: "", categoryId: undefined, status: "DRAFT", iconKey: "", displayOrder: 0
       });
     }
+    setActiveTab('details');
     setIsModalOpen(true);
   };
 
@@ -77,14 +115,19 @@ export default function AdminProducts() {
           body: JSON.stringify(data)
         });
       } else {
-        await apiFetch("/api/v1/admin/products", {
+        const res = await apiFetch("/api/v1/admin/products", {
           method: "POST",
           body: JSON.stringify(data)
         });
+        const newProduct = await res.json();
+        setEditingItem(newProduct);
+        toast.success("Product created. You can now add Media and Features.");
+        queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
+        return;
       }
       setIsModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
-      toast.success(editingItem ? "Product updated successfully" : "Product created successfully");
+      toast.success("Product updated successfully");
     } catch (err) {
       console.error(err);
       toast.error("Failed to save product");
@@ -105,6 +148,133 @@ export default function AdminProducts() {
         console.error(err);
         toast.error("Failed to delete product");
       }
+    }
+  };
+
+  // Feature Handlers
+  const handleAddFeature = async () => {
+    if (!editingItem || !featureTitle) return;
+    try {
+      await apiFetch("/api/v1/admin/product-features", {
+        method: "POST",
+        body: JSON.stringify({
+          productId: editingItem.id,
+          title: featureTitle,
+          description: featureDesc,
+          displayOrder: productFeatures.length
+        })
+      });
+      setFeatureTitle("");
+      setFeatureDesc("");
+      refetchFeatures();
+      toast.success("Feature added");
+    } catch (err) {
+      toast.error("Failed to add feature");
+    }
+  };
+
+  const handleDeleteFeature = async (id: number) => {
+    if (confirm("Delete this feature?")) {
+      await apiFetch(`/api/v1/admin/product-features/${id}`, { method: "DELETE" });
+      refetchFeatures();
+      toast.success("Feature deleted");
+    }
+  };
+
+  // Media Handlers
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!editingItem || !e.target.files?.[0]) return;
+    const file = e.target.files[0];
+    
+    // Client-side validation matching backend constraints
+    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Invalid file type. Only JPG, PNG, WEBP, GIF, and SVG are allowed.");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const uploadRes = await fetch("/api/v1/media/upload", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token") || ""}` // Need to pass token if protected
+        },
+        body: formData
+      });
+      
+      if (!uploadRes.ok) throw new Error("Upload failed");
+      const filename = await uploadRes.text();
+
+      const nextOrder = productMedia.length > 0 
+        ? Math.max(...productMedia.map(m => m.displayOrder || 0)) + 1 
+        : 0;
+
+      await createMedia.mutateAsync({
+        productId: editingItem.id,
+        mediaType: "IMAGE",
+        url: `/uploads/${filename}`,
+        altText: file.name,
+        displayOrder: nextOrder
+      });
+      toast.success("Image uploaded");
+    } catch (err) {
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
+      if (e.target) e.target.value = ''; // Reset input
+    }
+  };
+
+  const handleDeleteMedia = async (id: number) => {
+    if (confirm("Delete this media?")) {
+      try {
+        setProcessingId(id);
+        await deleteMedia.mutateAsync(id);
+        toast.success("Media deleted");
+      } catch (err) {
+        toast.error("Failed to delete media");
+      } finally {
+        setProcessingId(null);
+      }
+    }
+  };
+
+  const handleMoveMedia = async (currentIndex: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && currentIndex === 0) return;
+    if (direction === 'down' && currentIndex === productMedia.length - 1) return;
+
+    const swapIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    const item1 = productMedia[currentIndex];
+    const item2 = productMedia[swapIndex];
+
+    try {
+      setProcessingId(item1.id);
+      
+      // Swap their orders
+      const order1 = item1.displayOrder;
+      const order2 = item2.displayOrder;
+      
+      await Promise.all([
+        updateMedia.mutateAsync({ id: item1.id, productId: item1.productId, displayOrder: order2 }),
+        updateMedia.mutateAsync({ id: item2.id, productId: item2.productId, displayOrder: order1 })
+      ]);
+    } catch (err) {
+      toast.error("Failed to reorder images");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleAltTextChange = async (id: number, productId: number, newAltText: string) => {
+    try {
+      await updateMedia.mutateAsync({ id, productId, altText: newAltText });
+      toast.success("Alt text saved");
+    } catch (err) {
+      toast.error("Failed to save alt text");
     }
   };
 
@@ -133,16 +303,31 @@ export default function AdminProducts() {
         </button>
       </div>
 
+      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+        <input 
+          type="text" 
+          placeholder="Search products..." 
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="w-full sm:w-64 h-10 bg-surface border border-border rounded-md px-3 text-sm focus:border-brand-accent outline-none"
+        />
+        <select 
+          value={statusFilter}
+          onChange={e => setStatusFilter(e.target.value)}
+          className="w-full sm:w-48 h-10 bg-surface border border-border rounded-md px-3 text-sm focus:border-brand-accent outline-none"
+        >
+          <option value="ALL">All Statuses</option>
+          <option value="PUBLISHED">Published</option>
+          <option value="DRAFT">Draft</option>
+          <option value="ARCHIVED">Archived</option>
+        </select>
+      </div>
+
       <div className="bg-surface border border-border rounded-xl overflow-hidden">
-        {items.length === 0 ? (
+        {currentItems.length === 0 ? (
           <div className="col-span-full p-16 flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-6 border border-border">
-              <Plus className="w-8 h-8 text-foreground/50" />
-            </div>
-            <h3 className="text-xl font-bold text-foreground mb-2">No products yet</h3>
-            <p className="text-foreground/50 max-w-md">
-              Start by adding a product to showcase to your prospects.
-            </p>
+            <h3 className="text-xl font-bold text-foreground mb-2">No products found</h3>
+            <p className="text-foreground/50">Adjust your search or filters to see more results.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -156,7 +341,7 @@ export default function AdminProducts() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {items.map((item, idx) => (
+                {currentItems.map((item, idx) => (
                   <motion.tr 
                     key={item.id}
                     initial={{ opacity: 0, y: 10 }}
@@ -191,6 +376,22 @@ export default function AdminProducts() {
           </div>
         )}
       </div>
+      
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-medium transition-colors ${
+                currentPage === i + 1 ? 'bg-brand-accent text-black' : 'bg-surface border border-border hover:bg-border'
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Modal */}
       <AnimatePresence>
@@ -207,7 +408,7 @@ export default function AdminProducts() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-surface border border-border w-full max-w-2xl rounded-2xl shadow-2xl relative z-10 flex flex-col max-h-[90vh]"
+              className="bg-surface border border-border w-full max-w-4xl rounded-2xl shadow-2xl relative z-10 flex flex-col max-h-[90vh]"
             >
               <div className="p-6 border-b border-border flex justify-between items-center shrink-0">
                 <h2 className="text-xl font-bold">{editingItem ? "Edit Product" : "Add Product"}</h2>
@@ -215,105 +416,277 @@ export default function AdminProducts() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
+
+              {/* Tabs */}
+              <div className="flex border-b border-border px-6 mt-4 gap-6 shrink-0">
+                <button 
+                  onClick={() => setActiveTab('details')}
+                  className={`pb-3 flex items-center gap-2 text-sm font-medium transition-colors border-b-2 ${activeTab === 'details' ? 'border-brand-accent text-brand-accent' : 'border-transparent text-foreground/60 hover:text-foreground'}`}
+                >
+                  <Info className="w-4 h-4" /> Details
+                </button>
+                <button 
+                  onClick={() => setActiveTab('media')}
+                  disabled={!editingItem}
+                  className={`pb-3 flex items-center gap-2 text-sm font-medium transition-colors border-b-2 ${activeTab === 'media' ? 'border-brand-accent text-brand-accent' : 'border-transparent text-foreground/60 hover:text-foreground'} disabled:opacity-30 disabled:cursor-not-allowed`}
+                >
+                  <ImageIcon className="w-4 h-4" /> Media
+                </button>
+                <button 
+                  onClick={() => setActiveTab('features')}
+                  disabled={!editingItem}
+                  className={`pb-3 flex items-center gap-2 text-sm font-medium transition-colors border-b-2 ${activeTab === 'features' ? 'border-brand-accent text-brand-accent' : 'border-transparent text-foreground/60 hover:text-foreground'} disabled:opacity-30 disabled:cursor-not-allowed`}
+                >
+                  <ListIcon className="w-4 h-4" /> Features
+                </button>
+              </div>
               
               <div className="p-6 overflow-y-auto">
-                <form id="product-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Name</label>
-                      <input 
-                        {...register("name")}
-                        onChange={(e) => {
-                          register("name").onChange(e);
-                          if (!editingItem) {
-                            setValue("slug", e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
-                          }
-                        }}
-                        className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                      />
-                      {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+                {activeTab === 'details' && (
+                  <form id="product-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-foreground">Name</label>
+                        <input 
+                          {...register("name")}
+                          onChange={(e) => {
+                            register("name").onChange(e);
+                            if (!editingItem) {
+                              setValue("slug", e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
+                            }
+                          }}
+                          className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                        />
+                        {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-foreground">Slug</label>
+                        <input 
+                          {...register("slug")}
+                          className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                        />
+                        {errors.slug && <p className="text-xs text-red-500">{errors.slug.message}</p>}
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Slug</label>
-                      <input 
-                        {...register("slug")}
-                        className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                      />
-                      {errors.slug && <p className="text-xs text-red-500">{errors.slug.message}</p>}
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-foreground">Category</label>
+                        <select 
+                          {...register("categoryId", { valueAsNumber: true })}
+                          className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                        >
+                          <option value="">Select a category</option>
+                          {categories.map((cat: any) => (
+                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                          ))}
+                        </select>
+                        {errors.categoryId && <p className="text-xs text-red-500">{errors.categoryId.message}</p>}
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-foreground">Status</label>
+                        <select 
+                          {...register("status")}
+                          className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                        >
+                          <option value="DRAFT">Draft</option>
+                          <option value="PUBLISHED">Published</option>
+                          <option value="ARCHIVED">Archived</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-foreground">Icon Key (Lucide)</label>
+                        <input 
+                          {...register("iconKey")}
+                          className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-foreground">Display Order</label>
+                        <input 
+                          type="number"
+                          {...register("displayOrder", { valueAsNumber: true })}
+                          className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                        />
+                      </div>
+                    </div>
+
                     <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Category</label>
-                      <select 
-                        {...register("categoryId", { valueAsNumber: true })}
-                        className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
+                      <label className="text-sm font-medium text-foreground">Short Description</label>
+                      <textarea 
+                        {...register("shortDescription")}
+                        className="w-full bg-background border border-border rounded-md p-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors h-20 resize-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-foreground">Detailed Description</label>
+                      <textarea 
+                        {...register("description")}
+                        className="w-full bg-background border border-border rounded-md p-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors h-32 resize-none"
+                      />
+                    </div>
+                  </form>
+                )}
+
+                {activeTab === 'media' && (
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <label className={`flex items-center gap-2 bg-brand-accent text-black hover:bg-brand-accent/90 px-4 py-2 rounded-md cursor-pointer transition-colors text-sm font-medium ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                        {uploading ? (
+                          <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Upload className="w-4 h-4" />
+                        )}
+                        {uploading ? "Uploading..." : "Upload Image"}
+                        <input type="file" className="hidden" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" onChange={handleFileUpload} disabled={uploading} />
+                      </label>
+                      <p className="text-xs text-foreground/50">Supported formats: JPG, PNG, WEBP, GIF, SVG.</p>
+                    </div>
+
+                    {mediaLoading ? (
+                      <div className="flex justify-center p-10">
+                        <div className="w-6 h-6 border-4 border-brand-accent border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    ) : productMedia.length === 0 ? (
+                      <div className="text-center py-10 border border-dashed border-border rounded-lg text-foreground/50 text-sm">
+                        No media uploaded yet.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {productMedia.map((m: any, index: number) => {
+                          const isProcessing = processingId === m.id;
+                          return (
+                            <div key={m.id} className="relative group rounded-lg border border-border bg-surface p-3 flex flex-col gap-3">
+                              {/* Loading Overlay */}
+                              {isProcessing && (
+                                <div className="absolute inset-0 bg-background/80 z-20 flex items-center justify-center rounded-lg backdrop-blur-sm">
+                                  <div className="w-6 h-6 border-4 border-brand-accent border-t-transparent rounded-full animate-spin" />
+                                </div>
+                              )}
+
+                              <div className="relative aspect-video rounded-md overflow-hidden bg-background">
+                                <img src={m.url} alt={m.altText} className="w-full h-full object-cover" />
+                                {index === 0 && (
+                                  <span className="absolute top-2 left-2 bg-brand-accent text-black text-[10px] font-bold px-2 py-1 rounded">Primary</span>
+                                )}
+                              </div>
+                              
+                              <div className="flex-1 flex flex-col gap-2">
+                                <input 
+                                  defaultValue={m.altText || ""}
+                                  placeholder="Alt text"
+                                  onBlur={(e) => {
+                                    if (e.target.value !== m.altText) {
+                                      handleAltTextChange(m.id, m.productId, e.target.value);
+                                    }
+                                  }}
+                                  className="w-full h-8 bg-background border border-border rounded-md px-2 text-xs focus:outline-none focus:border-brand-accent transition-colors"
+                                />
+                                
+                                <div className="flex justify-between items-center mt-1">
+                                  <div className="flex gap-1">
+                                    <button 
+                                      onClick={() => handleMoveMedia(index, 'up')}
+                                      disabled={index === 0}
+                                      className="p-1.5 bg-background border border-border rounded text-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                      title="Move Up"
+                                    >
+                                      <ArrowUp className="w-3 h-3" />
+                                    </button>
+                                    <button 
+                                      onClick={() => handleMoveMedia(index, 'down')}
+                                      disabled={index === productMedia.length - 1}
+                                      className="p-1.5 bg-background border border-border rounded text-foreground/70 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                      title="Move Down"
+                                    >
+                                      <ArrowDown className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                  <button 
+                                    onClick={() => handleDeleteMedia(m.id)} 
+                                    className="p-1.5 bg-red-500/10 text-red-500 rounded hover:bg-red-500/20 transition-colors"
+                                    title="Delete"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'features' && (
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                      <div className="flex-1 space-y-2">
+                        <input 
+                          value={featureTitle}
+                          onChange={e => setFeatureTitle(e.target.value)}
+                          placeholder="Feature Title"
+                          className="w-full h-10 bg-background border border-border rounded-md px-3 text-sm focus:border-brand-accent outline-none"
+                        />
+                        <input 
+                          value={featureDesc}
+                          onChange={e => setFeatureDesc(e.target.value)}
+                          placeholder="Short description (optional)"
+                          className="w-full h-10 bg-background border border-border rounded-md px-3 text-sm focus:border-brand-accent outline-none"
+                        />
+                      </div>
+                      <button 
+                        onClick={handleAddFeature}
+                        disabled={!featureTitle}
+                        className="bg-brand-accent text-black px-4 rounded-md font-medium text-sm disabled:opacity-50 h-10"
                       >
-                        <option value="">Select a category</option>
-                        {categories.map(cat => (
-                          <option key={cat.id} value={cat.id}>{cat.name}</option>
-                        ))}
-                      </select>
-                      {errors.categoryId && <p className="text-xs text-red-500">{errors.categoryId.message}</p>}
+                        Add
+                      </button>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Status</label>
-                      <select 
-                        {...register("status")}
-                        className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                      >
-                        <option value="DRAFT">Draft</option>
-                        <option value="PUBLISHED">Published</option>
-                        <option value="ARCHIVED">Archived</option>
-                      </select>
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Icon Key (Lucide)</label>
-                      <input 
-                        {...register("iconKey")}
-                        className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                      />
+                    <div className="space-y-2">
+                      {productFeatures.length === 0 ? (
+                        <div className="text-center py-10 border border-dashed border-border rounded-lg text-foreground/50 text-sm">
+                          No features added yet.
+                        </div>
+                      ) : (
+                        productFeatures.map((f: any) => (
+                          <div key={f.id} className="flex justify-between items-start bg-background border border-border p-3 rounded-lg">
+                            <div>
+                              <h4 className="font-medium text-sm">{f.title}</h4>
+                              {f.description && <p className="text-xs text-foreground/70 mt-1">{f.description}</p>}
+                            </div>
+                            <button onClick={() => handleDeleteFeature(f.id)} className="text-red-400 hover:text-red-500 p-1">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))
+                      )}
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">Display Order</label>
-                      <input 
-                        type="number"
-                        {...register("displayOrder", { valueAsNumber: true })}
-                        className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
-                      />
-                    </div>
                   </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Short Description</label>
-                    <textarea 
-                      {...register("shortDescription")}
-                      className="w-full bg-background border border-border rounded-md p-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors h-20 resize-none"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Detailed Description</label>
-                    <textarea 
-                      {...register("description")}
-                      className="w-full bg-background border border-border rounded-md p-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors h-32 resize-none"
-                    />
-                  </div>
-                </form>
+                )}
               </div>
 
-              <div className="p-6 border-t border-border flex justify-end gap-3 bg-surface/50 rounded-b-2xl shrink-0">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium border border-border bg-background rounded-md hover:bg-border/50 transition-colors">
-                  Cancel
-                </button>
-                <button type="submit" form="product-form" className="px-4 py-2 text-sm font-medium bg-brand-accent text-black rounded-md hover:bg-brand-accent/90 transition-colors flex items-center gap-2">
-                  <Check className="w-4 h-4" />
-                  Save Product
-                </button>
+              <div className="p-6 border-t border-border flex justify-between items-center bg-surface/50 rounded-b-2xl shrink-0">
+                <div className="text-xs text-foreground/50">
+                  {activeTab !== 'details' && "Changes in Media/Features save automatically."}
+                </div>
+                <div className="flex gap-3">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium border border-border bg-background rounded-md hover:bg-border/50 transition-colors">
+                    Close
+                  </button>
+                  {activeTab === 'details' && (
+                    <button type="submit" form="product-form" className="px-4 py-2 text-sm font-medium bg-brand-accent text-black rounded-md hover:bg-brand-accent/90 transition-colors flex items-center gap-2">
+                      <Check className="w-4 h-4" />
+                      Save Details
+                    </button>
+                  )}
+                </div>
               </div>
             </motion.div>
           </div>

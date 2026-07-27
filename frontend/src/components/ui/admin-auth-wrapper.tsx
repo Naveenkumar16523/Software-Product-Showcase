@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import Link from "next/link";
-import { LayoutDashboard, Users, Briefcase, LogOut, Code, Menu, X, Package, MonitorPlay, Mailbox, BookOpen, MessageSquareQuote, HelpCircle, BadgeDollarSign, Building2, Contact } from "lucide-react";
-import { Toaster } from "react-hot-toast";
+import { LayoutDashboard, Users, Briefcase, LogOut, Code, Menu, X, Package, MonitorPlay, Mailbox, BookOpen, MessageSquareQuote, HelpCircle, BadgeDollarSign, Building2, Contact, Tags } from "lucide-react";
+import { Toaster, toast } from "react-hot-toast";
+import { useDemoRequests } from "@/hooks/queries/useDemoRequests";
 
 export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -13,6 +14,9 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unseenDemoCount, setUnseenDemoCount] = useState(0);
+
+  const { data: demoRequests = [] } = useDemoRequests();
 
   const isLoginPage = pathname === "/admin/login";
 
@@ -39,6 +43,54 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
     checkAuth();
   }, [pathname, router, isLoginPage]);
 
+  // Request Notification permission once on load
+  useEffect(() => {
+    if (isAuthenticated && "Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, [isAuthenticated]);
+
+  // Handle live notifications and unseen badge
+  useEffect(() => {
+    if (!isAuthenticated || demoRequests.length === 0) return;
+
+    const maxId = Math.max(...demoRequests.map(r => r.id));
+    const lastSeenId = parseInt(localStorage.getItem("demoRequests:lastSeenId") || "0", 10);
+
+    if (pathname === "/admin/demo-requests") {
+      // Admin is on the page, update seen ID
+      localStorage.setItem("demoRequests:lastSeenId", maxId.toString());
+      setUnseenDemoCount(0);
+    } else {
+      // Calculate unseen count
+      const unseen = demoRequests.filter(r => r.id > lastSeenId).length;
+      setUnseenDemoCount(unseen);
+    }
+
+    // Handle notifications for genuinely new items
+    const lastNotifiedId = parseInt(sessionStorage.getItem("demoRequests:lastNotifiedId") || localStorage.getItem("demoRequests:lastSeenId") || "0", 10);
+    const unnotified = demoRequests.filter(r => r.id > lastNotifiedId);
+    
+    if (unnotified.length > 0) {
+      sessionStorage.setItem("demoRequests:lastNotifiedId", maxId.toString());
+      const req = unnotified[0]; // notify for the most recent unnotified one
+      
+      if (document.hidden) {
+        if ("Notification" in window && Notification.permission === "granted") {
+          const n = new Notification("New demo request", {
+            body: `${req.name} from ${req.companyName}`
+          });
+          n.onclick = () => {
+            window.focus();
+            router.push("/admin/demo-requests");
+          };
+        }
+      } else {
+        toast(`New demo request from ${req.name}`, { icon: '🔔' });
+      }
+    }
+  }, [demoRequests, isAuthenticated, pathname, router]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -58,11 +110,12 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: <LayoutDashboard className="w-5 h-5" /> },
     { name: "Leads", href: "/admin/leads", icon: <Users className="w-5 h-5" /> },
-    { name: "Demo Requests", href: "/admin/demo-requests", icon: <MonitorPlay className="w-5 h-5" /> },
+    { name: "Demo Requests", href: "/admin/demo-requests", icon: <MonitorPlay className="w-5 h-5" />, count: unseenDemoCount },
     { name: "Newsletter", href: "/admin/newsletter", icon: <Mailbox className="w-5 h-5" /> },
     { name: "Portfolio", href: "/admin/portfolio", icon: <Briefcase className="w-5 h-5" /> },
     { name: "Services", href: "/admin/services", icon: <Code className="w-5 h-5" /> },
     { name: "Products", href: "/admin/products", icon: <Package className="w-5 h-5" /> },
+    { name: "Categories", href: "/admin/product-categories", icon: <Tags className="w-5 h-5" /> },
     { name: "Blog", href: "/admin/blog", icon: <BookOpen className="w-5 h-5" /> },
     { name: "Testimonials", href: "/admin/testimonials", icon: <MessageSquareQuote className="w-5 h-5" /> },
     { name: "Pricing", href: "/admin/pricing", icon: <BadgeDollarSign className="w-5 h-5" /> },
@@ -107,14 +160,21 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
                 key={item.name}
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors ${
+                className={`flex items-center justify-between px-3 py-2.5 rounded-md transition-colors ${
                   isActive 
                     ? "bg-brand-accent text-black font-medium" 
                     : "text-foreground/70 hover:bg-white/5 hover:text-foreground"
                 }`}
               >
-                {item.icon}
-                {item.name}
+                <div className="flex items-center gap-3">
+                  {item.icon}
+                  {item.name}
+                </div>
+                {(item.count ?? 0) > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {item.count}
+                  </span>
+                )}
               </Link>
             );
           })}

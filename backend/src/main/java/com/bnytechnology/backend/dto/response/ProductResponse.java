@@ -1,5 +1,7 @@
 package com.bnytechnology.backend.dto.response;
 
+import java.util.List;
+
 public class ProductResponse {
     private Long id;
     private String name;
@@ -11,6 +13,7 @@ public class ProductResponse {
     private String status;
     private String iconKey;
     private Integer displayOrder;
+    private List<ProductMediaResponse> media;
 
     // Getters and setters
     public Long getId() { return id; }
@@ -33,4 +36,6 @@ public class ProductResponse {
     public void setIconKey(String iconKey) { this.iconKey = iconKey; }
     public Integer getDisplayOrder() { return displayOrder; }
     public void setDisplayOrder(Integer displayOrder) { this.displayOrder = displayOrder; }
+    public List<ProductMediaResponse> getMedia() { return media; }
+    public void setMedia(List<ProductMediaResponse> media) { this.media = media; }
 }

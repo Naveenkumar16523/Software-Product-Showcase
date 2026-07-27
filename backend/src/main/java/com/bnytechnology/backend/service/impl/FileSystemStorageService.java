@@ -34,6 +34,12 @@ public class FileSystemStorageService implements StorageService {
             if (file.isEmpty()) {
                 throw new RuntimeException("Failed to store empty file.");
             }
+            
+            String contentType = file.getContentType();
+            if (contentType == null || !(contentType.startsWith("image/") || contentType.equals("image/svg+xml"))) {
+                throw new RuntimeException("Only image files are allowed.");
+            }
+            
             String originalFilename = file.getOriginalFilename();
             String extension = "";
             if (originalFilename != null && originalFilename.contains(".")) {

@@ -18,7 +18,7 @@ import java.util.function.Function;
 @SuppressWarnings("null")
 public class JwtService {
 
-    @Value("${jwt.secret:generate_a_secure_base64_secret_key_that_is_at_least_32_bytes_long_like_a_random_sha256_hash}")
+    @Value("${jwt.secret}")
     private String secretKey;
 
     private static final long JWT_EXPIRATION = 86400000; // 24 hours

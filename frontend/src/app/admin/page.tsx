@@ -61,10 +61,10 @@ export default function AdminDashboard() {
       desc: "Recent inquiries"
     },
     { 
-      title: "Portfolio Projects", 
-      value: stats.totalPortfolio, 
+      title: "Total Products", 
+      value: stats.totalProducts || 0, 
       icon: <Briefcase className="w-6 h-6 text-brand-accent" />,
-      desc: "Published case studies"
+      desc: "Published products"
     },
   ];
 

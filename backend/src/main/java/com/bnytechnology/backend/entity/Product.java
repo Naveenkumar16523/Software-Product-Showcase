@@ -1,6 +1,7 @@
 package com.bnytechnology.backend.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -36,6 +37,13 @@ public class Product extends Auditable {
     @Column(name = "display_order")
     private Integer displayOrder;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OrderBy("displayOrder ASC")
+    private List<ProductMedia> media;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -63,4 +71,10 @@ public class Product extends Auditable {
 
     public Integer getDisplayOrder() { return displayOrder; }
     public void setDisplayOrder(Integer displayOrder) { this.displayOrder = displayOrder; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
+
+    public List<ProductMedia> getMedia() { return media; }
+    public void setMedia(List<ProductMedia> media) { this.media = media; }
 }

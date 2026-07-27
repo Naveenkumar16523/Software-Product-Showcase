@@ -6,7 +6,7 @@ export function useProductCategories() {
   return useQuery<ProductCategory[]>({
     queryKey: ["admin", "product-categories"],
     queryFn: async () => {
-      const res = await apiFetch("/api/v1/product-categories");
+      const res = await apiFetch("/api/v1/admin/product-categories");
       const json = await res.json();
       return json.content || json;
     },

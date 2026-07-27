@@ -27,7 +27,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductResponse> findAll() {
-        return repository.findAll().stream()
+        return repository.findByDeletedFalse().stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductResponse> findAllPublished() {
+        return repository.findByStatusAndDeletedFalse(com.bnytechnology.backend.entity.ProductStatus.PUBLISHED).stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
@@ -35,9 +43,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public ProductResponse findById(Long id) {
-        return repository.findById(id)
+        return repository.findByIdAndDeletedFalse(id)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProductResponse findByIdPublished(Long id) {
+        return repository.findByIdAndStatusAndDeletedFalse(id, com.bnytechnology.backend.entity.ProductStatus.PUBLISHED)
+                .map(mapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("Product not found or not published"));
     }
 
     @Override
@@ -48,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse update(Long id, ProductRequest request) {
-        Product existing = repository.findById(id)
+        Product existing = repository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         
         // This should ideally use mapstruct update methods, for now recreating to keep scaffold simple
@@ -63,6 +79,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(Long id) {
-        repository.deleteById(id);
+        Product existing = repository.findByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        existing.setDeleted(true);
+        repository.save(existing);
     }
 }

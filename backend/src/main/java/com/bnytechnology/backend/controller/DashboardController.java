@@ -8,6 +8,7 @@ import com.bnytechnology.backend.repository.ContactSubmissionRepository;
 import com.bnytechnology.backend.repository.DemoRequestRepository;
 import com.bnytechnology.backend.repository.PortfolioItemRepository;
 import com.bnytechnology.backend.repository.AppUserRepository;
+import com.bnytechnology.backend.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,15 +28,18 @@ public class DashboardController {
     private final DemoRequestRepository demoRepo;
     private final PortfolioItemRepository portfolioRepo;
     private final AppUserRepository userRepo;
+    private final ProductRepository productRepo;
 
     public DashboardController(ContactSubmissionRepository contactRepo, 
                                DemoRequestRepository demoRepo, 
                                PortfolioItemRepository portfolioRepo,
-                               AppUserRepository userRepo) {
+                               AppUserRepository userRepo,
+                               ProductRepository productRepo) {
         this.contactRepo = contactRepo;
         this.demoRepo = demoRepo;
         this.portfolioRepo = portfolioRepo;
         this.userRepo = userRepo;
+        this.productRepo = productRepo;
     }
 
     @GetMapping("/stats")
@@ -80,6 +84,7 @@ public class DashboardController {
                 "totalLeads", totalLeads,
                 "newLeadsThisWeek", newLeadsThisWeek,
                 "totalPortfolio", portfolioRepo.count(),
+                "totalProducts", productRepo.count(),
                 "activeUsers", userRepo.count(),
                 "funnel", funnel,
                 "weeklyLeadCounts", weeklyLeadCounts

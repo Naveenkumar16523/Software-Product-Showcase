@@ -22,5 +22,7 @@ export function useDemoRequests() {
       }
       return res.json();
     },
+    refetchInterval: 30000,
+    refetchOnWindowFocus: true,
   });
 }

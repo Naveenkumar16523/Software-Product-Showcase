@@ -18,11 +18,11 @@ public class PublicProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAll() {
-        return ResponseEntity.ok(service.findAll());
+        return ResponseEntity.ok(service.findAllPublished());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(service.findByIdPublished(id));
     }
 }

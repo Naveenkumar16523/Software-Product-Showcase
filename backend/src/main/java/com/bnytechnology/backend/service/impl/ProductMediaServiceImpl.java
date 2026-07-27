@@ -26,8 +26,14 @@ public class ProductMediaServiceImpl implements ProductMediaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductMediaResponse> findAll() {
-        return repository.findAll().stream()
+    public List<ProductMediaResponse> findAll(Long productId) {
+        List<ProductMedia> medias;
+        if (productId != null) {
+            medias = repository.findByProductIdOrderByDisplayOrderAsc(productId);
+        } else {
+            medias = repository.findAll();
+        }
+        return medias.stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
