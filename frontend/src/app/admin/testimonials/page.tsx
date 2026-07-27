@@ -16,10 +16,10 @@ export default function AdminTestimonials() {
   const [editingItem, setEditingItem] = useState<Testimonial | null>(null);
 
   const [formData, setFormData] = useState<Partial<Testimonial>>({
-    clientName: "",
-    clientRole: "",
-    clientCompany: "",
-    content: "",
+    authorName: "",
+    authorRole: "",
+    authorCompany: "",
+    quote: "",
     rating: 5,
     avatarUrl: "",
   });
@@ -31,7 +31,7 @@ export default function AdminTestimonials() {
     } else {
       setEditingItem(null);
       setFormData({
-        clientName: "", clientRole: "", clientCompany: "", content: "", rating: 5, avatarUrl: ""
+        authorName: "", authorRole: "", authorCompany: "", quote: "", rating: 5, avatarUrl: ""
       });
     }
     setIsModalOpen(true);
@@ -135,20 +135,20 @@ export default function AdminTestimonials() {
                     <td className="p-4 align-top">
                       <div className="flex items-center gap-3">
                         {item.avatarUrl ? (
-                          <img src={item.avatarUrl} alt={item.clientName} className="w-10 h-10 rounded-full object-cover border border-border" />
+                          <img src={item.avatarUrl} alt={item.authorName} className="w-10 h-10 rounded-full object-cover border border-border" />
                         ) : (
                           <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center border border-border text-xs font-bold text-foreground/50">
-                            {item.clientName.substring(0,2).toUpperCase()}
+                            {(item.authorName || '').substring(0,2).toUpperCase()}
                           </div>
                         )}
                         <div>
-                          <div className="font-medium text-foreground">{item.clientName}</div>
-                          <div className="text-foreground/50 text-xs">{item.clientRole} @ {item.clientCompany}</div>
+                          <div className="font-medium text-foreground">{item.authorName}</div>
+                          <div className="text-foreground/50 text-xs">{item.authorRole} @ {item.authorCompany}</div>
                         </div>
                       </div>
                     </td>
                     <td className="p-4 align-top">
-                      <p className="text-foreground/80 max-w-lg line-clamp-2">{item.content}</p>
+                      <p className="text-foreground/80 max-w-lg line-clamp-2">{item.quote}</p>
                     </td>
                     <td className="p-4 align-top text-right whitespace-nowrap">
                       <button onClick={() => handleOpenModal(item)} className="p-2 text-foreground/50 hover:text-foreground transition-colors mr-2">
@@ -198,8 +198,8 @@ export default function AdminTestimonials() {
                       <input 
                         type="text" 
                         required 
-                        value={formData.clientName} 
-                        onChange={e => setFormData({...formData, clientName: e.target.value})} 
+                        value={formData.authorName} 
+                        onChange={e => setFormData({...formData, authorName: e.target.value})} 
                         className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
                       />
                     </div>
@@ -208,8 +208,8 @@ export default function AdminTestimonials() {
                       <input 
                         type="text" 
                         required 
-                        value={formData.clientCompany} 
-                        onChange={e => setFormData({...formData, clientCompany: e.target.value})} 
+                        value={formData.authorCompany} 
+                        onChange={e => setFormData({...formData, authorCompany: e.target.value})} 
                         className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
                       />
                     </div>
@@ -221,8 +221,8 @@ export default function AdminTestimonials() {
                       <input 
                         type="text" 
                         required 
-                        value={formData.clientRole} 
-                        onChange={e => setFormData({...formData, clientRole: e.target.value})} 
+                        value={formData.authorRole} 
+                        onChange={e => setFormData({...formData, authorRole: e.target.value})} 
                         className="w-full h-11 bg-background border border-border rounded-md px-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors"
                       />
                     </div>
@@ -241,11 +241,11 @@ export default function AdminTestimonials() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Content</label>
+                    <label className="text-sm font-medium text-foreground">Quote</label>
                     <textarea 
                       required 
-                      value={formData.content} 
-                      onChange={e => setFormData({...formData, content: e.target.value})} 
+                      value={formData.quote} 
+                      onChange={e => setFormData({...formData, quote: e.target.value})} 
                       className="w-full bg-background border border-border rounded-md p-4 text-foreground focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-colors h-24 resize-none"
                     />
                   </div>

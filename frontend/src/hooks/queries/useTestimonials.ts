@@ -3,12 +3,14 @@ import { apiFetch } from "@/lib/api";
 
 export interface Testimonial {
   id: number;
-  clientName: string;
-  clientRole: string;
-  clientCompany: string;
-  content: string;
+  authorName: string;
+  authorRole: string;
+  authorCompany: string;
+  quote: string;
   rating: number;
   avatarUrl: string;
+  isFeatured: boolean;
+  displayOrder: number;
   createdAt: string;
   updatedAt: string;
 }
