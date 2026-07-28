@@ -13,10 +13,13 @@ import {
 import { useUIStore } from "@/store/useUIStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import DemoRequestModal from "@/components/ui/DemoRequestModal";
 
 export default function AppNavbar() {
   const router = useRouter();
   const { isMobileMenuOpen, toggleMobileMenu, setMobileMenuOpen } = useUIStore();
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
 
   const navItems = [
     { name: "Home", link: "/" },
@@ -38,7 +41,7 @@ export default function AppNavbar() {
         <div className="flex items-center gap-4">
           <NavbarButton 
             variant="primary" 
-            onClick={() => router.push('/request-demo')}
+            onClick={() => setIsDemoModalOpen(true)}
             className="border-none shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
           >
             Request Demo
@@ -74,7 +77,7 @@ export default function AppNavbar() {
             <NavbarButton
               onClick={() => {
                 setMobileMenuOpen(false);
-                router.push('/request-demo');
+                setIsDemoModalOpen(true);
               }}
               variant="primary"
               className="w-full h-12 border-none shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]"
@@ -84,6 +87,10 @@ export default function AppNavbar() {
           </div>
         </MobileNavMenu>
       </MobileNav>
+      <DemoRequestModal 
+        isOpen={isDemoModalOpen} 
+        onClose={() => setIsDemoModalOpen(false)} 
+      />
     </Navbar>
   );
 }
