@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Footer } from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 import AppNavbar from "@/components/layout/Navbar";
 
 export default function PrivacyPolicy() {
