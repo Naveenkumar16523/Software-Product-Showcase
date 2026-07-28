@@ -5,6 +5,7 @@ import { CheckCircle2, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import emailjs from "@emailjs/browser";
 
 const demoSchema = z.object({
   firstName: z.string().min(2, "First name is required"),
@@ -40,28 +41,34 @@ export default function RequestDemoPage() {
     }
     
     try {
-      const compiledMessage = `
-Company: ${data.company}
-Phone: ${data.phone}
-Industry: ${data.industry}
-Size: ${data.businessSize}
-Interest: ${data.productInterest}
-Message: ${data.message || 'No additional message'}
-      `;
+      const templateParams = {
+        name: `${data.firstName} ${data.lastName}`,
+        email: data.email,
+        phone: data.phone,
+        company: data.company,
+        product: data.productInterest,
+        demo_date: "Not specified",
+        demo_time: "Not specified",
+        message: `${data.message || 'No additional message'}\n\nIndustry: ${data.industry}\nSize: ${data.businessSize}`,
+        submitted_at: new Date().toLocaleString(),
+      };
 
-      const response = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1/demo-requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: `${data.firstName} ${data.lastName}`,
-          email: data.email,
-          message: compiledMessage,
-          source: 'demo_request'
-        }),
-      });
+      // Send Primary Email to Admin
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
+        templateParams,
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to submit request. Please try again.");
+      // Send Auto-Reply to Customer
+      if (process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID) {
+        await emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+          process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID,
+          templateParams,
+          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
+        );
       }
 
       setIsSuccess(true);
