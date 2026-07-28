@@ -1,12 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import { Footer } from "@/components/layout/Footer";
-import { MainNav } from "@/components/layout/MainNav";
+import AppNavbar from "@/components/layout/Navbar";
 
 export default function PrivacyPolicy() {
   return (
     <div className="bg-background min-h-screen flex flex-col">
-      <MainNav />
+      <AppNavbar />
       <main className="flex-1 pt-32 pb-16 px-4 md:px-8">
         <div className="max-w-3xl mx-auto prose prose-invert prose-brand">
           <h1 className="text-4xl font-bold mb-8 text-foreground">Privacy Policy</h1>
