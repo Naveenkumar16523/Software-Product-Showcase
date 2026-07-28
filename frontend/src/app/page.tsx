@@ -15,6 +15,8 @@ import { products } from "@/lib/data/products";
 import { industries } from "@/lib/data/industries";
 import { Scanline } from "@/components/effects/Scanline";
 import BorderGlow from "@/components/ui/border-glow";
+import emailjs from "@emailjs/browser";
+import toast from "react-hot-toast";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -552,10 +554,54 @@ function DemoRequestSection() {
   const y = useTransform(scrollYProgress, [0, 1], ["0px", "30px"]);
   const reduce = useReducedMotion();
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const templateParams = {
+        name: `${data.firstName} ${data.lastName}`,
+        email: data.email,
+        company: data.company,
+        phone: "Not provided",
+        product: "General Demo Request",
+        demo_date: "Not specified",
+        demo_time: "Not specified",
+        message: "Requested via Homepage Demo Section",
+        submitted_at: new Date().toLocaleString(),
+      };
+
+      // Send Primary Email to Admin
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
+        templateParams,
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
+      );
+
+      // Send Auto-Reply to Customer
+      if (process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID) {
+        await emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+          process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID,
+          templateParams,
+          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
+        );
+      }
+
+      setSubmitted(true);
+      toast.success("Demo request submitted successfully!");
+    } catch (error) {
+      console.error("FAILED...", error);
+      toast.error("Failed to send demo request. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -590,23 +636,23 @@ function DemoRequestSection() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-foreground/80">First Name</label>
-                    <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="John" required />
+                    <input type="text" name="firstName" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="John" required disabled={isSubmitting} />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-foreground/80">Last Name</label>
-                    <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="Doe" required />
+                    <input type="text" name="lastName" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="Doe" required disabled={isSubmitting} />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-foreground/80">Work Email</label>
-                  <input type="email" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="john@company.com" required />
+                  <input type="email" name="email" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="john@company.com" required disabled={isSubmitting} />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-foreground/80">Company Name</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="Acme Retail" required />
+                  <input type="text" name="company" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="Acme Retail" required disabled={isSubmitting} />
                 </div>
-                <button type="submit" data-cursor="hover" className="w-full py-4 bg-brand-accent hover:bg-brand-accent/90 text-black font-bold rounded-lg transition-colors text-lg shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)]">
-                  Request a demo
+                <button type="submit" disabled={isSubmitting} data-cursor="hover" className="w-full py-4 bg-brand-accent hover:bg-brand-accent/90 text-black font-bold rounded-lg transition-colors text-lg shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)] disabled:opacity-50">
+                  {isSubmitting ? "Submitting..." : "Request a demo"}
                 </button>
                 <p className="text-xs text-foreground/50 text-center font-mono uppercase tracking-widest mt-4">By submitting, you agree to our Terms.</p>
               </form>

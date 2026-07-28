@@ -33,8 +33,9 @@ export default function AppNavbar() {
   ];
 
   return (
-    <Navbar>
-      {/* Desktop Navigation */}
+    <>
+      <Navbar>
+        {/* Desktop Navigation */}
       <NavBody>
         <NavbarLogo />
         <NavItems items={navItems} />
@@ -87,10 +88,11 @@ export default function AppNavbar() {
           </div>
         </MobileNavMenu>
       </MobileNav>
-      <DemoRequestModal 
-        isOpen={isDemoModalOpen} 
-        onClose={() => setIsDemoModalOpen(false)} 
-      />
     </Navbar>
+    <DemoRequestModal 
+      isOpen={isDemoModalOpen} 
+      onClose={() => setIsDemoModalOpen(false)} 
+    />
+    </>
   );
 }
