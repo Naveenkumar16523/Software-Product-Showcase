@@ -3,7 +3,6 @@ import { motion, useScroll, useTransform, useReducedMotion, useSpring, useMotion
 import Link from "next/link";
 import Image from "next/image";
 import { Hero } from "@/components/home/Hero";
-import LoadingScreen from "@/components/effects/LoadingScreen";
 import { LogoMarquee } from "@/components/effects/LogoMarquee";
 import { ArrowRight, CheckCircle2, ChevronRight, Cloud, Database, Package, Shield, Star, Store, Users, Zap, Cpu, ScanLine, Receipt, BarChart, X } from "lucide-react";
 import React, { useRef, MouseEvent, useState } from "react";
@@ -21,28 +20,18 @@ import toast from "react-hot-toast";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
-
   return (
-    <>
-      <AnimatePresence>
-        {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
-      </AnimatePresence>
-      
-      {!isLoading && (
-        <div className="flex flex-col min-h-screen bg-bg">
-          <Hero />
-          <LogoMarquee />
-          <ProductsSection />
-          <IndustriesSection />
-          <WhyChooseUsSection />
-          <SuccessStoriesSection />
-          <TestimonialsSection />
-          <StatsSection />
-          <DemoRequestSection />
-        </div>
-      )}
-    </>
+    <div className="flex flex-col min-h-screen bg-bg">
+      <Hero />
+      <LogoMarquee />
+      <ProductsSection />
+      <IndustriesSection />
+      <WhyChooseUsSection />
+      <SuccessStoriesSection />
+      <TestimonialsSection />
+      <StatsSection />
+      <DemoRequestSection />
+    </div>
   );
 }
 
