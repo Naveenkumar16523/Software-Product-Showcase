@@ -504,10 +504,10 @@ function Counter({ value, suffix = "", prefix = "", decimals = 0 }: { value: num
 
 function StatsSection() {
   const stats = [
-    { label: "Businesses", value: 0, suffix: "+" },
-    { label: "Countries", value: 0, suffix: "+" },
-    { label: "Transactions Daily", value: 0, suffix: "M+" },
-    { label: "Uptime Guarantee", value: 0, suffix: "%", decimals: 1 },
+    { label: "Businesses", value: 15, suffix: "+" },
+    { label: "Countries", value: 3, suffix: "+" },
+    { label: "Transactions Daily", value: 10, suffix: "K+" },
+    { label: "Uptime Guarantee", value: 99.9, suffix: "%", decimals: 1 },
   ];
   
   const reduce = useReducedMotion();
