@@ -19,7 +19,8 @@ export default async function ResourcesPage() {
   try {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
     const res = await fetch(`${API_URL}/api/v1/blog-posts`, {
-      next: { revalidate: 60 } // Revalidate every minute
+      next: { revalidate: 60 }, // Revalidate every minute
+      signal: AbortSignal.timeout(3000) // Fail fast during build if API is unreachable
     });
     if (res.ok) {
       fetchedPosts = await res.json();
