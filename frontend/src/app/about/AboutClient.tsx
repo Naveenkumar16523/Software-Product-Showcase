@@ -2,7 +2,7 @@
 import { motion, useScroll, useSpring } from "framer-motion";
 import Image from "next/image";
 import { StatsBlock } from "@/components/ui/stats-block";
-import { ArrowRight, MapPin, Phone, Quote } from "lucide-react";
+import { ArrowRight, MapPin, Phone, Quote, Megaphone, Smartphone, PenTool } from "lucide-react";
 import { SiX, SiGithub } from "@icons-pack/react-simple-icons";
 
 const SiLinkedin = ({ size = 24 }: { size?: number }) => (
@@ -101,6 +101,79 @@ export default function About() {
           >
             We are a team of passionate engineers and designers dedicated to building software that empowers enterprises.
           </motion.p>
+        </div>
+      </section>
+
+      {/* Company Intro Section */}
+      <section className="py-20 relative">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-display font-bold mb-6 text-brand-accent">Digital Marketing That Stands the Test of Time.</h2>
+          <p className="text-lg md:text-xl font-light text-foreground/90 leading-relaxed mb-6">
+            We are here to manage your promotion activities with experience. If you are looking for a Chennai based web designer that can also deliver SEO, SMO and web development, you have come to the right place. Actually, we have developed with fundamental principles of offering a Seo service that assists client to succeed in their business. We have sustained to study and improve our process as the industry grows. Beside the way, we have also created the advanced quality control and reporting, a cutting edge content development, internal and external constant education for our staffs and marketing team. Presently, we are one among the biggest pools of online marketing professional and we have more than 100 dedicated team members right now. We lead by a well-experienced management team that offers you a great support and strategic direction for a company.
+          </p>
+          <p className="text-lg md:text-xl font-light text-foreground/90 leading-relaxed mb-8">
+            With our SEM services, you can obtain the benefits of ideal business power at minimal prices as well as low risk. We strictly follow the flexible methodology to keep pace with modifying algorithms of search engines to improve ROI within an ideal time period. Here are the excellent SEM services that we provide:
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto text-left">
+            {['Market analysis', 'Campaign management', 'Keyword research', 'Ad campaign', 'Analysis', 'Reporting'].map((service, i) => (
+              <div key={i} className="flex items-center gap-2 text-foreground/80">
+                <ArrowRight className="w-4 h-4 text-brand-accent" />
+                <span>{service}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What We're Offering Section */}
+      <section className="py-24 bg-background relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="h-[1px] w-12 bg-brand-accent"></div>
+              <span className="text-brand-accent font-semibold tracking-widest text-sm uppercase">Our Services List</span>
+              <div className="h-[1px] w-12 bg-brand-accent"></div>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display font-black text-foreground uppercase tracking-tight">What We&apos;re Offering</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {/* Card 1 */}
+            <div className="bg-surface border border-white/5 p-10 rounded-2xl text-center flex flex-col items-center hover:border-brand-accent/30 transition-colors group relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] group-hover:opacity-10 transition-opacity"></div>
+              <div className="mb-6 relative z-10">
+                <Megaphone className="w-16 h-16 text-brand-accent" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4 relative z-10 uppercase">Our Experts</h3>
+              <p className="text-foreground/70 leading-relaxed relative z-10 text-sm md:text-base">
+                Our experts also design a personalized SEM strategy to obtain the best possible results by considering the requirements, objectives and constraints of your business.
+              </p>
+            </div>
+
+            {/* Card 2 */}
+            <div className="bg-surface border border-white/5 p-10 rounded-2xl text-center flex flex-col items-center hover:border-brand-accent/30 transition-colors group relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] group-hover:opacity-10 transition-opacity"></div>
+              <div className="mb-6 relative z-10">
+                <Smartphone className="w-16 h-16 text-brand-accent" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4 relative z-10 uppercase">Our Aim</h3>
+              <p className="text-foreground/70 leading-relaxed relative z-10 text-sm md:text-base">
+                Our main aim is to get you a targeted traffic to your website with a great support of search engines, so that you can boost up your brand value and sales as well.
+              </p>
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-surface border border-white/5 p-10 rounded-2xl text-center flex flex-col items-center hover:border-brand-accent/30 transition-colors group relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] group-hover:opacity-10 transition-opacity"></div>
+              <div className="mb-6 relative z-10">
+                <PenTool className="w-16 h-16 text-brand-accent" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4 relative z-10 uppercase">Our Invention</h3>
+              <p className="text-foreground/70 leading-relaxed relative z-10 text-sm md:text-base">
+                Since our invention, we are one of the well qualified SMO service provider companies. We make a brand identity for your business and then market your products via our online medium.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

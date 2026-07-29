@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Hero } from "@/components/home/Hero";
 import { LogoMarquee } from "@/components/effects/LogoMarquee";
-import { ArrowRight, CheckCircle2, ChevronRight, Cloud, Database, Package, Shield, Star, Store, Users, Zap, Cpu, ScanLine, Receipt, BarChart, X } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronRight, Cloud, Database, Package, Shield, Star, Store, Users, Zap, Cpu, ScanLine, Receipt, BarChart, X, User, Mail, Building2 } from "lucide-react";
 import React, { useRef, MouseEvent, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -621,29 +621,37 @@ function DemoRequestSection() {
                 <p className="text-foreground/80 text-lg">Someone from the team will reach out within one business day to coordinate a time.</p>
               </div>
             ) : (
-              <form className="space-y-6" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-foreground/80">First Name</label>
-                    <input type="text" name="firstName" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="John" required disabled={isSubmitting} />
+              <form className="space-y-5" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="flex items-center gap-1.5 text-xs font-medium text-foreground/60 uppercase tracking-wider">
+                      <User className="w-3 h-3" /> First Name <span className="text-brand-accent">*</span>
+                    </label>
+                    <input type="text" name="firstName" className="w-full px-4 py-3 bg-foreground/[0.03] border border-foreground/10 rounded-xl text-foreground text-sm placeholder:text-foreground/20 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/20 transition-all hover:border-foreground/20 disabled:opacity-50" placeholder="John" required disabled={isSubmitting} />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-foreground/80">Last Name</label>
-                    <input type="text" name="lastName" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="Doe" required disabled={isSubmitting} />
+                  <div className="space-y-1.5">
+                    <label className="flex items-center gap-1.5 text-xs font-medium text-foreground/60 uppercase tracking-wider">
+                      <User className="w-3 h-3" /> Last Name <span className="text-brand-accent">*</span>
+                    </label>
+                    <input type="text" name="lastName" className="w-full px-4 py-3 bg-foreground/[0.03] border border-foreground/10 rounded-xl text-foreground text-sm placeholder:text-foreground/20 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/20 transition-all hover:border-foreground/20 disabled:opacity-50" placeholder="Doe" required disabled={isSubmitting} />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-foreground/80">Work Email</label>
-                  <input type="email" name="email" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="john@company.com" required disabled={isSubmitting} />
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-foreground/60 uppercase tracking-wider">
+                    <Mail className="w-3 h-3" /> Work Email <span className="text-brand-accent">*</span>
+                  </label>
+                  <input type="email" name="email" className="w-full px-4 py-3 bg-foreground/[0.03] border border-foreground/10 rounded-xl text-foreground text-sm placeholder:text-foreground/20 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/20 transition-all hover:border-foreground/20 disabled:opacity-50" placeholder="john@company.com" required disabled={isSubmitting} />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-foreground/80">Company Name</label>
-                  <input type="text" name="company" className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-amber-accent bg-background" placeholder="Acme Retail" required disabled={isSubmitting} />
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-foreground/60 uppercase tracking-wider">
+                    <Building2 className="w-3 h-3" /> Company Name <span className="text-brand-accent">*</span>
+                  </label>
+                  <input type="text" name="company" className="w-full px-4 py-3 bg-foreground/[0.03] border border-foreground/10 rounded-xl text-foreground text-sm placeholder:text-foreground/20 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/20 transition-all hover:border-foreground/20 disabled:opacity-50" placeholder="Acme Retail" required disabled={isSubmitting} />
                 </div>
-                <button type="submit" disabled={isSubmitting} data-cursor="hover" className="w-full py-4 bg-brand-accent hover:bg-brand-accent/90 text-black font-bold rounded-lg transition-colors text-lg shadow-[0_0_15px_rgba(163,230,53,0.3)] hover:shadow-[0_0_25px_rgba(163,230,53,0.5)] disabled:opacity-50">
+                <button type="submit" disabled={isSubmitting} data-cursor="hover" className="w-full py-3.5 bg-brand-accent hover:bg-brand-accent/90 text-black font-semibold rounded-xl transition-colors text-sm shadow-[0_0_15px_rgba(163,230,53,0.2)] hover:shadow-[0_0_25px_rgba(163,230,53,0.4)] disabled:opacity-50 mt-2">
                   {isSubmitting ? "Submitting..." : "Request a demo"}
                 </button>
-                <p className="text-xs text-foreground/50 text-center font-mono uppercase tracking-widest mt-4">By submitting, you agree to our Terms.</p>
+                <p className="text-[10px] text-foreground/40 text-center font-mono uppercase tracking-widest mt-4">By submitting, you agree to our Terms.</p>
               </form>
             )}
           </div>
