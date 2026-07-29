@@ -8,19 +8,19 @@ import { motion, AnimatePresence } from "framer-motion";
 const SLIDES = [
   {
     id: 1,
-    video: "/CRM_web_app_.mp4",
+    video: "/hero-videos/CRM_web_app_product_demo_202607291524.mp4",
     title: "Retail Store",
     thumb: "/crm-preview-v2.png",
   },
   {
     id: 2,
-    video: "/RC_car_website.mp4",
+    video: "/hero-videos/RC_car_website_walkthrough_1080p_202607291526.mp4",
     title: "Logistics",
     thumb: "/marque-preview.png",
   },
   {
     id: 3,
-    video: "/Luxury_spa_website.mp4",
+    video: "/hero-videos/Luxury_spa_website_walkthrough_1080p_202607291528.mp4",
     title: "POS System",
     thumb: "/salon-preview.jpg",
   }
@@ -94,9 +94,9 @@ export const Hero = () => {
       <AnimatePresence initial={false}>
         <motion.div
           key={activeSlide}
-          initial={{ opacity: 0, scale: 1, filter: "blur(10px)" }}
-          animate={{ opacity: 1, scale: 1.05, filter: "blur(0px)" }}
-          exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          exit={{ opacity: 0, filter: "blur(10px)" }}
           transition={{ duration: 1, ease: "easeInOut" }}
           className="absolute inset-0 z-0 origin-center"
         >
@@ -203,16 +203,16 @@ export const Hero = () => {
           </div>
         </div>
 
-        {/* Right Side: Thumbnail Navigation (Overlapping Cards) */}
-        <div className="hidden lg:flex items-center justify-end pointer-events-auto -space-x-8">
+        {/* Right Side: Thumbnail Navigation */}
+        <div className="hidden lg:flex items-center justify-end pointer-events-auto gap-5">
           {SLIDES.map((slide, idx) => (
             <div 
               key={slide.id}
               onClick={() => goToSlide(idx)}
-              className={`relative rounded-[32px] overflow-hidden cursor-pointer transition-all duration-500 group shadow-2xl ${
+              className={`relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 group shadow-xl ${
                 activeSlide === idx 
-                  ? 'w-[200px] h-[130px] border-2 border-brand-accent z-20 scale-100' 
-                  : 'w-[160px] h-[100px] z-10 opacity-60 hover:opacity-100 hover:z-30 scale-95'
+                  ? 'w-[160px] h-[100px] border-2 border-brand-accent scale-100 ring-4 ring-brand-accent/20' 
+                  : 'w-[130px] h-[80px] opacity-60 hover:opacity-100 scale-95'
               }`}
               style={{
                 transformOrigin: 'center center'
