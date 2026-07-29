@@ -204,15 +204,15 @@ export const Hero = () => {
         </div>
 
         {/* Right Side: Thumbnail Navigation */}
-        <div className="hidden lg:flex items-center justify-end pointer-events-auto gap-5">
+        <div className="hidden lg:flex items-center justify-end pointer-events-auto gap-4">
           {SLIDES.map((slide, idx) => (
             <div 
               key={slide.id}
               onClick={() => goToSlide(idx)}
-              className={`relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 group shadow-xl ${
+              className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 group shadow-xl ${
                 activeSlide === idx 
-                  ? 'w-[160px] h-[100px] border-2 border-brand-accent scale-100 ring-4 ring-brand-accent/20' 
-                  : 'w-[130px] h-[80px] opacity-60 hover:opacity-100 scale-95'
+                  ? 'w-32 h-20 border-2 border-brand-accent scale-100 ring-4 ring-brand-accent/20' 
+                  : 'w-24 h-16 opacity-60 hover:opacity-100 scale-95'
               }`}
               style={{
                 transformOrigin: 'center center'
