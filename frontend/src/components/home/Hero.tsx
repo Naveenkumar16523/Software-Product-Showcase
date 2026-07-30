@@ -112,120 +112,60 @@ export const Hero = () => {
       </AnimatePresence>
 
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/80 backdrop-blur-[2px] z-10" />
+      <div className="absolute inset-0 bg-black/40 z-10" />
 
       {/* Main Content */}
-      <section className="relative flex-1 flex flex-col items-center justify-center px-6 z-20 pt-20">
+      <section className="relative flex-1 flex flex-col items-start justify-start px-6 md:px-10 lg:px-16 z-20 pt-24 md:pt-32">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-col items-center text-center max-w-[850px] mx-auto space-y-8"
+          className="flex flex-col items-start text-left max-w-[650px] space-y-6"
         >
           {/* Badge */}
           <div className="inline-flex items-center rounded-full glass-border px-5 py-2 text-xs font-semibold text-white/90 uppercase tracking-[0.25em] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.5)] backdrop-blur-xl bg-white/5 border border-white/10">
-            Enterprise Grade Software
+            AI-POWERED ENTERPRISE SOFTWARE
           </div>
           
           {/* Headline */}
-          <h1 className="text-[40px] sm:text-[56px] lg:text-[72px] xl:text-[88px] font-display italic font-bold tracking-tight text-white leading-[1.05]">
-            Empower Your Retail Business with{" "}
-            <span className="bg-gradient-to-r from-brand-accent to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(163,230,53,0.3)]">Intelligent Solutions</span>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display italic font-bold tracking-tight text-white leading-[1.2]">
+            Smarter Solutions.<br/>
+            <span className="bg-gradient-to-r from-brand-accent to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(163,230,53,0.3)]">Stronger Retail.</span>
           </h1>
           
           {/* Description */}
-          <p className="text-base sm:text-lg lg:text-xl text-white/70 max-w-[650px] mx-auto leading-relaxed font-light">
-            Simplify retail operations, automate billing, optimize inventory, and accelerate business growth with our AI-powered enterprise platform.
+          <p className="text-base sm:text-lg text-white/90 max-w-[550px] leading-relaxed font-bold">
+            Simplify operations, optimize inventory, and accelerate growth with an intelligent retail management platform.
           </p>
           
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-5 pt-4 w-full sm:w-auto">
-            <Link href="/products" className="group relative inline-flex h-14 items-center justify-center rounded-full bg-brand-accent px-8 py-3.5 text-base font-bold text-black transition-all hover:bg-brand-accent/90 shadow-[0_0_20px_rgba(163,230,53,0.4)] hover:shadow-[0_0_35px_rgba(163,230,53,0.6)] hover:-translate-y-1 w-full sm:w-auto">
-              <Box className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+          <div className="flex flex-col sm:flex-row gap-4 pt-2 w-full sm:w-auto">
+            <Link href="/products" className="group relative inline-flex h-11 items-center justify-center rounded-full bg-brand-accent px-6 py-2.5 text-sm font-bold text-black transition-all hover:bg-brand-accent/90 shadow-[0_0_20px_rgba(163,230,53,0.4)] hover:shadow-[0_0_35px_rgba(163,230,53,0.6)] hover:-translate-y-1 w-full sm:w-auto">
+              <Box className="mr-2 h-4 w-4 transition-transform group-hover:scale-110" />
               Explore Products
             </Link>
           
-            <Link href="/request-demo" className="group relative inline-flex h-14 items-center justify-center rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white px-8 py-3.5 text-base font-medium transition-all hover:bg-white/10 hover:border-white/40 hover:-translate-y-1 w-full sm:w-auto shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-              Contact Sales <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            <Link href="/request-demo" className="group relative inline-flex h-11 items-center justify-center rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white px-6 py-2.5 text-sm font-medium transition-all hover:bg-white/10 hover:border-white/40 hover:-translate-y-1 w-full sm:w-auto shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+              Contact Sales <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </motion.div>
       </section>
 
-      {/* Carousel Controls & Indicators */}
-      <div className="absolute bottom-0 left-0 right-0 z-30 p-6 md:p-12 flex flex-col md:flex-row items-end justify-between gap-8 pointer-events-none">
-        
-        {/* Left Side: Progress & Navigation */}
-        <div className="flex flex-col gap-5 w-full md:w-auto pointer-events-auto">
-          {/* Slide Numbers */}
-          <div className="flex items-center gap-4 text-white/70 font-mono text-sm tracking-[0.2em] font-bold">
-            <span>0{activeSlide + 1}</span>
-            <span className="w-12 h-[1px] bg-white/20"></span>
-            <span>0{SLIDES.length}</span>
-          </div>
-
-          {/* Progress Bars */}
-          <div className="flex gap-2.5">
-            {SLIDES.map((slide, idx) => (
-              <div 
-                key={slide.id} 
-                className="w-8 h-1.5 bg-white/20 rounded-full overflow-hidden cursor-pointer relative"
-                onClick={() => goToSlide(idx)}
-              >
-                {activeSlide === idx && (
-                  <motion.div 
-                    className="absolute top-0 left-0 bottom-0 bg-brand-accent rounded-full"
-                    style={{ width: `${progress}%` }}
-                    initial={{ width: "0%" }}
-                  />
-                )}
-                {activeSlide > idx && (
-                  <div className="absolute top-0 left-0 bottom-0 right-0 bg-brand-accent rounded-full" />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Arrow Controls */}
-          <div className="flex gap-4 mt-2">
-            <button 
-              onClick={prevSlide}
-              className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-white backdrop-blur-md bg-transparent hover:bg-white/5 hover:border-white/40 hover:scale-105 transition-all"
-            >
-              <ChevronLeft className="w-6 h-6" strokeWidth={1.5} />
-            </button>
-            <button 
-              onClick={nextSlide}
-              className="w-14 h-14 rounded-full border border-white flex items-center justify-center text-white backdrop-blur-md bg-transparent hover:bg-white/10 hover:scale-105 transition-all"
-            >
-              <ChevronRight className="w-6 h-6" strokeWidth={1.5} />
-            </button>
-          </div>
-        </div>
-
-        {/* Right Side: Thumbnail Navigation */}
-        <div className="hidden lg:flex items-center justify-end pointer-events-auto gap-4">
-          {SLIDES.map((slide, idx) => (
-            <div 
-              key={slide.id}
-              onClick={() => goToSlide(idx)}
-              className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 group shadow-xl ${
-                activeSlide === idx 
-                  ? 'w-32 h-20 border-2 border-brand-accent scale-100 ring-4 ring-brand-accent/20' 
-                  : 'w-24 h-16 opacity-60 hover:opacity-100 scale-95'
-              }`}
-              style={{
-                transformOrigin: 'center center'
-              }}
-            >
-              {activeSlide !== idx && (
-                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/30 transition-colors z-10" />
-              )}
-              <img src={slide.thumb} alt={slide.title} className="w-full h-full object-cover" />
-            </div>
-          ))}
-        </div>
-
+      {/* Navigation Arrows */}
+      <div className="absolute bottom-12 left-0 right-0 z-30 pointer-events-none flex items-center justify-between px-6 md:px-12">
+        <button 
+          onClick={prevSlide}
+          className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-white backdrop-blur-md bg-transparent hover:bg-white/5 hover:border-white/40 hover:scale-105 transition-all pointer-events-auto"
+        >
+          <ChevronLeft className="w-6 h-6" strokeWidth={1.5} />
+        </button>
+        <button 
+          onClick={nextSlide}
+          className="w-14 h-14 rounded-full border border-white flex items-center justify-center text-white backdrop-blur-md bg-transparent hover:bg-white/10 hover:scale-105 transition-all pointer-events-auto"
+        >
+          <ChevronRight className="w-6 h-6" strokeWidth={1.5} />
+        </button>
       </div>
     </div>
   );
