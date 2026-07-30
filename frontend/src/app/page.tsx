@@ -14,7 +14,7 @@ import { products } from "@/lib/data/products";
 import { industries } from "@/lib/data/industries";
 import { Scanline } from "@/components/effects/Scanline";
 import BorderGlow from "@/components/ui/border-glow";
-import emailjs from "@emailjs/browser";
+
 import toast from "react-hot-toast";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -565,23 +565,8 @@ function DemoRequestSection() {
         submitted_at: new Date().toLocaleString(),
       };
 
-      // Send Primary Email to Admin
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
-        templateParams,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
-      );
-
-      // Send Auto-Reply to Customer
-      if (process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID) {
-        await emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
-          process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID,
-          templateParams,
-          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
-        );
-      }
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setSubmitted(true);
       toast.success("Demo request submitted successfully!");

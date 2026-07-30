@@ -5,7 +5,7 @@ import { CheckCircle2, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import emailjs from "@emailjs/browser";
+
 
 const demoSchema = z.object({
   firstName: z.string().min(2, "First name is required"),
@@ -53,23 +53,8 @@ export default function RequestDemoPage() {
         submitted_at: new Date().toLocaleString(),
       };
 
-      // Send Primary Email to Admin
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
-        templateParams,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
-      );
-
-      // Send Auto-Reply to Customer
-      if (process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID) {
-        await emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
-          process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID,
-          templateParams,
-          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
-        );
-      }
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setIsSuccess(true);
       reset();
