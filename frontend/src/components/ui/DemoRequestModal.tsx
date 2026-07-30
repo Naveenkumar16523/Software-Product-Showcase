@@ -86,7 +86,7 @@ export default function DemoRequestModal({ isOpen, onClose }: DemoRequestModalPr
     messageLines.push(`\nWould love a walkthrough whenever works for you!`);
     
     const encodedMessage = encodeURIComponent(messageLines.join('\n'));
-    const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918925758449";
+    const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919941070555";
     const waUrl = `https://wa.me/${waNumber}?text=${encodedMessage}`;
 
     // 3. Open WhatsApp synchronously
