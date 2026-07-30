@@ -28,7 +28,7 @@ export function NavBody({ children }: { children: ReactNode }) {
 export function NavbarLogo() {
   return (
     <Link href="/" className="flex items-center space-x-2">
-      <img src="/icon.png" alt="B&Y Technologies" className="h-12 w-auto object-contain rounded-full" />
+      <img src="/logo.png" alt="B&Y Technologies" className="h-12 w-auto object-contain" />
     </Link>
   );
 }

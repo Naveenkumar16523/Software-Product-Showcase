@@ -18,10 +18,13 @@ export default async function ResourcesPage() {
   let fetchedPosts = [];
   try {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000); // Fail fast during build if API is unreachable
     const res = await fetch(`${API_URL}/api/v1/blog-posts`, {
       next: { revalidate: 60 }, // Revalidate every minute
-      signal: AbortSignal.timeout(3000) // Fail fast during build if API is unreachable
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     if (res.ok) {
       fetchedPosts = await res.json();
     }
